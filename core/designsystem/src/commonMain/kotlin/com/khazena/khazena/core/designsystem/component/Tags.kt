@@ -1,0 +1,109 @@
+package com.khazena.khazena.core.designsystem.component
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
+import com.khazena.khazena.core.designsystem.KhazenaRadius
+import com.khazena.khazena.core.designsystem.KhazenaSize
+import com.khazena.khazena.core.designsystem.KhazenaTheme
+
+/** Discount = Sun; Live/Verified/Expired = Paper + 6pt status dot; Highlight = Ink; OnColourBlock = white (on Sun/Ember/photos). */
+enum class TagType { Discount, Live, Verified, Expired, Highlight, OnColourBlock }
+
+/** 24 tall, DM Mono uppercase. Not interactive. */
+@Composable
+fun KhazenaTag(label: String, modifier: Modifier = Modifier, type: TagType = TagType.Discount) {
+    val colors = KhazenaTheme.colors
+    val container = when (type) {
+        TagType.Discount -> colors.tagDiscount
+        TagType.Live, TagType.Verified, TagType.Expired -> colors.tagStatus
+        TagType.Highlight -> colors.tagHighlight
+        TagType.OnColourBlock -> colors.surfaceCard
+    }
+    val dot = when (type) {
+        TagType.Live -> colors.statusLive
+        TagType.Verified -> colors.statusVerified
+        TagType.Expired -> colors.statusExpired
+        else -> null
+    }
+    Row(
+        modifier = modifier
+            .height(KhazenaSize.tag)
+            .clip(KhazenaRadius.pill)
+            .background(container)
+            .padding(start = if (dot != null) 9.dp else 10.dp, end = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (dot != null) Box(Modifier.size(6.dp).background(dot, CircleShape))
+        Text(
+            text = label.uppercase(),
+            style = KhazenaTheme.typography.monoTagS,
+            color = if (type == TagType.Highlight) colors.textOnDark else colors.textPrimary,
+            maxLines = 1,
+        )
+    }
+}
+
+/** Filter chip: 36 tall, selected = Ink. Optional count bubble. */
+@Composable
+fun KhazenaChip(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    count: Int? = null,
+) {
+    val colors = KhazenaTheme.colors
+    Row(
+        modifier = modifier
+            .minimumInteractiveComponentSize()
+            .height(KhazenaSize.chip)
+            .clip(KhazenaRadius.pill)
+            .background(if (selected) colors.actionSelected else colors.surfaceCard)
+            .then(if (selected) Modifier else Modifier.border(1.dp, colors.borderDefault, KhazenaRadius.pill))
+            .selectable(selected = selected, role = Role.Tab, onClick = onClick)
+            .padding(start = 14.dp, end = if (count != null) 6.dp else 14.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = label,
+            style = KhazenaTheme.typography.labelMSemiBold,
+            color = if (selected) colors.actionOnSelected else colors.textPrimary,
+            maxLines = 1,
+        )
+        if (count != null) {
+            Box(
+                Modifier
+                    .height(22.dp)
+                    .clip(KhazenaRadius.pill)
+                    .background(if (selected) colors.textSecondary else colors.surfaceTile)
+                    .padding(horizontal = 7.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = count.toString(),
+                    style = KhazenaTheme.typography.labelXSMedium,
+                    color = if (selected) colors.actionOnSelected else colors.textSecondary,
+                )
+            }
+        }
+    }
+}
+

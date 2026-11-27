@@ -24,6 +24,8 @@ data class KhazenaColors(
     val surfaceTile: Color = Color(0xFFF2ECE1),
     val borderDefault: Color = Color(0xFFE7E0D2),
     val borderStrong: Color = Color(0xFFD8CFBF),
+    val borderSelected: Color = Color(0xFF16121F),
+    val surfaceInverse: Color = Color(0xFF16121F),
 
     // Text
     val textPrimary: Color = Color(0xFF16121F),
@@ -40,6 +42,7 @@ data class KhazenaColors(
     val actionSecondary: Color = Color(0xFFF8F2E7),
     val actionSelected: Color = Color(0xFF16121F),
     val actionDisabled: Color = Color(0xFFE7E0D2),
+    val actionOnSelected: Color = Color(0xFFF8F2E7),
 
     // Tags
     val tagDiscount: Color = Color(0xFFFFC933),
