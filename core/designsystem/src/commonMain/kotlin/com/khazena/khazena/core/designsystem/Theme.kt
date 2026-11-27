@@ -15,11 +15,6 @@ private val LocalKhazenaTypography = staticCompositionLocalOf<KhazenaTypography>
     error("KhazenaTypography not provided: wrap the UI in KhazenaTheme { }")
 }
 
-/**
- * Khazena theme. The design is light-only (Paper base), so there is no dark scheme.
- * Use `KhazenaTheme.colors` / `.typography` for exact Figma tokens. Material 3 components
- * get a matching colour scheme, type scale and shapes, so they look right without overrides.
- */
 @Composable
 fun KhazenaTheme(content: @Composable () -> Unit) {
     val colors = remember { KhazenaColors() }
@@ -71,7 +66,6 @@ private fun KhazenaColors.toMaterial() = lightColorScheme(
     onSurface = textPrimary,
     surfaceVariant = surfaceTile,
     onSurfaceVariant = textSecondary,
-    // Flat design, no shadows: containers are plain Paper / Card / Tile, never tinted.
     surfaceTint = surfaceBackground,
     surfaceContainerLowest = surfaceCard,
     surfaceContainerLow = surfaceCard,

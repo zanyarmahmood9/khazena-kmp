@@ -3,10 +3,6 @@ package com.khazena.khazena.core.designsystem
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 
-/**
- * Figma › 03 · Spacing & radius. Everything sits on a 2/4pt grid: screen margin 20,
- * card padding 11–16, gaps of 10–12 in lists, 32 between sections.
- */
 object KhazenaSpacing {
     val s2 = 2.dp
     val s4 = 4.dp
@@ -26,13 +22,13 @@ object KhazenaSpacing {
 }
 
 object KhazenaRadius {
-    val xs = RoundedCornerShape(8.dp) // small marks
-    val sm = RoundedCornerShape(14.dp) // thumbnails, star tiles
-    val card = RoundedCornerShape(20.dp) // all white cards
-    val tile = RoundedCornerShape(22.dp) // category tiles
-    val block = RoundedCornerShape(24.dp) // colour blocks
-    val hero = RoundedCornerShape(28.dp) // hero & onboarding blocks
-    val pill = RoundedCornerShape(percent = 50) // buttons, tags, chips
+    val xs = RoundedCornerShape(8.dp)
+    val sm = RoundedCornerShape(14.dp)
+    val card = RoundedCornerShape(20.dp)
+    val tile = RoundedCornerShape(22.dp)
+    val block = RoundedCornerShape(24.dp)
+    val hero = RoundedCornerShape(28.dp)
+    val pill = RoundedCornerShape(percent = 50)
 }
 
 object KhazenaSize {

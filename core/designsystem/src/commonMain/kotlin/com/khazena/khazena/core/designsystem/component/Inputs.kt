@@ -40,10 +40,10 @@ import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 
 private val SearchFieldShape = RoundedCornerShape(18.dp)
 
-/** Search field: 52 tall, white, radius 18, hairline border; Ink 1.5 border when focused. Clear button once filled. */
 @Composable
 fun KhazenaSearchField(
     value: String,
@@ -106,7 +106,6 @@ fun KhazenaSearchField(
     )
 }
 
-/** Pill segmented control, 48 tall; selected segment = Ink. */
 @Composable
 fun KhazenaSegmentedControl(
     options: List<String>,
@@ -146,7 +145,6 @@ fun KhazenaSegmentedControl(
     }
 }
 
-/** 51×31 switch: Ink track when on, Strong border colour when off, white 27pt knob. */
 @Composable
 fun KhazenaToggle(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier) {
     val colors = KhazenaTheme.colors
@@ -176,7 +174,6 @@ fun KhazenaRadio(selected: Boolean, onClick: () -> Unit, modifier: Modifier = Mo
     )
 }
 
-/** 24pt checkbox, radius 7: Ink with a check when on, white with 2pt Strong border when off. */
 @Composable
 fun KhazenaCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier) {
     SelectionMark(
@@ -217,7 +214,6 @@ private fun SelectionMark(
     }
 }
 
-/** Rating input tile, 48pt; Sun when selected. Use five in a row. */
 @Composable
 fun KhazenaStarTile(selected: Boolean, contentDescription: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val colors = KhazenaTheme.colors
@@ -238,10 +234,8 @@ fun KhazenaStarTile(selected: Boolean, contentDescription: String, onClick: () -
     }
 }
 
-/** Member = Violet; OnColour = white with Violet initials (on colour blocks); Expired = Paper with Ink initials. */
 enum class AvatarStyle { Member, OnColour, Expired }
 
-/** Initials avatar, 44 or 52. */
 @Composable
 fun KhazenaAvatar(
     initials: String,
@@ -264,5 +258,49 @@ fun KhazenaAvatar(
             style = if (large) KhazenaTheme.typography.labelAvatarL else KhazenaTheme.typography.labelAvatarM,
             color = content,
         )
+    }
+}
+
+@Preview(name = "Search field", widthDp = 390)
+@Composable
+private fun SearchFieldPreview() = PreviewSurface {
+    KhazenaSearchField("", {}, "Search restaurants, salons, services…", "Clear")
+    KhazenaSearchField("kebab", {}, "Search restaurants, salons, services…", "Clear")
+}
+
+@Preview(name = "Segmented control", widthDp = 390)
+@Composable
+private fun SegmentedControlPreview() = PreviewSurface {
+    KhazenaSegmentedControl(listOf("Menu", "Reviews · 126", "Info"), 1, {})
+}
+
+@Preview(name = "Toggle · radio · checkbox", widthDp = 390)
+@Composable
+private fun SelectionControlsPreview() = PreviewSurface {
+    listOf(true, false).forEach { on ->
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            KhazenaToggle(on, {})
+            KhazenaRadio(on, {})
+            KhazenaCheckbox(on, {})
+        }
+    }
+}
+
+@Preview(name = "Star tile", widthDp = 390)
+@Composable
+private fun StarTilePreview() = PreviewSurface {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        (1..5).forEach { KhazenaStarTile(it <= 4, "$it stars", {}) }
+    }
+}
+
+@Preview(name = "Avatar", widthDp = 390)
+@Composable
+private fun AvatarPreview() = PreviewSurface {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        AvatarStyle.entries.forEach {
+            KhazenaAvatar("BK", style = it)
+            KhazenaAvatar("BK", style = it, large = true)
+        }
     }
 }

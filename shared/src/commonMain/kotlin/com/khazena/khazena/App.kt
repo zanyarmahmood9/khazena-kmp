@@ -9,7 +9,6 @@ import com.khazena.khazena.core.designsystem.component.KhazenaComponentGallery
 @Preview
 fun App() {
     KhazenaTheme {
-        // shortcut: shows the design-system gallery until the first feature screen replaces it.
         KhazenaComponentGallery()
     }
 }

@@ -34,8 +34,8 @@ import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 
-/** H3 section title with an optional "See all"-style link on the right. */
 @Composable
 fun KhazenaSectionHeader(
     title: String,
@@ -61,14 +61,9 @@ fun KhazenaSectionHeader(
     }
 }
 
-/** One tab: outline icon, filled icon when active, and the accessibility label (tabs are icon-only). */
 @Immutable
 data class TabBarItem(val label: String, val icon: DrawableResource, val selectedIcon: DrawableResource)
 
-/**
- * Floating icon-only tab bar: white pill of tabs (active = Sun pill + filled icon) and a round Ember
- * action button beside it (Scan). Sits over content with a Paper fade, so draw it at the bottom of a Box.
- */
 @Composable
 fun KhazenaTabBar(
     items: List<TabBarItem>,
@@ -140,4 +135,32 @@ fun KhazenaTabBar(
     }
 }
 
-private val TabBarShadow = Color(0x240D0D1A) // rgba(13,13,26,0.14)
+private val TabBarShadow = Color(0x240D0D1A)
+
+@Preview(name = "Section header", widthDp = 390)
+@Composable
+private fun SectionHeaderPreview() = PreviewSurface {
+    KhazenaSectionHeader("Highest discounts.", linkLabel = "See all")
+    KhazenaSectionHeader("Near you.")
+}
+
+@Preview(name = "Tab bar", widthDp = 390)
+@Composable
+private fun TabBarPreview() = PreviewSurface {
+    Box(Modifier.fillMaxWidth().height(120.dp)) {
+        KhazenaTabBar(
+            items = listOf(
+                TabBarItem("Home", KhazenaIcons.House, KhazenaIcons.HouseFill),
+                TabBarItem("Search", KhazenaIcons.MagnifyingGlass, KhazenaIcons.MagnifyingGlassFill),
+                TabBarItem("Wallet", KhazenaIcons.Wallet, KhazenaIcons.WalletFill),
+                TabBarItem("Profile", KhazenaIcons.User, KhazenaIcons.UserFill),
+            ),
+            selectedIndex = 0,
+            onSelect = {},
+            actionIcon = KhazenaIcons.QrCode,
+            actionLabel = "Scan",
+            onAction = {},
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
+    }
+}

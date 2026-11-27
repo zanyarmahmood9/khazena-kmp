@@ -21,11 +21,10 @@ import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import androidx.compose.ui.tooling.preview.Preview
 
-/** Discount = Sun; Live/Verified/Expired = Paper + 6pt status dot; Highlight = Ink; OnColourBlock = white (on Sun/Ember/photos). */
 enum class TagType { Discount, Live, Verified, Expired, Highlight, OnColourBlock }
 
-/** 24 tall, DM Mono uppercase. Not interactive. */
 @Composable
 fun KhazenaTag(label: String, modifier: Modifier = Modifier, type: TagType = TagType.Discount) {
     val colors = KhazenaTheme.colors
@@ -60,7 +59,6 @@ fun KhazenaTag(label: String, modifier: Modifier = Modifier, type: TagType = Tag
     }
 }
 
-/** Filter chip: 36 tall, selected = Ink. Optional count bubble. */
 @Composable
 fun KhazenaChip(
     label: String,
@@ -107,3 +105,18 @@ fun KhazenaChip(
     }
 }
 
+@Preview(name = "Tag", widthDp = 390)
+@Composable
+private fun TagPreview() = PreviewSurface {
+    TagType.entries.forEach { KhazenaTag(it.name, type = it) }
+}
+
+@Preview(name = "Chip", widthDp = 390)
+@Composable
+private fun ChipPreview() = PreviewSurface {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        KhazenaChip("All", selected = false, onClick = {})
+        KhazenaChip("Grills", selected = true, onClick = {}, count = 9)
+        KhazenaChip("Cafés", selected = false, onClick = {})
+    }
+}

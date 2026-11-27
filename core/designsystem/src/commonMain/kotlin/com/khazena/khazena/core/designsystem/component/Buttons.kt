@@ -18,18 +18,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.tooling.preview.Preview
 
-/** Primary = Ember with Ink label, one per screen. Dark = Ink, for actions on Sun/Ember blocks. Secondary = white with hairline. Ghost = text link. */
-enum class ButtonVariant { Primary, Dark, Secondary, Ghost }
+enum class ButtonVariant { Primary, Dark, Secondary, Ghost, Danger }
 
-/** L = 56 tall, M = 44 tall. */
-enum class ButtonSize { L, M }
+enum class ButtonSize(internal val height: Dp, internal val paddingX: Dp, internal val iconSize: Dp, internal val gap: Dp) {
+    L(KhazenaSize.button, 28.dp, 20.dp, 8.dp),
+    M(KhazenaSize.buttonSm, 20.dp, 18.dp, 8.dp),
+    Compact(42.dp, 16.dp, 18.dp, 6.dp),
+    S(32.dp, 14.dp, 14.dp, 4.dp),
+}
 
 @Composable
 fun KhazenaButton(
@@ -47,12 +55,19 @@ fun KhazenaButton(
         variant == ButtonVariant.Primary -> colors.actionPrimary to colors.actionOnPrimary
         variant == ButtonVariant.Dark -> colors.blockInk to colors.textOnDark
         variant == ButtonVariant.Secondary -> colors.surfaceCard to colors.textPrimary
+        variant == ButtonVariant.Danger -> colors.statusDanger to colors.surfaceCard
         else -> Color.Transparent to colors.textPrimary
     }
-    val large = size == ButtonSize.L
+    val type = KhazenaTheme.typography
+    val textStyle = when (size) {
+        ButtonSize.L -> type.buttonL
+        ButtonSize.M -> type.buttonM
+        ButtonSize.Compact -> type.buttonM.copy(fontSize = 15.sp)
+        ButtonSize.S -> type.buttonM.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+    }
     Row(
         modifier = modifier
-            .height(if (large) KhazenaSize.button else KhazenaSize.buttonSm)
+            .height(size.height)
             .clip(KhazenaRadius.pill)
             .background(container)
             .then(
@@ -61,16 +76,16 @@ fun KhazenaButton(
                 } else Modifier,
             )
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
-            .padding(PaddingValues(horizontal = if (large) 28.dp else 20.dp)),
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            .padding(PaddingValues(horizontal = size.paddingX)),
+        horizontalArrangement = Arrangement.spacedBy(size.gap, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (icon != null) {
-            Icon(painterResource(icon), null, Modifier.size(if (large) 20.dp else 18.dp), tint = content)
+            Icon(painterResource(icon), null, Modifier.size(size.iconSize), tint = content)
         }
         Text(
             text = text,
-            style = if (large) KhazenaTheme.typography.buttonL else KhazenaTheme.typography.buttonM,
+            style = textStyle,
             color = content,
             maxLines = 1,
         )
@@ -79,7 +94,6 @@ fun KhazenaButton(
 
 enum class IconButtonStyle { Paper, White, Ink, Ember }
 
-/** 44pt circular header button (back, bell, close, share). Flat: no blur or shadow. */
 @Composable
 fun KhazenaIconButton(
     icon: DrawableResource,
@@ -104,5 +118,34 @@ fun KhazenaIconButton(
         contentAlignment = Alignment.Center,
     ) {
         Icon(painterResource(icon), contentDescription, Modifier.size(20.dp), tint = content)
+    }
+}
+
+@Preview(name = "Button · variants", widthDp = 390)
+@Composable
+private fun ButtonVariantsPreview() = PreviewSurface {
+    ButtonVariant.entries.forEach {
+        KhazenaButton(it.name, {}, Modifier.fillMaxWidth(), variant = it, icon = KhazenaIcons.QrCode)
+    }
+    KhazenaButton("Disabled", {}, Modifier.fillMaxWidth(), enabled = false)
+}
+
+@Preview(name = "Button · sizes", widthDp = 390)
+@Composable
+private fun ButtonSizesPreview() = PreviewSurface {
+    ButtonSize.entries.forEach {
+        KhazenaButton("${it.name} · ${it.height.value.toInt()}", {}, size = it, icon = KhazenaIcons.Export)
+    }
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        KhazenaButton("Export", {}, variant = ButtonVariant.Secondary, size = ButtonSize.Compact, icon = KhazenaIcons.Export)
+        KhazenaButton("See all 126", {}, variant = ButtonVariant.Secondary, size = ButtonSize.S)
+    }
+}
+
+@Preview(name = "Icon button", widthDp = 390)
+@Composable
+private fun IconButtonPreview() = PreviewSurface {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        IconButtonStyle.entries.forEach { KhazenaIconButton(KhazenaIcons.ArrowLeft, "Back", {}, style = it) }
     }
 }

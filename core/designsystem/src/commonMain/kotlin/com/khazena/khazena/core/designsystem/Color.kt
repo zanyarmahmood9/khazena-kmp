@@ -3,13 +3,6 @@ package com.khazena.khazena.core.designsystem
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
-/**
- * Colour tokens from Figma "🧩 Styles, elements & components" › 01 · Colour and B0 · Business foundations.
- * Property names mirror the Figma variable names (`text/primary` -> `textPrimary`).
- *
- * Rules from the file: Ember is for the primary action only. Put Ink text on Ember and Sun, and
- * white on Violet. Never put white on Ember (3.4:1).
- */
 @Immutable
 data class KhazenaColors(
     // Brand blocks
@@ -19,7 +12,7 @@ data class KhazenaColors(
     val blockInk: Color = Color(0xFF16121F),
 
     // Surfaces & borders
-    val surfaceBackground: Color = Color(0xFFF8F2E7), // "Paper"
+    val surfaceBackground: Color = Color(0xFFF8F2E7),
     val surfaceCard: Color = Color(0xFFFFFFFF),
     val surfaceTile: Color = Color(0xFFF2ECE1),
     val borderDefault: Color = Color(0xFFE7E0D2),
@@ -55,7 +48,6 @@ data class KhazenaColors(
     val statusExpired: Color = Color(0xFFDC2626),
     val statusExpiredOnDark: Color = Color(0xFFFF8A70),
 
-    // Status (business app): text colour on its tint, for chips and notes
     val statusSuccess: Color = Color(0xFF1F7A3A),
     val statusSuccessTint: Color = Color(0xFFDDF1E2),
     val statusDanger: Color = Color(0xFFC2260C),

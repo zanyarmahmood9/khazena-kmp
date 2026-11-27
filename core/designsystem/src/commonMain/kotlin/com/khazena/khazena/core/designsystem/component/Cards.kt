@@ -28,8 +28,9 @@ import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.tooling.preview.Preview
 
-/** "Near you" row: places, search results and saved places. Pass the photo as a Painter (e.g. from Coil). */
 @Composable
 fun KhazenaPlaceRow(
     photo: Painter,
@@ -47,7 +48,6 @@ fun KhazenaPlaceRow(
     }
 }
 
-/** Menu item with member price, original price and the saving. */
 @Composable
 fun KhazenaMenuItem(
     photo: Painter,
@@ -95,7 +95,6 @@ private fun CardRow(photo: Painter, modifier: Modifier, content: @Composable and
     }
 }
 
-/** 80pt category tile with a category illustration. */
 @Composable
 fun KhazenaCategoryTile(art: Painter, label: String, modifier: Modifier = Modifier) {
     Column(
@@ -108,7 +107,6 @@ fun KhazenaCategoryTile(art: Painter, label: String, modifier: Modifier = Modifi
     }
 }
 
-/** 232pt Ink deal card: photo with discount + rating tags, caption band with a Sun call to action. */
 @Composable
 fun KhazenaDealCard(
     photo: Painter,
@@ -141,7 +139,6 @@ fun KhazenaDealCard(
 
 enum class FactKind { Rating, Distance, Hours }
 
-/** 28 tall Paper fact chip on store pages: star / pin / clock + mono label. */
 @Composable
 fun KhazenaFactChip(kind: FactKind, label: String, modifier: Modifier = Modifier) {
     val colors = KhazenaTheme.colors
@@ -158,4 +155,44 @@ fun KhazenaFactChip(kind: FactKind, label: String, modifier: Modifier = Modifier
         Icon(painterResource(icon), null, Modifier.size(14.dp), tint = tint)
         Text(label.uppercase(), style = KhazenaTheme.typography.monoTagS, color = colors.textPrimary, maxLines = 1)
     }
+}
+
+@Composable
+private fun previewPhoto() = ColorPainter(KhazenaTheme.colors.borderStrong)
+
+@Preview(name = "Place row", widthDp = 390)
+@Composable
+private fun PlaceRowPreview() = PreviewSurface {
+    KhazenaPlaceRow(previewPhoto(), "Naz Café", "Café · 0.6 km", discountLabel = "Save 10%")
+    KhazenaPlaceRow(previewPhoto(), "Shifa Pharmacy", "Pharmacy · 0.4 km")
+}
+
+@Preview(name = "Menu item", widthDp = 390)
+@Composable
+private fun MenuItemPreview() = PreviewSurface {
+    KhazenaMenuItem(previewPhoto(), "Chicken Kebab Platter", "Two skewers, rice, grilled veg and fresh bread", "8,400 IQD", originalPrice = "12,000", savingLabel = "−3,600")
+    KhazenaMenuItem(previewPhoto(), "Red Lentil Soup", "With lemon and warm bread", "4,000 IQD")
+}
+
+@Preview(name = "Category tile", widthDp = 390)
+@Composable
+private fun CategoryTilePreview() = PreviewSurface {
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        KhazenaCategoryTile(previewPhoto(), "Food & Cafes")
+        KhazenaCategoryTile(previewPhoto(), "Beauty")
+    }
+}
+
+@Preview(name = "Deal card", widthDp = 390)
+@Composable
+private fun DealCardPreview() = PreviewSurface {
+    KhazenaDealCard(previewPhoto(), "Azmar Grill", "Grill · Salim St", "30% off", "★ 4.8", "Redeem in store →")
+}
+
+@Preview(name = "Fact chip", widthDp = 390)
+@Composable
+private fun FactChipPreview() = PreviewSurface {
+    KhazenaFactChip(FactKind.Rating, "4.8 (126)")
+    KhazenaFactChip(FactKind.Distance, "0.6 km")
+    KhazenaFactChip(FactKind.Hours, "Open · 11pm")
 }

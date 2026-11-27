@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -23,8 +24,9 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.ui.tooling.preview.Preview
 
-/** Every design-system component with Figma's sample copy. A developer screen, not shipped UI. */
 @Composable
 fun KhazenaComponentGallery(modifier: Modifier = Modifier) {
     val photo = ColorPainter(KhazenaTheme.colors.borderStrong)
@@ -57,6 +59,12 @@ fun KhazenaComponentGallery(modifier: Modifier = Modifier) {
                 KhazenaButton("Scan to save", {}, variant = ButtonVariant.Secondary, size = ButtonSize.M, icon = KhazenaIcons.QrCode)
                 KhazenaButton("Scan to save", {}, variant = ButtonVariant.Ghost, size = ButtonSize.M, icon = KhazenaIcons.QrCode)
             }
+            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                KhazenaButton("Export", {}, variant = ButtonVariant.Secondary, size = ButtonSize.Compact, icon = KhazenaIcons.Export)
+                KhazenaButton("Add service", {}, size = ButtonSize.Compact)
+                KhazenaButton("See all 126", {}, variant = ButtonVariant.Secondary, size = ButtonSize.S)
+            }
+            KhazenaButton("Close business account", {}, Modifier.fillMaxWidth(), variant = ButtonVariant.Danger)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 IconButtonStyle.entries.forEach { KhazenaIconButton(KhazenaIcons.ArrowLeft, "Back", {}, style = it) }
             }
@@ -119,3 +127,16 @@ fun KhazenaComponentGallery(modifier: Modifier = Modifier) {
         )
     }
 }
+
+@Composable
+internal fun PreviewSurface(content: @Composable ColumnScope.() -> Unit) = KhazenaTheme {
+    Column(
+        Modifier.background(KhazenaTheme.colors.surfaceBackground).padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        content = content,
+    )
+}
+
+@Preview(name = "Component gallery", widthDp = 390, heightDp = 2400)
+@Composable
+private fun ComponentGalleryPreview() = KhazenaTheme { KhazenaComponentGallery() }

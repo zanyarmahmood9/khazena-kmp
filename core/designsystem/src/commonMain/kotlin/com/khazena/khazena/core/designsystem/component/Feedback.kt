@@ -29,8 +29,8 @@ import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 
-/** Sun offer block: kicker, big headline, body and an Ink "%" badge. */
 @Composable
 fun KhazenaOfferBlock(kicker: String, headline: String, body: String, modifier: Modifier = Modifier) {
     val colors = KhazenaTheme.colors
@@ -49,16 +49,11 @@ fun KhazenaOfferBlock(kicker: String, headline: String, body: String, modifier: 
     }
 }
 
-/** "khazena" wordmark text, as set next to the K mark. Brand name: not translated. */
 @Composable
 internal fun Wordmark(style: androidx.compose.ui.text.TextStyle, color: androidx.compose.ui.graphics.Color) {
     Text("khazena", style = style, color = color, maxLines = 1)
 }
 
-/**
- * Membership card, 196 tall: Violet when active, Ink when expired. All copy is passed in so it can be
- * localised: e.g. memberLabel "Member", planLabel "Plan", dateLabel "Valid until" / "Expired on".
- */
 @Composable
 fun KhazenaMembershipCard(
     active: Boolean,
@@ -122,7 +117,6 @@ private fun CardFact(label: String, value: String, color: androidx.compose.ui.gr
     }
 }
 
-/** White info banner with a Sun icon tile (bell by default). */
 @Composable
 fun KhazenaInfoBanner(message: String, modifier: Modifier = Modifier, icon: DrawableResource = KhazenaIcons.Bell) {
     val colors = KhazenaTheme.colors
@@ -138,7 +132,6 @@ fun KhazenaInfoBanner(message: String, modifier: Modifier = Modifier, icon: Draw
     }
 }
 
-/** Ink pill toast with title, detail and an optional action (e.g. Undo). Show it from a SnackbarHost. */
 @Composable
 fun KhazenaToast(
     title: String,
@@ -168,7 +161,6 @@ fun KhazenaToast(
     }
 }
 
-/** Home header: K mark + wordmark, member avatar and a white bell button. */
 @Composable
 fun KhazenaAppHeader(
     initials: String,
@@ -193,4 +185,36 @@ fun KhazenaAppHeader(
         )
         KhazenaIconButton(KhazenaIcons.Bell, notificationsLabel, onNotificationsClick, style = IconButtonStyle.White)
     }
+}
+
+@Preview(name = "Offer block", widthDp = 390)
+@Composable
+private fun OfferBlockPreview() = PreviewSurface {
+    KhazenaOfferBlock("Member offer · every item", "30% off\neverything.", "Member price is applied to every item")
+}
+
+@Preview(name = "Membership card", widthDp = 390)
+@Composable
+private fun MembershipCardPreview() = PreviewSurface {
+    KhazenaMembershipCard(true, "Premium", "Active", "Member", "Bandy Kamal", "Plan", "1-Year Premium", "Valid until", "12 Oct 2027")
+    KhazenaMembershipCard(false, "Premium", "Expired", "Member", "Bandy Kamal", "Plan", "1-Year Premium", "Expired on", "12 Oct 2026")
+}
+
+@Preview(name = "Info banner", widthDp = 390)
+@Composable
+private fun InfoBannerPreview() = PreviewSurface {
+    KhazenaInfoBanner("Show this live code to the cashier. Screenshots won’t work.")
+}
+
+@Preview(name = "Toast", widthDp = 390)
+@Composable
+private fun ToastPreview() = PreviewSurface {
+    KhazenaToast("Removed from saved", detail = "Shine Car Wash", actionLabel = "Undo")
+    KhazenaToast("Copied")
+}
+
+@Preview(name = "App header", widthDp = 390)
+@Composable
+private fun AppHeaderPreview() = PreviewSurface {
+    KhazenaAppHeader("BK", "Notifications", {}, {})
 }

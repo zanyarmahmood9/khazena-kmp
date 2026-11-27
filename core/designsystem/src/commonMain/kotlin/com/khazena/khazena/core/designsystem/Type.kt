@@ -17,7 +17,6 @@ import khazena.core.designsystem.generated.resources.instrument_sans_regular
 import khazena.core.designsystem.generated.resources.instrument_sans_semibold
 import org.jetbrains.compose.resources.Font
 
-/** Type styles from Figma › 02 · Typography. Names mirror the Figma styles (`Heading/H1` -> `headingH1`). */
 @Immutable
 data class KhazenaTypography(
     val displayXL: TextStyle,
@@ -47,10 +46,8 @@ data class KhazenaTypography(
     val monoCode: TextStyle,
 )
 
-// Figma centres text in its line box and adds no font padding; this matches it.
 private val figmaLineHeight = LineHeightStyle(LineHeightStyle.Alignment.Center, LineHeightStyle.Trim.None)
 
-// Figma gives line height and letter spacing in %, which map to em.
 private fun style(family: FontFamily, weight: FontWeight, size: Int, lineHeight: Double, tracking: Double) =
     TextStyle(
         fontFamily = family,

@@ -27,8 +27,20 @@ import khazena.core.designsystem.generated.resources.kmark_header
 import khazena.core.designsystem.generated.resources.kmark_on_ink
 import khazena.core.designsystem.generated.resources.kmark_on_violet
 import khazena.core.designsystem.generated.resources.kmark_watermark
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.khazena.khazena.core.designsystem.KhazenaTheme
+import org.jetbrains.compose.resources.painterResource
 
-/** Figma › 04 · Components › Icons (Phosphor Bold, 24pt). Tint them; they are single-colour. */
 object KhazenaIcons {
     val House = Res.drawable.ic_house
     val HouseFill = Res.drawable.ic_house_fill
@@ -54,10 +66,36 @@ object KhazenaIcons {
     val ShoppingBag = Res.drawable.ic_shopping_bag
 }
 
-/** Khazena "K" mark, multi-colour: draw with Image, never tint. */
 object KhazenaLogo {
     val MarkOnPaper = Res.drawable.kmark_header
     val MarkOnViolet = Res.drawable.kmark_on_violet
     val MarkOnInk = Res.drawable.kmark_on_ink
     internal val Watermark = Res.drawable.kmark_watermark
+}
+
+@Preview(name = "Icons", widthDp = 390)
+@Composable
+private fun IconsPreview() = PreviewSurface {
+    val icons = with(KhazenaIcons) {
+        listOf(
+            House, HouseFill, MagnifyingGlass, MagnifyingGlassFill, Wallet, WalletFill, User, UserFill, QrCode, Bell, ArrowLeft,
+            ArrowRight, Export, Bookmark, StarFill, MapPin, Clock, Check, X, HeartFill, Storefront, ShoppingBag,
+        )
+    }
+    icons.chunked(8).forEach { row ->
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            row.forEach { Icon(painterResource(it), null, Modifier.size(24.dp), tint = KhazenaTheme.colors.textPrimary) }
+        }
+    }
+}
+
+@Preview(name = "Logo", widthDp = 390)
+@Composable
+private fun LogoPreview() = PreviewSurface {
+    Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
+        listOf(KhazenaLogo.MarkOnPaper, KhazenaLogo.MarkOnViolet, KhazenaLogo.MarkOnInk).forEach {
+            Image(painterResource(it), null, Modifier.size(64.dp))
+        }
+    }
+    Text("K mark on Paper · Violet · Ink", style = KhazenaTheme.typography.bodyS, color = KhazenaTheme.colors.textSecondary)
 }
