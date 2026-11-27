@@ -1,0 +1,12 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="home_greeting">ئەمڕۆ لە کوێ پاشەکەوت دەکەیت؟</string>
+    <string name="home_offer_kicker">ئۆفەری ئەندامان · هەموو سەردانێک</string>
+    <string name="home_offer_headline">تا ٤٠٪ داشکان
+لە نزیکت.</string>
+    <string name="home_offer_body">کۆدی «سکانم بکە» لە کاتی پارەدان پیشان بدە.</string>
+    <string name="home_section_deals">زۆرترین داشکان.</string>
+    <string name="home_empty_badge">هیچ نییە</string>
+    <string name="home_empty_title">هێشتا هیچ ئۆفەرێک لە نزیکت نییە.</string>
+    <string name="home_empty_body">هەموو هەفتەیەک شوێنی نوێ زیاد دەکەین. بۆ پشکنینەوە بۆ خوارەوە ڕابکێشە.</string>
+</resources>

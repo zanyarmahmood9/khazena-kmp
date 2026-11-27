@@ -1,0 +1,7 @@
+<resources>
+    <string name="services_title">Services</string>
+    <string name="services_subtitle">What members see on your page, with their member price.</string>
+    <string name="services_empty_badge">No list yet</string>
+    <string name="services_empty_title">No service list yet.</string>
+    <string name="services_empty_body">Add what you offer and members will see their member price for each item.</string>
+</resources>

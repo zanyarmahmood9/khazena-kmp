@@ -304,3 +304,16 @@ private fun AvatarPreview() = PreviewSurface {
         }
     }
 }
+@Preview(name = "Inputs · RTL", widthDp = 390)
+@Composable
+private fun InputsRtlPreview() = RtlPreviewSurface {
+    KhazenaSearchField("", {}, "گەڕان بۆ چێشتخانە، ساڵۆن، خزمەتگوزاری…", "سڕینەوە")
+    KhazenaSearchField("کەباب", {}, "گەڕان", "سڕینەوە")
+    KhazenaSegmentedControl(listOf("مینیو", "هەڵسەنگاندن · ١٢٦", "زانیاری"), 0, {})
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+        KhazenaToggle(true, {})
+        KhazenaToggle(false, {})
+        KhazenaRadio(true, {})
+        KhazenaCheckbox(true, {})
+    }
+}

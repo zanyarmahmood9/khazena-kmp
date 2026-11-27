@@ -196,3 +196,11 @@ private fun FactChipPreview() = PreviewSurface {
     KhazenaFactChip(FactKind.Distance, "0.6 km")
     KhazenaFactChip(FactKind.Hours, "Open · 11pm")
 }
+@Preview(name = "Cards · RTL", widthDp = 390)
+@Composable
+private fun CardsRtlPreview() = RtlPreviewSurface {
+    KhazenaPlaceRow(previewPhoto(), "کافێ ناز", "کافێ · ٠.٦ کم", discountLabel = "١٠٪ پاشەکەوت")
+    KhazenaMenuItem(previewPhoto(), "کەبابی مریشک", "دوو شیش، برنج و نانی گەرم", "٨٬٤٠٠ د.ع", originalPrice = "١٢٬٠٠٠", savingLabel = "−٣٬٦٠٠")
+    KhazenaDealCard(previewPhoto(), "ئازمەر گریل", "گریل · شەقامی سالم", "٣٠٪ داشکان", "★ ٤.٨", "لە دوکان وەریبگرە ←")
+    KhazenaFactChip(FactKind.Distance, "٠.٦ کم")
+}

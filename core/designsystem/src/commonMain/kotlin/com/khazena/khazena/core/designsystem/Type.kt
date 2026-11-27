@@ -15,6 +15,15 @@ import khazena.core.designsystem.generated.resources.instrument_sans_bold
 import khazena.core.designsystem.generated.resources.instrument_sans_medium
 import khazena.core.designsystem.generated.resources.instrument_sans_regular
 import khazena.core.designsystem.generated.resources.instrument_sans_semibold
+import khazena.core.designsystem.generated.resources.readex_pro_bold
+import khazena.core.designsystem.generated.resources.readex_pro_medium
+import khazena.core.designsystem.generated.resources.readex_pro_regular
+import khazena.core.designsystem.generated.resources.readex_pro_semibold
+import khazena.core.designsystem.generated.resources.vazirmatn_bold
+import khazena.core.designsystem.generated.resources.vazirmatn_extrabold
+import khazena.core.designsystem.generated.resources.vazirmatn_medium
+import khazena.core.designsystem.generated.resources.vazirmatn_regular
+import khazena.core.designsystem.generated.resources.vazirmatn_semibold
 import org.jetbrains.compose.resources.Font
 
 @Immutable
@@ -48,26 +57,50 @@ data class KhazenaTypography(
 
 private val figmaLineHeight = LineHeightStyle(LineHeightStyle.Alignment.Center, LineHeightStyle.Trim.None)
 
-private fun style(family: FontFamily, weight: FontWeight, size: Int, lineHeight: Double, tracking: Double) =
-    TextStyle(
-        fontFamily = family,
-        fontWeight = weight,
-        fontSize = size.sp,
-        lineHeight = lineHeight.em,
-        letterSpacing = (tracking / 100).em,
-        lineHeightStyle = figmaLineHeight,
-    )
+private const val ARABIC_SCRIPT_MIN_LINE_HEIGHT = 1.5
 
 @Composable
-internal fun khazenaTypography(): KhazenaTypography {
-    val bricolage = FontFamily(Font(Res.font.bricolage_grotesque_extrabold, FontWeight.ExtraBold))
-    val instrument = FontFamily(
+fun languageFontFamily(languageCode: String): FontFamily = when (languageCode) {
+    "ckb" -> FontFamily(
+        Font(Res.font.vazirmatn_regular, FontWeight.Normal),
+        Font(Res.font.vazirmatn_medium, FontWeight.Medium),
+        Font(Res.font.vazirmatn_semibold, FontWeight.SemiBold),
+        Font(Res.font.vazirmatn_bold, FontWeight.Bold),
+        Font(Res.font.vazirmatn_extrabold, FontWeight.ExtraBold),
+    )
+    "ar" -> FontFamily(
+        Font(Res.font.readex_pro_regular, FontWeight.Normal),
+        Font(Res.font.readex_pro_medium, FontWeight.Medium),
+        Font(Res.font.readex_pro_semibold, FontWeight.SemiBold),
+        Font(Res.font.readex_pro_bold, FontWeight.Bold),
+    )
+    else -> FontFamily(
         Font(Res.font.instrument_sans_regular, FontWeight.Normal),
         Font(Res.font.instrument_sans_medium, FontWeight.Medium),
         Font(Res.font.instrument_sans_semibold, FontWeight.SemiBold),
         Font(Res.font.instrument_sans_bold, FontWeight.Bold),
     )
-    val mono = FontFamily(Font(Res.font.dm_mono_medium, FontWeight.Medium))
+}
+
+@Composable
+internal fun brandFontFamily(): FontFamily = FontFamily(Font(Res.font.bricolage_grotesque_extrabold, FontWeight.ExtraBold))
+
+@Composable
+internal fun khazenaTypography(languageCode: String): KhazenaTypography {
+    val arabicScript = languageCode == "ckb" || languageCode == "ar"
+    val instrument = languageFontFamily(languageCode)
+    val bricolage = if (arabicScript) instrument else FontFamily(Font(Res.font.bricolage_grotesque_extrabold, FontWeight.ExtraBold))
+    val mono = if (arabicScript) instrument else FontFamily(Font(Res.font.dm_mono_medium, FontWeight.Medium))
+
+    // Tracking breaks Arabic-script letter joins and tight line heights clip its marks.
+    fun style(family: FontFamily, weight: FontWeight, size: Int, lineHeight: Double, tracking: Double) = TextStyle(
+        fontFamily = family,
+        fontWeight = weight,
+        fontSize = size.sp,
+        lineHeight = (if (arabicScript) maxOf(lineHeight, ARABIC_SCRIPT_MIN_LINE_HEIGHT) else lineHeight).em,
+        letterSpacing = (if (arabicScript) 0.0 else tracking / 100).em,
+        lineHeightStyle = figmaLineHeight,
+    )
 
     return KhazenaTypography(
         displayXL = style(bricolage, FontWeight.ExtraBold, 48, 1.0, -5.0),

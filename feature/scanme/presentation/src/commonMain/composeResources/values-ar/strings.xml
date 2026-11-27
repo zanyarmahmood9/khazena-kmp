@@ -1,0 +1,10 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="scanme_title">امسح رمزي</string>
+    <string name="scanme_live">رمز مباشر</string>
+    <string name="scanme_refreshes_in">يتجدّد خلال %1$s</string>
+    <string name="scanme_hint">اعرض هذا الرمز عند الصندوق. يمسحه الكاشير ويُطبَّق سعر العضو.</string>
+    <string name="scanme_empty_badge">لا عضوية</string>
+    <string name="scanme_empty_title">لا توجد عضوية نشطة.</string>
+    <string name="scanme_empty_body">احصل على عضوية خزينة لتفعيل رمزك المباشر وأسعار الأعضاء.</string>
+</resources>

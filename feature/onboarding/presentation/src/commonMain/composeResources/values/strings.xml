@@ -1,0 +1,38 @@
+<resources>
+    <string name="splash_tagline">Not a coupon app.\nA membership that pays you back.</string>
+    <string name="splash_footer">One membership · everywhere</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="intro_1_kicker">01 / 04 · Save local</string>
+    <string name="intro_1_title">Save at places\nyou already love.</string>
+    <string name="intro_1_body">One membership unlocks member prices at restaurants, markets, salons and shops near you.</string>
+    <string name="intro_2_kicker">02 / 04 · Show · Scan · Save</string>
+    <string name="intro_2_title">Show your code.\nSave on the spot.</string>
+    <string name="intro_2_body">Open Scan Me at the counter. The cashier scans your live code and your member price is applied instantly.</string>
+    <string name="intro_3_kicker">03 / 04 · Near you</string>
+    <string name="intro_3_title">See what’s\nclose to you.</string>
+    <string name="intro_3_body">Allow location to see the places, distances and deals around you. You can change this any time in Settings.</string>
+    <string name="side_kicker">04 / 04 · Choose your side</string>
+    <string name="side_title">One app.\nTwo sides.</string>
+    <string name="side_body">Tell us how you’ll use Khazena. You can add the other side later in Settings.</string>
+    <string name="side_customer_kicker">For members</string>
+    <string name="side_customer_title">I’m a customer</string>
+    <string name="side_customer_body">Find deals near you, scan your code and save at 1,200+ local places.</string>
+    <string-array name="side_customer_tags">
+        <item>Scan &amp; save</item>
+        <item>Wallet</item>
+        <item>Reviews</item>
+    </string-array>
+    <string name="side_business_kicker">For merchants</string>
+    <string name="side_business_title">I own a business</string>
+    <string name="side_business_body">List your store, welcome Khazena members and grow repeat visits.</string>
+    <string-array name="side_business_tags">
+        <item>Scan members</item>
+        <item>Offers</item>
+        <item>Insights</item>
+    </string-array>
+    <string name="continue_as_customer">Continue as customer</string>
+    <string name="continue_as_business">Continue as business</string>
+    <string name="have_account">Already have an account?</string>
+    <string name="sign_in">Sign in</string>
+</resources>

@@ -16,9 +16,9 @@ class KmpDataConventionPlugin : Plugin<Project> {
             "commonMainImplementation"(project(":core:domain"))
             if (path != ":core:data") "commonMainImplementation"(project(":core:data"))
 
-            "commonMainImplementation"(libs.lib("supabase-postgrest"))
             "commonMainImplementation"(libs.lib("kotlinx-serialization-json"))
             "commonMainImplementation"(libs.lib("koin-core"))
+            "commonMainImplementation"(libs.lib("androidx-datastore-preferences"))
         }
     }
 }

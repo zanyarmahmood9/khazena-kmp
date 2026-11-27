@@ -9,6 +9,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.unit.LayoutDirection
 
 private val LocalKhazenaColors = staticCompositionLocalOf { KhazenaColors() }
 private val LocalKhazenaTypography = staticCompositionLocalOf<KhazenaTypography> {
@@ -16,9 +19,9 @@ private val LocalKhazenaTypography = staticCompositionLocalOf<KhazenaTypography>
 }
 
 @Composable
-fun KhazenaTheme(content: @Composable () -> Unit) {
+fun KhazenaTheme(languageCode: String = Locale.current.language, content: @Composable () -> Unit) {
     val colors = remember { KhazenaColors() }
-    val typography = khazenaTypography()
+    val typography = khazenaTypography(languageCode)
 
     CompositionLocalProvider(
         LocalKhazenaColors provides colors,
@@ -38,6 +41,12 @@ fun KhazenaTheme(content: @Composable () -> Unit) {
         )
     }
 }
+
+@Composable
+fun KhazenaRtlPreview(languageCode: String = "ckb", content: @Composable () -> Unit) =
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        KhazenaTheme(languageCode, content)
+    }
 
 object KhazenaTheme {
     val colors: KhazenaColors

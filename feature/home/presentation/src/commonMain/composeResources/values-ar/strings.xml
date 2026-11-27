@@ -1,0 +1,12 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="home_greeting">أين ستوفّر اليوم؟</string>
+    <string name="home_offer_kicker">عرض الأعضاء · في كل زيارة</string>
+    <string name="home_offer_headline">خصم حتى ٤٠٪
+بالقرب منك.</string>
+    <string name="home_offer_body">اعرض رمز «امسح رمزي» عند الصندوق.</string>
+    <string name="home_section_deals">أعلى الخصومات.</string>
+    <string name="home_empty_badge">لا شيء قريب</string>
+    <string name="home_empty_title">لا توجد عروض قريبة منك بعد.</string>
+    <string name="home_empty_body">نضيف أماكن جديدة كل أسبوع. اسحب للأسفل للتحقق مجددًا.</string>
+</resources>

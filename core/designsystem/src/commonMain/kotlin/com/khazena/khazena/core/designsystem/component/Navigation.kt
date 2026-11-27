@@ -164,3 +164,24 @@ private fun TabBarPreview() = PreviewSurface {
         )
     }
 }
+@Preview(name = "Navigation · RTL", widthDp = 390)
+@Composable
+private fun NavigationRtlPreview() = RtlPreviewSurface {
+    KhazenaSectionHeader("زۆرترین داشکان.", linkLabel = "هەمووی ببینە")
+    Box(Modifier.fillMaxWidth().height(120.dp)) {
+        KhazenaTabBar(
+            items = listOf(
+                TabBarItem("سەرەکی", KhazenaIcons.House, KhazenaIcons.HouseFill),
+                TabBarItem("گەڕان", KhazenaIcons.MagnifyingGlass, KhazenaIcons.MagnifyingGlassFill),
+                TabBarItem("جزدان", KhazenaIcons.Wallet, KhazenaIcons.WalletFill),
+                TabBarItem("پرۆفایل", KhazenaIcons.User, KhazenaIcons.UserFill),
+            ),
+            selectedIndex = 0,
+            onSelect = {},
+            actionIcon = KhazenaIcons.Scan,
+            actionLabel = "سکان",
+            onAction = {},
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
+    }
+}

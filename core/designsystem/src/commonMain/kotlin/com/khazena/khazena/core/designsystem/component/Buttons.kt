@@ -149,3 +149,12 @@ private fun IconButtonPreview() = PreviewSurface {
         IconButtonStyle.entries.forEach { KhazenaIconButton(KhazenaIcons.ArrowLeft, "Back", {}, style = it) }
     }
 }
+@Preview(name = "Buttons · RTL", widthDp = 390)
+@Composable
+private fun ButtonsRtlPreview() = RtlPreviewSurface {
+    KhazenaButton("سکان بکە و پاشەکەوت بکە", {}, Modifier.fillMaxWidth(), icon = KhazenaIcons.QrCode)
+    KhazenaButton("دواتر", {}, variant = ButtonVariant.Secondary, size = ButtonSize.M, icon = KhazenaIcons.ArrowRight)
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        IconButtonStyle.entries.forEach { KhazenaIconButton(KhazenaIcons.ArrowLeft, "گەڕانەوە", {}, style = it) }
+    }
+}

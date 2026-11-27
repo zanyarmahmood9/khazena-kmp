@@ -5,16 +5,19 @@ import khazena.core.designsystem.generated.resources.ic_arrow_left
 import khazena.core.designsystem.generated.resources.ic_arrow_right
 import khazena.core.designsystem.generated.resources.ic_bell
 import khazena.core.designsystem.generated.resources.ic_bookmark
+import khazena.core.designsystem.generated.resources.ic_chart_bar
 import khazena.core.designsystem.generated.resources.ic_check
 import khazena.core.designsystem.generated.resources.ic_clock
 import khazena.core.designsystem.generated.resources.ic_export
 import khazena.core.designsystem.generated.resources.ic_heart_fill
 import khazena.core.designsystem.generated.resources.ic_house
 import khazena.core.designsystem.generated.resources.ic_house_fill
+import khazena.core.designsystem.generated.resources.ic_list
 import khazena.core.designsystem.generated.resources.ic_magnifying_glass
 import khazena.core.designsystem.generated.resources.ic_magnifying_glass_fill
 import khazena.core.designsystem.generated.resources.ic_map_pin
 import khazena.core.designsystem.generated.resources.ic_qr_code
+import khazena.core.designsystem.generated.resources.ic_scan
 import khazena.core.designsystem.generated.resources.ic_shopping_bag
 import khazena.core.designsystem.generated.resources.ic_star_fill
 import khazena.core.designsystem.generated.resources.ic_storefront
@@ -64,6 +67,9 @@ object KhazenaIcons {
     val HeartFill = Res.drawable.ic_heart_fill
     val Storefront = Res.drawable.ic_storefront
     val ShoppingBag = Res.drawable.ic_shopping_bag
+    val Scan = Res.drawable.ic_scan
+    val ListBullets = Res.drawable.ic_list
+    val ChartBar = Res.drawable.ic_chart_bar
 }
 
 object KhazenaLogo {
@@ -79,7 +85,7 @@ private fun IconsPreview() = PreviewSurface {
     val icons = with(KhazenaIcons) {
         listOf(
             House, HouseFill, MagnifyingGlass, MagnifyingGlassFill, Wallet, WalletFill, User, UserFill, QrCode, Bell, ArrowLeft,
-            ArrowRight, Export, Bookmark, StarFill, MapPin, Clock, Check, X, HeartFill, Storefront, ShoppingBag,
+            ArrowRight, Export, Bookmark, StarFill, MapPin, Clock, Check, X, HeartFill, Storefront, ShoppingBag, Scan, ListBullets, ChartBar,
         )
     }
     icons.chunked(8).forEach { row ->

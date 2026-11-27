@@ -27,6 +27,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.brandFontFamily
+import androidx.compose.ui.unit.em
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,8 +52,12 @@ fun KhazenaOfferBlock(kicker: String, headline: String, body: String, modifier: 
 }
 
 @Composable
-internal fun Wordmark(style: androidx.compose.ui.text.TextStyle, color: androidx.compose.ui.graphics.Color) {
-    Text("khazena", style = style, color = color, maxLines = 1)
+fun KhazenaWordmark(
+    style: androidx.compose.ui.text.TextStyle,
+    color: androidx.compose.ui.graphics.Color,
+    modifier: Modifier = Modifier,
+) {
+    Text("khazena", style = style.copy(fontFamily = brandFontFamily(), letterSpacing = (-0.04).em), color = color, maxLines = 1, modifier = modifier)
 }
 
 @Composable
@@ -89,7 +95,7 @@ fun KhazenaMembershipCard(
                     Modifier.size(width = 16.8.dp, height = 19.04.dp),
                 )
                 Spacer(Modifier.size(6.dp))
-                Wordmark(KhazenaTheme.typography.wordmarkS, content)
+                KhazenaWordmark(KhazenaTheme.typography.wordmarkS, content)
                 Spacer(Modifier.size(6.dp))
                 KhazenaTag(planBadge)
                 Spacer(Modifier.weight(1f))
@@ -176,7 +182,7 @@ fun KhazenaAppHeader(
     ) {
         Image(painterResource(KhazenaLogo.MarkOnPaper), null, Modifier.size(width = 22.8.dp, height = 25.84.dp))
         Box(Modifier.semantics { heading() }) {
-            Wordmark(KhazenaTheme.typography.headingH2Tight, KhazenaTheme.colors.textPrimary)
+            KhazenaWordmark(KhazenaTheme.typography.headingH2Tight, KhazenaTheme.colors.textPrimary)
         }
         Spacer(Modifier.weight(1f))
         KhazenaAvatar(
@@ -217,4 +223,13 @@ private fun ToastPreview() = PreviewSurface {
 @Composable
 private fun AppHeaderPreview() = PreviewSurface {
     KhazenaAppHeader("BK", "Notifications", {}, {})
+}
+@Preview(name = "Feedback · RTL", widthDp = 390)
+@Composable
+private fun FeedbackRtlPreview() = RtlPreviewSurface {
+    KhazenaAppHeader("ب ک", "ئاگادارکردنەوەکان", {}, {})
+    KhazenaOfferBlock("ئۆفەری ئەندام · هەموو بەرهەمێک", "٣٠٪ داشکان\nلە هەمووی.", "نرخی ئەندام بۆ هەموو بەرهەمێک دادەنرێت")
+    KhazenaMembershipCard(true, "پریمیەم", "چالاک", "ئەندام", "باندی کەمال", "پلان", "پریمیەمی یەک ساڵ", "بەسەرچوون", "١٢ی ١٠ی ٢٠٢٧")
+    KhazenaInfoBanner("ئەم کۆدە زیندووە پیشانی کاشێر بدە. وێنەی شاشە کار ناکات.")
+    KhazenaToast("لە پاشەکەوتکراوەکان لابرا", detail = "شاین کار واش", actionLabel = "گەڕانەوە")
 }

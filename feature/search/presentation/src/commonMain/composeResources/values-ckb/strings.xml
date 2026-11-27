@@ -1,0 +1,13 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="search_placeholder">گەڕان بۆ چێشتخانە، ساڵۆن، خزمەتگوزاری…</string>
+    <string name="search_clear">سڕینەوەی گەڕان</string>
+    <string name="search_popular">بەناوبانگ لە نزیکت.</string>
+    <string name="search_results">ئەنجامەکان.</string>
+    <string name="search_empty_badge">هیچ نییە</string>
+    <string name="search_empty_title">هیچ ئەنجامێک بۆ «%1$s» نییە.</string>
+    <string name="search_empty_body">شوێن یان خزمەتگوزارییەک بەو ناوە نەدۆزرایەوە. ڕێنووسەکە بپشکنە یان وشەیەکی تر تاقی بکەرەوە.</string>
+    <string name="search_empty_action">سڕینەوەی گەڕان</string>
+    <string name="search_nothing_title">هێشتا هیچ نییە بۆ پیشاندان.</string>
+    <string name="search_nothing_body">شوێنەکان لێرە دەردەکەون کاتێک دەچنە ناو خەزێنە. بۆ پشکنینەوە بۆ خوارەوە ڕابکێشە.</string>
+</resources>

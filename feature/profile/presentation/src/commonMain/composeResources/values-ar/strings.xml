@@ -1,0 +1,14 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="app_language">لغة التطبيق</string>
+    <string name="language_sheet_subtitle">اختر اللغة التي يتحدث بها خزينة معك</string>
+    <string name="language_ckb_description">الكردية · السورانية</string>
+    <string name="language_ar_description">العربية</string>
+    <string name="language_en_description">الإنجليزية</string>
+    <string name="language_direction_note">تحوّل الكردية والعربية التطبيق بالكامل إلى الاتجاه من اليمين إلى اليسار. تظهر أسماء المتاجر والقوائم باللغة التي تختارها عندما يوفّرها التاجر.</string>
+    <string name="apply">تطبيق</string>
+    <string name="profile_signed_out_badge">غير مسجّل</string>
+    <string name="profile_signed_out_title">سجّل الدخول لرؤية ملفك الشخصي.</string>
+    <string name="profile_signed_out_body">عضويتك وأماكنك المحفوظة ورمز «امسح رمزي» تظهر هنا بعد تسجيل الدخول.</string>
+    <string name="profile_signed_out_action">تسجيل الدخول</string>
+</resources>

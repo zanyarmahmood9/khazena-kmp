@@ -6,7 +6,12 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.domain)
+            implementation(projects.core.designsystem)
             implementation(libs.androidx.lifecycle.runtimeCompose)
         }
     }
+}
+
+compose.resources {
+    publicResClass = true
 }

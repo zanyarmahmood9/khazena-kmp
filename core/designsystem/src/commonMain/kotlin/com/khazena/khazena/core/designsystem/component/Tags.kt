@@ -120,3 +120,15 @@ private fun ChipPreview() = PreviewSurface {
         KhazenaChip("Cafés", selected = false, onClick = {})
     }
 }
+@Preview(name = "Tags · RTL", widthDp = 390)
+@Composable
+private fun TagsRtlPreview() = RtlPreviewSurface {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        KhazenaTag("چالاک", type = TagType.Live)
+        KhazenaTag("٣٠٪ داشکان")
+    }
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        KhazenaChip("هەموو", selected = false, onClick = {})
+        KhazenaChip("گریل", selected = true, onClick = {}, count = 9)
+    }
+}

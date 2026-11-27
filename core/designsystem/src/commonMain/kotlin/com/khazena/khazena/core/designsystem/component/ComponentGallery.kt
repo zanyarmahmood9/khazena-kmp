@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.unit.dp
+import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import androidx.compose.foundation.layout.ColumnScope
@@ -129,13 +130,17 @@ fun KhazenaComponentGallery(modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun PreviewSurface(content: @Composable ColumnScope.() -> Unit) = KhazenaTheme {
-    Column(
-        Modifier.background(KhazenaTheme.colors.surfaceBackground).padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        content = content,
-    )
-}
+internal fun PreviewSurface(content: @Composable ColumnScope.() -> Unit) = KhazenaTheme { PreviewColumn(content) }
+
+@Composable
+internal fun RtlPreviewSurface(content: @Composable ColumnScope.() -> Unit) = KhazenaRtlPreview { PreviewColumn(content) }
+
+@Composable
+private fun PreviewColumn(content: @Composable ColumnScope.() -> Unit) = Column(
+    Modifier.background(KhazenaTheme.colors.surfaceBackground).padding(20.dp),
+    verticalArrangement = Arrangement.spacedBy(12.dp),
+    content = content,
+)
 
 @Preview(name = "Component gallery", widthDp = 390, heightDp = 2400)
 @Composable

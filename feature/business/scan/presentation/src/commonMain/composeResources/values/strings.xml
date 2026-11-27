@@ -1,0 +1,8 @@
+<resources>
+    <string name="scan_member_title">Scan member</string>
+    <string name="scan_member_camera_hint">Point the camera at the member’s live code. Camera scanning is coming soon.</string>
+    <string name="scan_member_recent">Scanned today.</string>
+    <string name="scan_member_empty_badge">No scans</string>
+    <string name="scan_member_empty_title">No scans yet today.</string>
+    <string name="scan_member_empty_body">Members you scan today show up here, with what they saved.</string>
+</resources>

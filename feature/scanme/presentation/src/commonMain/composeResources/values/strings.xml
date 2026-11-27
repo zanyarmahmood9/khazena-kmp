@@ -1,0 +1,9 @@
+<resources>
+    <string name="scanme_title">Scan Me</string>
+    <string name="scanme_live">Live code</string>
+    <string name="scanme_refreshes_in">Refreshes in %1$s</string>
+    <string name="scanme_hint">Show this code at the counter. The cashier scans it and your member price is applied.</string>
+    <string name="scanme_empty_badge">No membership</string>
+    <string name="scanme_empty_title">No active membership.</string>
+    <string name="scanme_empty_body">Get a Khazena membership to unlock your live code and member prices.</string>
+</resources>

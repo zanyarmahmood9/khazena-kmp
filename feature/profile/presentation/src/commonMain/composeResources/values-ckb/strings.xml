@@ -1,0 +1,14 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="app_language">زمانی ئەپ</string>
+    <string name="language_sheet_subtitle">هەڵبژێرە خەزێنە بە چ زمانێک قسەت لەگەڵ بکات</string>
+    <string name="language_ckb_description">کوردی · سۆرانی</string>
+    <string name="language_ar_description">عەرەبی</string>
+    <string name="language_en_description">ئینگلیزی</string>
+    <string name="language_direction_note">کوردی و عەرەبی هەموو ئەپەکە دەکەنە ڕاست بۆ چەپ. ناوی فرۆشگاکان و مێنووەکان بەو زمانە پیشان دەدرێن کە هەڵیدەبژێریت، ئەگەر بازرگانەکە دابینی کردبێت.</string>
+    <string name="apply">جێبەجێکردن</string>
+    <string name="profile_signed_out_badge">دەرچوویت</string>
+    <string name="profile_signed_out_title">بچۆ ژوورەوە بۆ بینینی پرۆفایلەکەت.</string>
+    <string name="profile_signed_out_body">ئەندامێتی، شوێنە پاشەکەوتکراوەکان و کۆدی «سکانم بکە» دوای چوونەژوورەوە لێرەن.</string>
+    <string name="profile_signed_out_action">چوونەژوورەوە</string>
+</resources>

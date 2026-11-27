@@ -2,18 +2,12 @@ package com.khazena.khazena.core.data.network
 
 import com.khazena.khazena.core.domain.DataError
 import com.khazena.khazena.core.domain.Result
-import io.github.jan.supabase.exceptions.HttpRequestException
-import io.github.jan.supabase.exceptions.RestException
 import kotlinx.serialization.SerializationException
 import kotlin.coroutines.cancellation.CancellationException
 
 suspend inline fun <T> safeCall(execute: suspend () -> T): Result<T, DataError.Network> {
     return try {
         Result.Success(execute())
-    } catch (e: RestException) {
-        Result.Error(statusCodeToNetworkError(e.statusCode))
-    } catch (e: HttpRequestException) {
-        Result.Error(DataError.Network.NO_INTERNET)
     } catch (e: SerializationException) {
         Result.Error(DataError.Network.SERIALIZATION)
     } catch (e: Exception) {

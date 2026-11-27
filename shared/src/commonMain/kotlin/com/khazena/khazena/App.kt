@@ -1,22 +1,41 @@
 package com.khazena.khazena
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.rememberNavController
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
+import com.khazena.khazena.core.designsystem.KhazenaColors
 import com.khazena.khazena.core.designsystem.KhazenaTheme
-import com.khazena.khazena.core.designsystem.component.KhazenaComponentGallery
+import com.khazena.khazena.core.presentation.language.ProvideAppLanguage
+import com.khazena.khazena.navigation.AppNavHost
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-@Preview
-fun App() {
+fun App(isDebug: Boolean = false) {
     setSingletonImageLoaderFactory { context ->
         ImageLoader.Builder(context)
             .components { add(KtorNetworkFetcherFactory()) }
             .build()
     }
-    KhazenaTheme {
-        KhazenaComponentGallery()
+    val viewModel = koinViewModel<AppViewModel>()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val navController = rememberNavController()
+
+    val language = state.language
+    if (language == null) {
+        Box(Modifier.fillMaxSize().background(KhazenaColors().blockEmber))
+        return
+    }
+    ProvideAppLanguage(language) {
+        KhazenaTheme(language.code) {
+            AppNavHost(navController, state.isSignedIn, isDebug)
+        }
     }
 }

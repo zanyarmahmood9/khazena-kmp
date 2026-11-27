@@ -1,0 +1,12 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="business_home_greeting">ئامادەی بۆ سکانکردن؟</string>
+    <string name="business_home_scans_today">سکانی ئەمڕۆ</string>
+    <string name="business_home_new_members">ئەندامی نوێی ئەم هەفتەیە</string>
+    <string name="business_home_savings_given">پاشەکەوتی ئەندامەکانت ئەم هەفتەیە</string>
+    <string name="business_home_recent">دوایین سکانەکان.</string>
+    <string name="business_home_empty_badge">هێشتا سکان نییە</string>
+    <string name="business_home_empty_title">ئەمڕۆ هێشتا سەردان نییە.</string>
+    <string name="business_home_empty_body">کاتێک ئەندامێک کۆدەکەی پیشان دەدات، سکانی بکە. سەردانەکانی ئەمڕۆ لێرە دەردەکەون.</string>
+    <string name="business_home_empty_action">سکانی ئەندام</string>
+</resources>

@@ -1,0 +1,8 @@
+<resources>
+    <string name="store_title">Store</string>
+    <string name="store_discount_kicker">Member discount · every visit</string>
+    <string name="store_discount_body">Applied automatically when you scan a member’s code.</string>
+    <string name="store_empty_badge">Not set up</string>
+    <string name="store_empty_title">Set up your store.</string>
+    <string name="store_empty_body">Add your address, opening hours and member discount so members can find you.</string>
+</resources>

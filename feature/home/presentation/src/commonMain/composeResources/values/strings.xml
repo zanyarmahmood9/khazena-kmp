@@ -1,0 +1,11 @@
+<resources>
+    <string name="home_greeting">Where to save today?</string>
+    <string name="home_offer_kicker">Member offer · every visit</string>
+    <string name="home_offer_headline">Up to 40% off
+near you.</string>
+    <string name="home_offer_body">Show your Scan Me code at the counter.</string>
+    <string name="home_section_deals">Highest discounts.</string>
+    <string name="home_empty_badge">Nothing nearby</string>
+    <string name="home_empty_title">No deals near you yet.</string>
+    <string name="home_empty_body">We add new places every week. Pull down to check again.</string>
+</resources>
