@@ -12,7 +12,7 @@ sealed interface IntroAction {
 }
 
 sealed interface IntroEvent {
-    data object NavigateToChooseSide : IntroEvent
+    data object Finished : IntroEvent
 }
 
 const val INTRO_PAGE_COUNT = 3

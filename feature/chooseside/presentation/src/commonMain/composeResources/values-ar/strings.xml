@@ -1,0 +1,27 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="skip">تخطٍّ</string>
+    <string name="side_kicker">اختر جهتك</string>
+    <string name="side_title">تطبيق واحد.\nجهتان.</string>
+    <string name="side_body">أخبرنا كيف ستستخدم خزينة. يمكنك إضافة الجهة الأخرى لاحقًا من الإعدادات.</string>
+    <string name="side_customer_kicker">للأعضاء</string>
+    <string name="side_customer_title">أنا عميل</string>
+    <string name="side_customer_body">اعثر على العروض القريبة، امسح رمزك ووفّر في أكثر من ١٬٢٠٠ مكان محلي.</string>
+    <string-array name="side_customer_tags">
+        <item>امسح ووفّر</item>
+        <item>المحفظة</item>
+        <item>التقييمات</item>
+    </string-array>
+    <string name="side_business_kicker">للتجّار</string>
+    <string name="side_business_title">لديّ نشاط تجاري</string>
+    <string name="side_business_body">أضف متجرك، رحّب بأعضاء خزينة وزِد الزيارات المتكررة.</string>
+    <string-array name="side_business_tags">
+        <item>مسح الأعضاء</item>
+        <item>العروض</item>
+        <item>الإحصاءات</item>
+    </string-array>
+    <string name="continue_as_customer">المتابعة كعميل</string>
+    <string name="continue_as_business">المتابعة كتاجر</string>
+    <string name="have_account">لديك حساب بالفعل؟</string>
+    <string name="sign_in">تسجيل الدخول</string>
+</resources>

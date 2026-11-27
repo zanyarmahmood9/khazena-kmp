@@ -1,4 +1,4 @@
-package com.khazena.khazena.feature.onboarding.presentation.side
+package com.khazena.khazena.feature.chooseside.presentation
 
 enum class Side { Customer, Business }
 

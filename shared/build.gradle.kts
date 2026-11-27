@@ -24,6 +24,7 @@ kotlin {
             implementation(projects.core.presentation)
             implementation(projects.core.designsystem)
             implementation(projects.feature.onboarding.presentation)
+            implementation(projects.feature.chooseside.presentation)
             implementation(projects.feature.home.domain)
             implementation(projects.feature.home.data)
             implementation(projects.feature.home.presentation)

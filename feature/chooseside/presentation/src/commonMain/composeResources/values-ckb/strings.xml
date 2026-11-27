@@ -1,0 +1,27 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="skip">تێپەڕاندن</string>
+    <string name="side_kicker">لایەنی خۆت هەڵبژێرە</string>
+    <string name="side_title">یەک ئەپ.\nدوو لایەن.</string>
+    <string name="side_body">پێمان بڵێ چۆن خەزێنە بەکاردەهێنیت. دواتر دەتوانیت لایەنەکەی تر لە ڕێکخستنەکان زیاد بکەیت.</string>
+    <string name="side_customer_kicker">بۆ ئەندامان</string>
+    <string name="side_customer_title">من کڕیارم</string>
+    <string name="side_customer_body">داشکانی نزیکت بدۆزەرەوە، کۆدەکەت سکان بکە و لە زیاتر لە ١٬٢٠٠ شوێنی ناوخۆیی پاشەکەوت بکە.</string>
+    <string-array name="side_customer_tags">
+        <item>سکان و پاشەکەوت</item>
+        <item>جزدان</item>
+        <item>هەڵسەنگاندن</item>
+    </string-array>
+    <string name="side_business_kicker">بۆ بازرگانان</string>
+    <string name="side_business_title">خاوەنی بازرگانیم</string>
+    <string name="side_business_body">فرۆشگاکەت تۆمار بکە، پێشوازی لە ئەندامانی خەزێنە بکە و سەردانی دووبارە زیاد بکە.</string>
+    <string-array name="side_business_tags">
+        <item>سکانی ئەندامان</item>
+        <item>ئۆفەرەکان</item>
+        <item>شیکاری</item>
+    </string-array>
+    <string name="continue_as_customer">وەک کڕیار بەردەوام بە</string>
+    <string name="continue_as_business">وەک بازرگان بەردەوام بە</string>
+    <string name="have_account">پێشتر هەژمارت هەیە؟</string>
+    <string name="sign_in">چوونەژوورەوە</string>
+</resources>

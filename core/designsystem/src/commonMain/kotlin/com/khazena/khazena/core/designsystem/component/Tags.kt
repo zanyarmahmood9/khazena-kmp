@@ -16,17 +16,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaTheme
-import androidx.compose.ui.tooling.preview.Preview
 
 enum class TagType { Discount, Live, Verified, Expired, Highlight, OnColourBlock }
 
 @Composable
-fun KhazenaTag(label: String, modifier: Modifier = Modifier, type: TagType = TagType.Discount) {
+fun KhazenaTag(label: String, modifier: Modifier = Modifier, type: TagType = TagType.Discount, contentColor: Color? = null) {
     val colors = KhazenaTheme.colors
     val container = when (type) {
         TagType.Discount -> colors.tagDiscount
@@ -53,7 +54,7 @@ fun KhazenaTag(label: String, modifier: Modifier = Modifier, type: TagType = Tag
         Text(
             text = label.uppercase(),
             style = KhazenaTheme.typography.monoTagS,
-            color = if (type == TagType.Highlight) colors.textOnDark else colors.textPrimary,
+            color = contentColor ?: if (type == TagType.Highlight) colors.textOnDark else colors.textPrimary,
             maxLines = 1,
         )
     }

@@ -19,6 +19,8 @@ import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaPlaceholder
 import com.khazena.khazena.feature.business.scan.presentation.ScanMemberRoute
 import com.khazena.khazena.feature.business.scan.presentation.scanMemberGraph
+import com.khazena.khazena.feature.chooseside.presentation.ChooseSideRoute
+import com.khazena.khazena.feature.chooseside.presentation.chooseSideGraph
 import com.khazena.khazena.feature.onboarding.presentation.OnboardingGraphRoute
 import com.khazena.khazena.feature.onboarding.presentation.onboardingGraph
 import com.khazena.khazena.feature.scanme.presentation.ScanMeRoute
@@ -51,12 +53,17 @@ internal fun AppNavHost(navController: NavHostController, isSignedIn: Boolean, i
     NavHost(navController, startDestination = OnboardingGraphRoute) {
         onboardingGraph(
             navController = navController,
+            onFinished = {
+                navController.navigate(ChooseSideRoute) { popUpTo<OnboardingGraphRoute> { inclusive = true } }
+            },
+        )
+        chooseSideGraph(
             onContinueAsCustomer = {
-                navController.navigate(CustomerRoute) { popUpTo<OnboardingGraphRoute> { inclusive = true } }
+                navController.navigate(CustomerRoute) { popUpTo<ChooseSideRoute> { inclusive = true } }
             },
             onContinueAsBusiness = {
                 requireAccount {
-                    navController.navigate(BusinessRoute) { popUpTo<OnboardingGraphRoute> { inclusive = true } }
+                    navController.navigate(BusinessRoute) { popUpTo<ChooseSideRoute> { inclusive = true } }
                 }
             },
             onSignIn = { navController.navigate(SignInRoute) },

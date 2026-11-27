@@ -1,5 +1,6 @@
-package com.khazena.khazena.feature.onboarding.presentation
+package com.khazena.khazena.feature.chooseside.presentation
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,15 +13,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -32,44 +34,45 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import com.khazena.khazena.core.designsystem.component.KhazenaButton
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
+import com.khazena.khazena.core.designsystem.component.KhazenaLogo
 import com.khazena.khazena.core.designsystem.component.KhazenaTag
+import com.khazena.khazena.core.designsystem.component.KhazenaWordmark
 import com.khazena.khazena.core.designsystem.component.TagType
-import khazena.feature.onboarding.presentation.generated.resources.Res
-import khazena.feature.onboarding.presentation.generated.resources.continue_as_business
-import khazena.feature.onboarding.presentation.generated.resources.continue_as_customer
-import khazena.feature.onboarding.presentation.generated.resources.have_account
-import khazena.feature.onboarding.presentation.generated.resources.side_body
-import khazena.feature.onboarding.presentation.generated.resources.side_business_body
-import khazena.feature.onboarding.presentation.generated.resources.side_business_kicker
-import khazena.feature.onboarding.presentation.generated.resources.side_business_tags
-import khazena.feature.onboarding.presentation.generated.resources.side_business_title
-import khazena.feature.onboarding.presentation.generated.resources.side_customer_body
-import khazena.feature.onboarding.presentation.generated.resources.side_customer_kicker
-import khazena.feature.onboarding.presentation.generated.resources.side_customer_tags
-import khazena.feature.onboarding.presentation.generated.resources.side_customer_title
-import khazena.feature.onboarding.presentation.generated.resources.side_kicker
-import khazena.feature.onboarding.presentation.generated.resources.side_title
-import khazena.feature.onboarding.presentation.generated.resources.sign_in
+import com.khazena.khazena.core.presentation.ObserveAsEvents
+import khazena.feature.chooseside.presentation.generated.resources.Res
+import khazena.feature.chooseside.presentation.generated.resources.continue_as_business
+import khazena.feature.chooseside.presentation.generated.resources.continue_as_customer
+import khazena.feature.chooseside.presentation.generated.resources.have_account
+import khazena.feature.chooseside.presentation.generated.resources.side_body
+import khazena.feature.chooseside.presentation.generated.resources.side_business_body
+import khazena.feature.chooseside.presentation.generated.resources.side_business_kicker
+import khazena.feature.chooseside.presentation.generated.resources.side_business_tags
+import khazena.feature.chooseside.presentation.generated.resources.side_business_title
+import khazena.feature.chooseside.presentation.generated.resources.side_customer_body
+import khazena.feature.chooseside.presentation.generated.resources.side_customer_kicker
+import khazena.feature.chooseside.presentation.generated.resources.side_customer_tags
+import khazena.feature.chooseside.presentation.generated.resources.side_customer_title
+import khazena.feature.chooseside.presentation.generated.resources.side_kicker
+import khazena.feature.chooseside.presentation.generated.resources.side_title
+import khazena.feature.chooseside.presentation.generated.resources.sign_in
+import khazena.feature.chooseside.presentation.generated.resources.skip
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringArrayResource
 import org.jetbrains.compose.resources.stringResource
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.khazena.khazena.core.presentation.ObserveAsEvents
-import com.khazena.khazena.feature.onboarding.presentation.side.ChooseSideAction
-import com.khazena.khazena.feature.onboarding.presentation.side.ChooseSideEvent
-import com.khazena.khazena.feature.onboarding.presentation.side.ChooseSideState
-import com.khazena.khazena.feature.onboarding.presentation.side.ChooseSideViewModel
-import com.khazena.khazena.feature.onboarding.presentation.side.Side
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -101,20 +104,27 @@ internal fun ChooseSideScreen(state: ChooseSideState, onAction: (ChooseSideActio
             .statusBarsPadding()
             .navigationBarsPadding(),
     ) {
-        OnboardingTopBar(step = ONBOARDING_STEPS - 1, onSkip = { onAction(ChooseSideAction.OnSkipClick) })
+        TopBar(onSkip = { onAction(ChooseSideAction.OnSkipClick) })
         Column(
-            Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = KhazenaSpacing.screenMargin, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = KhazenaSpacing.screenMargin).padding(top = 8.dp, bottom = 12.dp),
         ) {
             Text(stringResource(Res.string.side_kicker).uppercase(), style = KhazenaTheme.typography.monoKicker, color = colors.textSecondary)
+            Spacer(Modifier.height(7.dp))
             Text(
                 stringResource(Res.string.side_title),
                 style = KhazenaTheme.typography.displayL,
                 color = colors.textPrimary,
                 modifier = Modifier.semantics { heading() },
             )
-            Text(stringResource(Res.string.side_body), style = KhazenaTheme.typography.bodyM, color = colors.textSecondary)
-            Column(Modifier.selectableGroup().padding(top = 4.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                stringResource(Res.string.side_body),
+                style = KhazenaTheme.typography.bodyM,
+                color = colors.textSecondary,
+                modifier = Modifier.padding(end = 20.dp),
+            )
+            Spacer(Modifier.height(16.dp))
+            Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 SideCard(
                     selected = side == Side.Customer,
                     onSelect = { onAction(ChooseSideAction.OnSideSelected(Side.Customer)) },
@@ -122,6 +132,7 @@ internal fun ChooseSideScreen(state: ChooseSideState, onAction: (ChooseSideActio
                     content = colors.textPrimary,
                     iconContainer = colors.blockInk,
                     iconTint = colors.blockSun,
+                    tagText = colors.textPrimary,
                     icon = KhazenaIcons.ShoppingBag,
                     kicker = stringResource(Res.string.side_customer_kicker),
                     title = stringResource(Res.string.side_customer_title),
@@ -135,6 +146,7 @@ internal fun ChooseSideScreen(state: ChooseSideState, onAction: (ChooseSideActio
                     content = colors.textOnViolet,
                     iconContainer = colors.surfaceCard,
                     iconTint = colors.blockViolet,
+                    tagText = colors.blockViolet,
                     icon = KhazenaIcons.Storefront,
                     kicker = stringResource(Res.string.side_business_kicker),
                     title = stringResource(Res.string.side_business_title),
@@ -144,9 +156,9 @@ internal fun ChooseSideScreen(state: ChooseSideState, onAction: (ChooseSideActio
             }
         }
         Column(
-            Modifier.padding(horizontal = KhazenaSpacing.screenMargin).padding(top = 12.dp, bottom = 8.dp),
+            Modifier.padding(horizontal = KhazenaSpacing.screenMargin).padding(bottom = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             KhazenaButton(
                 text = stringResource(if (side == Side.Customer) Res.string.continue_as_customer else Res.string.continue_as_business),
@@ -154,16 +166,41 @@ internal fun ChooseSideScreen(state: ChooseSideState, onAction: (ChooseSideActio
                 modifier = Modifier.fillMaxWidth(),
                 icon = KhazenaIcons.ArrowRight,
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(stringResource(Res.string.have_account), style = KhazenaTheme.typography.bodyS, color = colors.textSecondary)
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(Res.string.have_account),
+                    style = KhazenaTheme.typography.labelMSemiBold.copy(fontWeight = FontWeight.Medium),
+                    color = colors.textSecondary,
+                )
                 Text(
                     stringResource(Res.string.sign_in),
-                    style = KhazenaTheme.typography.labelSMedium.copy(textDecoration = TextDecoration.Underline),
+                    style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
                     color = colors.textPrimary,
                     modifier = Modifier.clickable(role = Role.Button) { onAction(ChooseSideAction.OnSignInClick) },
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun TopBar(onSkip: () -> Unit) {
+    val colors = KhazenaTheme.colors
+    Box(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = KhazenaSpacing.screenMargin)) {
+        Row(
+            Modifier.align(Alignment.Center),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(painterResource(KhazenaLogo.MarkOnPaper), null, Modifier.width(16.dp).height(18.dp))
+            KhazenaWordmark(KhazenaTheme.typography.wordmarkS, colors.textPrimary)
+        }
+        Text(
+            stringResource(Res.string.skip),
+            style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
+            color = colors.textPrimary,
+            modifier = Modifier.align(Alignment.CenterEnd).clickable(role = Role.Button, onClick = onSkip).padding(8.dp),
+        )
     }
 }
 
@@ -176,6 +213,7 @@ private fun SideCard(
     content: Color,
     iconContainer: Color,
     iconTint: Color,
+    tagText: Color,
     icon: DrawableResource,
     kicker: String,
     title: String,
@@ -187,24 +225,30 @@ private fun SideCard(
         Modifier
             .fillMaxWidth()
             .background(container, KhazenaRadius.hero)
-            .border(2.5.dp, if (selected) colors.borderSelected else Color.Transparent, KhazenaRadius.hero)
+            .border(3.dp, if (selected) colors.borderSelected else Color.Transparent, KhazenaRadius.hero)
             .selectable(selected = selected, role = Role.RadioButton, onClick = onSelect)
             .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Row(verticalAlignment = Alignment.Top) {
-            Box(Modifier.size(48.dp).background(iconContainer, RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
+            Box(Modifier.size(48.dp).background(iconContainer, KhazenaRadius.sm), contentAlignment = Alignment.Center) {
                 Icon(painterResource(icon), null, Modifier.size(24.dp), tint = iconTint)
             }
             Spacer(Modifier.weight(1f))
             SelectionMark(selected, content)
         }
-        Spacer(Modifier.size(4.dp))
-        Text(kicker.uppercase(), style = KhazenaTheme.typography.monoKicker, color = content)
-        Text(title, style = KhazenaTheme.typography.headingH3, color = content)
-        Text(body, style = KhazenaTheme.typography.bodyM, color = content)
+        Spacer(Modifier.height(14.dp))
+        Text(kicker.uppercase(), style = KhazenaTheme.typography.monoKicker, color = content.copy(alpha = 0.75f))
+        Spacer(Modifier.height(4.dp))
+        Text(title, style = KhazenaTheme.typography.headingH2Tight, color = content)
+        Spacer(Modifier.height(10.dp))
+        Text(
+            body,
+            style = KhazenaTheme.typography.labelSMedium.copy(fontSize = 14.sp, lineHeight = 1.3.em),
+            color = content.copy(alpha = 0.85f),
+        )
+        Spacer(Modifier.height(12.dp))
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            tags.forEach { KhazenaTag(it, type = TagType.OnColourBlock) }
+            tags.forEach { KhazenaTag(it, type = TagType.OnColourBlock, contentColor = tagText) }
         }
     }
 }
@@ -217,7 +261,7 @@ private fun SelectionMark(selected: Boolean, outline: Color) {
             Icon(painterResource(KhazenaIcons.Check), null, Modifier.size(14.dp), tint = colors.textOnDark)
         }
     } else {
-        Box(Modifier.size(28.dp).border(1.5.dp, outline, CircleShape))
+        Box(Modifier.size(28.dp).border(2.dp, outline.copy(alpha = 0.7f), CircleShape))
     }
 }
 

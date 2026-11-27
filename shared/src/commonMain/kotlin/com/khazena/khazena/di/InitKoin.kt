@@ -11,6 +11,7 @@ import com.khazena.khazena.feature.business.scan.data.scanMemberDataModule
 import com.khazena.khazena.feature.business.scan.presentation.di.scanMemberPresentationModule
 import com.khazena.khazena.feature.business.services.data.servicesDataModule
 import com.khazena.khazena.feature.business.services.presentation.di.servicesPresentationModule
+import com.khazena.khazena.feature.chooseside.presentation.di.chooseSidePresentationModule
 import com.khazena.khazena.feature.home.data.homeDataModule
 import com.khazena.khazena.feature.home.presentation.di.homePresentationModule
 import com.khazena.khazena.feature.onboarding.presentation.di.onboardingPresentationModule
@@ -32,6 +33,7 @@ fun initKoin(config: KoinAppDeclaration? = null) {
             coreDataModule,
             appModule,
             onboardingPresentationModule,
+            chooseSidePresentationModule,
             homeDataModule, homePresentationModule,
             searchDataModule, searchPresentationModule,
             walletDataModule, walletPresentationModule,

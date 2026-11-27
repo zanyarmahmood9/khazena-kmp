@@ -1,5 +1,17 @@
 package com.khazena.khazena.core.designsystem.component
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.khazena.khazena.core.designsystem.KhazenaTheme
 import khazena.core.designsystem.generated.resources.Res
 import khazena.core.designsystem.generated.resources.ic_arrow_left
 import khazena.core.designsystem.generated.resources.ic_arrow_right
@@ -8,6 +20,7 @@ import khazena.core.designsystem.generated.resources.ic_bookmark
 import khazena.core.designsystem.generated.resources.ic_chart_bar
 import khazena.core.designsystem.generated.resources.ic_check
 import khazena.core.designsystem.generated.resources.ic_clock
+import khazena.core.designsystem.generated.resources.ic_crosshair
 import khazena.core.designsystem.generated.resources.ic_export
 import khazena.core.designsystem.generated.resources.ic_heart_fill
 import khazena.core.designsystem.generated.resources.ic_house
@@ -31,18 +44,6 @@ import khazena.core.designsystem.generated.resources.kmark_on_ember
 import khazena.core.designsystem.generated.resources.kmark_on_ink
 import khazena.core.designsystem.generated.resources.kmark_on_violet
 import khazena.core.designsystem.generated.resources.kmark_watermark
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.khazena.khazena.core.designsystem.KhazenaTheme
 import org.jetbrains.compose.resources.painterResource
 
 object KhazenaIcons {
@@ -71,6 +72,7 @@ object KhazenaIcons {
     val Scan = Res.drawable.ic_scan
     val ListBullets = Res.drawable.ic_list
     val ChartBar = Res.drawable.ic_chart_bar
+    val Crosshair = Res.drawable.ic_crosshair
 }
 
 object KhazenaLogo {
@@ -87,7 +89,7 @@ private fun IconsPreview() = PreviewSurface {
     val icons = with(KhazenaIcons) {
         listOf(
             House, HouseFill, MagnifyingGlass, MagnifyingGlassFill, Wallet, WalletFill, User, UserFill, QrCode, Bell, ArrowLeft,
-            ArrowRight, Export, Bookmark, StarFill, MapPin, Clock, Check, X, HeartFill, Storefront, ShoppingBag, Scan, ListBullets, ChartBar,
+            ArrowRight, Export, Bookmark, StarFill, MapPin, Clock, Check, X, HeartFill, Storefront, ShoppingBag, Scan, ListBullets, ChartBar, Crosshair,
         )
     }
     icons.chunked(8).forEach { row ->

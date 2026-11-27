@@ -3,7 +3,6 @@ package com.khazena.khazena.feature.onboarding.presentation.intro
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.WhileSubscribed
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 private const val PAGE_KEY = "page"
 
@@ -35,6 +35,6 @@ class IntroViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
     }
 
     private fun finish() {
-        viewModelScope.launch { eventChannel.send(IntroEvent.NavigateToChooseSide) }
+        viewModelScope.launch { eventChannel.send(IntroEvent.Finished) }
     }
 }

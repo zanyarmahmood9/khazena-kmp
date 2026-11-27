@@ -4,36 +4,27 @@
     <string name="splash_footer">یەک ئەندامێتی · لە هەموو شوێنێک</string>
     <string name="skip">تێپەڕاندن</string>
     <string name="next">دواتر</string>
-    <string name="intro_1_kicker">01 / 04 · پاشەکەوتی ناوخۆیی</string>
+    <string name="intro_1_kicker">01 / 03 · پاشەکەوتی ناوخۆیی</string>
     <string name="intro_1_title">لەو شوێنانە پاشەکەوت بکە\nکە خۆشت دەوێن.</string>
     <string name="intro_1_body">یەک ئەندامێتی نرخی ئەندامان لە چێشتخانە، مارکێت، ساڵۆن و دوکانەکانی نزیکت دەکاتەوە.</string>
-    <string name="intro_2_kicker">02 / 04 · پیشاندان · سکان · پاشەکەوت</string>
+    <string name="intro_1_stat_places">+١٬٢٠٠ شوێن</string>
+    <string name="intro_1_stat_categories">٨ پۆل</string>
+    <string name="intro_1_card_food">خواردن و کافێ</string>
+    <string name="intro_1_card_markets">مارکێت و بەقاڵی</string>
+    <string name="intro_1_card_beauty">تەندروستی و جوانی</string>
+    <string name="intro_1_card_places">%1$d شوێن</string>
+    <string name="intro_2_kicker">02 / 03 · پیشاندان · سکان · پاشەکەوت</string>
     <string name="intro_2_title">کۆدەکەت پیشان بدە.\nلە شوێنی خۆی پاشەکەوت بکە.</string>
     <string name="intro_2_body">لە کاتی پارەدان «سکانم بکە» بکەرەوە. کاشێرەکە کۆدە زیندووەکەت سکان دەکات و نرخی ئەندامێتی دەستبەجێ جێبەجێ دەبێت.</string>
-    <string name="intro_3_kicker">03 / 04 · نزیک لە تۆ</string>
+    <string name="intro_2_stat_counter">لە کاتی پارەدان</string>
+    <string name="intro_2_live_code">کۆدی زیندوو</string>
+    <string name="intro_2_applied">%1$s جێبەجێ کرا</string>
+    <string name="intro_3_kicker">03 / 03 · نزیک لە تۆ</string>
     <string name="intro_3_title">ببینە چی\nلە نزیکتە.</string>
     <string name="intro_3_body">ڕێگە بە شوێن بدە بۆ بینینی شوێن، دووری و داشکانەکانی دەوروبەرت. هەر کاتێک بتەوێت دەتوانیت لە ڕێکخستنەکان بیگۆڕیت.</string>
-    <string name="side_kicker">04 / 04 · لایەنی خۆت هەڵبژێرە</string>
-    <string name="side_title">یەک ئەپ.\nدوو لایەن.</string>
-    <string name="side_body">پێمان بڵێ چۆن خەزێنە بەکاردەهێنیت. دواتر دەتوانیت لایەنەکەی تر لە ڕێکخستنەکان زیاد بکەیت.</string>
-    <string name="side_customer_kicker">بۆ ئەندامان</string>
-    <string name="side_customer_title">من کڕیارم</string>
-    <string name="side_customer_body">داشکانی نزیکت بدۆزەرەوە، کۆدەکەت سکان بکە و لە زیاتر لە ١٬٢٠٠ شوێنی ناوخۆیی پاشەکەوت بکە.</string>
-    <string-array name="side_customer_tags">
-        <item>سکان و پاشەکەوت</item>
-        <item>جزدان</item>
-        <item>هەڵسەنگاندن</item>
-    </string-array>
-    <string name="side_business_kicker">بۆ بازرگانان</string>
-    <string name="side_business_title">خاوەنی بازرگانیم</string>
-    <string name="side_business_body">فرۆشگاکەت تۆمار بکە، پێشوازی لە ئەندامانی خەزێنە بکە و سەردانی دووبارە زیاد بکە.</string>
-    <string-array name="side_business_tags">
-        <item>سکانی ئەندامان</item>
-        <item>ئۆفەرەکان</item>
-        <item>شیکاری</item>
-    </string-array>
-    <string name="continue_as_customer">وەک کڕیار بەردەوام بە</string>
-    <string name="continue_as_business">وەک بازرگان بەردەوام بە</string>
-    <string name="have_account">پێشتر هەژمارت هەیە؟</string>
-    <string name="sign_in">چوونەژوورەوە</string>
+    <string name="intro_3_stat_near">نزیک لە تۆ</string>
+    <string name="intro_3_stat_location">شوێن</string>
+    <string name="intro_3_distance_m">%1$d م</string>
+    <string name="not_now">ئێستا نا</string>
+    <string name="allow_location">ڕێگەدان بە شوێن</string>
 </resources>

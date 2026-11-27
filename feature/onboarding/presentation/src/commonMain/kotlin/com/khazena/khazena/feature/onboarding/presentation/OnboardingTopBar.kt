@@ -28,13 +28,14 @@ import com.khazena.khazena.core.designsystem.component.KhazenaLogo
 import com.khazena.khazena.core.designsystem.component.KhazenaWordmark
 import khazena.feature.onboarding.presentation.generated.resources.Res
 import khazena.feature.onboarding.presentation.generated.resources.skip
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-internal const val ONBOARDING_STEPS = 4
+internal const val ONBOARDING_STEPS = 3
 
 @Composable
-internal fun OnboardingTopBar(step: Int, onSkip: (() -> Unit)?) {
+internal fun OnboardingTopBar(step: Int, onSkip: (() -> Unit)?, skipLabel: StringResource = Res.string.skip) {
     val colors = KhazenaTheme.colors
     Box(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = KhazenaSpacing.screenMargin)) {
         Row(
@@ -61,7 +62,7 @@ internal fun OnboardingTopBar(step: Int, onSkip: (() -> Unit)?) {
         }
         if (onSkip != null) {
             Text(
-                stringResource(Res.string.skip),
+                stringResource(skipLabel),
                 style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
                 color = colors.textPrimary,
                 modifier = Modifier.align(Alignment.CenterEnd).clickable(role = Role.Button, onClick = onSkip).padding(8.dp),

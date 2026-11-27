@@ -15,14 +15,9 @@ data object SplashRoute
 @Serializable
 data object IntroRoute
 
-@Serializable
-data object ChooseSideRoute
-
 fun NavGraphBuilder.onboardingGraph(
     navController: NavController,
-    onContinueAsCustomer: () -> Unit,
-    onContinueAsBusiness: () -> Unit,
-    onSignIn: () -> Unit,
+    onFinished: () -> Unit,
 ) {
     navigation<OnboardingGraphRoute>(startDestination = SplashRoute) {
         composable<SplashRoute> {
@@ -33,14 +28,7 @@ fun NavGraphBuilder.onboardingGraph(
             )
         }
         composable<IntroRoute> {
-            IntroRoot(onDone = { navController.navigate(ChooseSideRoute) { launchSingleTop = true } })
-        }
-        composable<ChooseSideRoute> {
-            ChooseSideRoot(
-                onContinueAsCustomer = onContinueAsCustomer,
-                onContinueAsBusiness = onContinueAsBusiness,
-                onSignIn = onSignIn,
-            )
+            IntroRoot(onFinished = onFinished)
         }
     }
 }
