@@ -2,32 +2,45 @@ package com.khazena.khazena.feature.onboarding.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
+import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import com.khazena.khazena.core.designsystem.component.KhazenaLogo
 import com.khazena.khazena.core.designsystem.component.KhazenaWordmark
+import com.khazena.khazena.core.presentation.ObserveAsEvents
+import com.khazena.khazena.feature.onboarding.presentation.splash.SplashEvent
+import com.khazena.khazena.feature.onboarding.presentation.splash.SplashViewModel
 import khazena.feature.onboarding.presentation.generated.resources.Res
 import khazena.feature.onboarding.presentation.generated.resources.splash_footer
 import khazena.feature.onboarding.presentation.generated.resources.splash_tagline
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import com.khazena.khazena.core.presentation.ObserveAsEvents
-import com.khazena.khazena.feature.onboarding.presentation.splash.SplashEvent
-import com.khazena.khazena.feature.onboarding.presentation.splash.SplashViewModel
 
 @Composable
 internal fun SplashRoot(onFinished: () -> Unit, viewModel: SplashViewModel = koinViewModel()) {
@@ -36,36 +49,74 @@ internal fun SplashRoot(onFinished: () -> Unit, viewModel: SplashViewModel = koi
             SplashEvent.NavigateNext -> onFinished()
         }
     }
-    SplashContent()
+    SplashScreen()
 }
 
 @Composable
-private fun SplashContent() {
+internal fun SplashScreen() {
     val colors = KhazenaTheme.colors
-    Box(Modifier.fillMaxSize().background(colors.blockEmber).navigationBarsPadding()) {
+    val typography = KhazenaTheme.typography
+    val latinScript = LocalLayoutDirection.current == LayoutDirection.Ltr
+    val ink = colors.textPrimary
+
+    Box(Modifier.fillMaxSize().background(colors.blockEmber)) {
+        Accent(colors.blockSun, width = 34.dp, angle = 28f, x = (-112.1).dp, y = (-160).dp)
+        Accent(ink, width = 26.dp, angle = -24f, x = 118.7.dp, y = (-191.2).dp)
+        Accent(ink, width = 22.dp, angle = -12f, x = (-127.3).dp, y = 180.1.dp)
+        Accent(colors.blockSun, width = 38.dp, angle = 20f, x = 127.3.dp, y = 200.7.dp)
+
         Column(
-            Modifier.align(Alignment.Center).padding(horizontal = 32.dp),
+            Modifier.align(Alignment.Center).absoluteOffset(y = 1.5.dp).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Image(painterResource(KhazenaLogo.MarkOnPaper), null, Modifier.size(width = 66.dp, height = 75.dp))
-            KhazenaWordmark(KhazenaTheme.typography.displayL, colors.blockInk)
+            Image(
+                painterResource(KhazenaLogo.MarkOnEmber),
+                contentDescription = null,
+                modifier = Modifier.absoluteOffset(x = 6.dp).size(width = 102.dp, height = 115.6.dp),
+            )
+            Spacer(Modifier.height(22.4.dp))
+            KhazenaWordmark(
+                style = typography.displayXL.copy(fontSize = 52.sp, lineHeight = 1.2.em, textAlign = TextAlign.Center),
+                color = ink,
+                letterSpacing = (-0.05).em,
+            )
+            Spacer(Modifier.height(7.6.dp))
             Text(
                 stringResource(Res.string.splash_tagline),
-                style = KhazenaTheme.typography.bodyM,
-                color = colors.blockInk,
+                style = typography.bodyM.copy(
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = if (latinScript) 1.3.em else typography.bodyM.lineHeight,
+                ),
+                color = ink.copy(alpha = 0.85f),
                 textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
             )
         }
+
         Text(
             stringResource(Res.string.splash_footer).uppercase(),
-            style = KhazenaTheme.typography.monoTagS,
-            color = colors.blockInk,
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 32.dp),
+            style = if (latinScript) typography.monoTagS.copy(letterSpacing = 0.06.em, lineHeight = 1.302.em) else typography.monoTagS,
+            color = ink.copy(alpha = 0.7f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(bottom = 59.7.dp),
         )
     }
 }
 
+@Composable
+private fun BoxScope.Accent(color: Color, width: Dp, angle: Float, x: Dp, y: Dp) = Box(
+    Modifier
+        .align(Alignment.Center)
+        .absoluteOffset(x, y)
+        .rotate(angle)
+        .size(width, 9.dp)
+        .background(color, RoundedCornerShape(5.dp)),
+)
+
 @Preview(widthDp = 390, heightDp = 844)
 @Composable
-private fun SplashPreview() = KhazenaTheme { SplashContent() }
+private fun SplashPreview() = KhazenaTheme { SplashScreen() }
+
+@Preview(name = "RTL", widthDp = 390, heightDp = 844)
+@Composable
+private fun SplashRtlPreview() = KhazenaRtlPreview { SplashScreen() }

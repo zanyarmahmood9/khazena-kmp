@@ -27,6 +27,7 @@ import khazena.core.designsystem.generated.resources.ic_wallet
 import khazena.core.designsystem.generated.resources.ic_wallet_fill
 import khazena.core.designsystem.generated.resources.ic_x
 import khazena.core.designsystem.generated.resources.kmark_header
+import khazena.core.designsystem.generated.resources.kmark_on_ember
 import khazena.core.designsystem.generated.resources.kmark_on_ink
 import khazena.core.designsystem.generated.resources.kmark_on_violet
 import khazena.core.designsystem.generated.resources.kmark_watermark
@@ -76,6 +77,7 @@ object KhazenaLogo {
     val MarkOnPaper = Res.drawable.kmark_header
     val MarkOnViolet = Res.drawable.kmark_on_violet
     val MarkOnInk = Res.drawable.kmark_on_ink
+    val MarkOnEmber = Res.drawable.kmark_on_ember
     internal val Watermark = Res.drawable.kmark_watermark
 }
 

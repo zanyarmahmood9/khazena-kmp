@@ -4,12 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import khazena.core.designsystem.generated.resources.Res
-import khazena.core.designsystem.generated.resources.bricolage_grotesque_extrabold
+import khazena.core.designsystem.generated.resources.bricolage_grotesque
 import khazena.core.designsystem.generated.resources.dm_mono_medium
 import khazena.core.designsystem.generated.resources.instrument_sans_bold
 import khazena.core.designsystem.generated.resources.instrument_sans_medium
@@ -82,14 +84,27 @@ fun languageFontFamily(languageCode: String): FontFamily = when (languageCode) {
     )
 }
 
+// Figma sets Bricolage's optical size to the font size; match it per style.
 @Composable
-internal fun brandFontFamily(): FontFamily = FontFamily(Font(Res.font.bricolage_grotesque_extrabold, FontWeight.ExtraBold))
+internal fun brandFontFamily(opticalSize: Float): FontFamily = FontFamily(
+    Font(
+        Res.font.bricolage_grotesque,
+        FontWeight.ExtraBold,
+        FontStyle.Normal,
+        FontVariation.Settings(
+            FontVariation.weight(FontWeight.ExtraBold.weight),
+            FontVariation.width(100f),
+            FontVariation.Setting("opsz", opticalSize.coerceIn(12f, 96f)),
+        ),
+    ),
+)
 
 @Composable
 internal fun khazenaTypography(languageCode: String): KhazenaTypography {
     val arabicScript = languageCode == "ckb" || languageCode == "ar"
     val instrument = languageFontFamily(languageCode)
-    val bricolage = if (arabicScript) instrument else FontFamily(Font(Res.font.bricolage_grotesque_extrabold, FontWeight.ExtraBold))
+    @Composable
+    fun bricolage(size: Int) = if (arabicScript) instrument else brandFontFamily(size.toFloat())
     val mono = if (arabicScript) instrument else FontFamily(Font(Res.font.dm_mono_medium, FontWeight.Medium))
 
     // Tracking breaks Arabic-script letter joins and tight line heights clip its marks.
@@ -103,14 +118,14 @@ internal fun khazenaTypography(languageCode: String): KhazenaTypography {
     )
 
     return KhazenaTypography(
-        displayXL = style(bricolage, FontWeight.ExtraBold, 48, 1.0, -5.0),
-        displayL = style(bricolage, FontWeight.ExtraBold, 40, 0.98, -5.0),
-        headingH1 = style(bricolage, FontWeight.ExtraBold, 32, 1.04, -4.0),
-        headingH2 = style(bricolage, FontWeight.ExtraBold, 28, 1.04, -4.0),
-        headingH3 = style(bricolage, FontWeight.ExtraBold, 22, 1.10, -2.0),
-        headingH2Tight = style(bricolage, FontWeight.ExtraBold, 26, 1.0, -3.0),
-        headingH4 = style(bricolage, FontWeight.ExtraBold, 19, 1.15, -2.0),
-        wordmarkS = style(bricolage, FontWeight.ExtraBold, 18, 1.1, -4.0),
+        displayXL = style(bricolage(48), FontWeight.ExtraBold, 48, 1.0, -5.0),
+        displayL = style(bricolage(40), FontWeight.ExtraBold, 40, 0.98, -5.0),
+        headingH1 = style(bricolage(32), FontWeight.ExtraBold, 32, 1.04, -4.0),
+        headingH2 = style(bricolage(28), FontWeight.ExtraBold, 28, 1.04, -4.0),
+        headingH3 = style(bricolage(22), FontWeight.ExtraBold, 22, 1.10, -2.0),
+        headingH2Tight = style(bricolage(26), FontWeight.ExtraBold, 26, 1.0, -3.0),
+        headingH4 = style(bricolage(19), FontWeight.ExtraBold, 19, 1.15, -2.0),
+        wordmarkS = style(bricolage(18), FontWeight.ExtraBold, 18, 1.1, -4.0),
         bodyL = style(instrument, FontWeight.Normal, 17, 1.35, 0.0),
         bodyM = style(instrument, FontWeight.Normal, 15, 1.35, 0.0),
         bodyS = style(instrument, FontWeight.Normal, 13, 1.30, 0.0),

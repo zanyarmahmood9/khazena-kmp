@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import com.khazena.khazena.core.designsystem.brandFontFamily
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.em
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -56,8 +57,9 @@ fun KhazenaWordmark(
     style: androidx.compose.ui.text.TextStyle,
     color: androidx.compose.ui.graphics.Color,
     modifier: Modifier = Modifier,
+    letterSpacing: TextUnit = (-0.04).em,
 ) {
-    Text("khazena", style = style.copy(fontFamily = brandFontFamily(), letterSpacing = (-0.04).em), color = color, maxLines = 1, modifier = modifier)
+    Text("khazena", style = style.copy(fontFamily = brandFontFamily(style.fontSize.value), letterSpacing = letterSpacing), color = color, maxLines = 1, modifier = modifier)
 }
 
 @Composable
