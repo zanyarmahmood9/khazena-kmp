@@ -1,0 +1,9 @@
+<resources>
+    <string name="error_no_internet">No internet connection. Check your connection and try again.</string>
+    <string name="error_request_timeout">This is taking too long. Please try again.</string>
+    <string name="error_unauthorized">Please sign in again.</string>
+    <string name="error_too_many_requests">Too many tries. Wait a moment and try again.</string>
+    <string name="error_server">Something went wrong on our side. Please try again soon.</string>
+    <string name="error_disk_full">Your phone is out of storage.</string>
+    <string name="error_unknown">Something went wrong. Please try again.</string>
+</resources>

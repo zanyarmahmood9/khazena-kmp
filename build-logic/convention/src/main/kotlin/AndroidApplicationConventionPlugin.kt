@@ -47,6 +47,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
         dependencies {
             "implementation"(libs.lib("compose-uiToolingPreview"))
+            "implementation"(libs.lib("koin-android"))
             "debugImplementation"(libs.lib("compose-uiTooling"))
         }
     }

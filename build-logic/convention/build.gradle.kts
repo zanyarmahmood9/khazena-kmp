@@ -44,6 +44,10 @@ gradlePlugin {
             id = "com.khazena.convention.cmp.library"
             implementationClass = "CmpLibraryConventionPlugin"
         }
+        register("kmpData") {
+            id = "com.khazena.convention.kmp.data"
+            implementationClass = "KmpDataConventionPlugin"
+        }
         register("cmpFeature") {
             id = "com.khazena.convention.cmp.feature"
             implementationClass = "CmpFeatureConventionPlugin"

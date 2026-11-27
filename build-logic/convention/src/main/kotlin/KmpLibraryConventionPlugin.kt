@@ -17,7 +17,9 @@ class KmpLibraryConventionPlugin : Plugin<Project> {
         configureKotlinMultiplatform()
 
         dependencies {
+            "commonMainImplementation"(libs.lib("kotlinx-coroutines-core"))
             "commonTestImplementation"(libs.lib("kotlin-test"))
+            "commonTestImplementation"(libs.lib("kotlinx-coroutines-test"))
         }
     }
 }

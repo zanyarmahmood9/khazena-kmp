@@ -4,11 +4,14 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 
-/** `feature:<name>:presentation` modules: Compose UI + ViewModel + core UI modules. Add Koin / navigation here once they're in the catalog. */
+/** `feature:<name>:presentation` modules: Compose UI + ViewModel + core UI modules, Koin, type-safe navigation, Coil. */
 class CmpFeatureConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) = with(target) {
-        pluginManager.apply("com.khazena.convention.cmp.library")
+        with(pluginManager) {
+            apply("com.khazena.convention.cmp.library")
+            apply("org.jetbrains.kotlin.plugin.serialization")
+        }
 
         dependencies {
             "commonMainImplementation"(project(":core:domain"))
@@ -17,6 +20,12 @@ class CmpFeatureConventionPlugin : Plugin<Project> {
 
             "commonMainImplementation"(libs.lib("androidx-lifecycle-viewmodelCompose"))
             "commonMainImplementation"(libs.lib("androidx-lifecycle-runtimeCompose"))
+            "commonMainImplementation"(libs.lib("koin-compose"))
+            "commonMainImplementation"(libs.lib("koin-compose-viewmodel"))
+            "commonMainImplementation"(libs.lib("navigation-compose"))
+            "commonMainImplementation"(libs.lib("kotlinx-serialization-json"))
+            "commonMainImplementation"(libs.lib("coil-compose"))
+            "commonMainImplementation"(libs.lib("coil-network-ktor3"))
         }
     }
 }
