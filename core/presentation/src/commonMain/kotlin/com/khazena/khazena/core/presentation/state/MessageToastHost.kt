@@ -22,9 +22,10 @@ import com.khazena.khazena.core.designsystem.KhazenaMotion
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.component.KhazenaToast
 import com.khazena.khazena.core.presentation.UiText
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 
-private const val MESSAGE_DURATION_MS = 3_000L
+private val MESSAGE_DURATION = 3.seconds
 
 class MessageToastState {
     var message by mutableStateOf<UiText?>(null)
@@ -49,7 +50,7 @@ fun rememberMessageToastState() = remember { MessageToastState() }
 fun MessageToastHost(state: MessageToastState, modifier: Modifier = Modifier) {
     LaunchedEffect(state.message, state.visible) {
         if (state.visible) {
-            delay(MESSAGE_DURATION_MS)
+            delay(MESSAGE_DURATION)
             state.hide()
         }
     }

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaMotion
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 
 @Composable
@@ -68,7 +69,7 @@ fun KhazenaBarChart(
         values.forEachIndexed { index, value ->
             val grow = remember { Animatable(0f) }
             LaunchedEffect(value) {
-                delay((index * KhazenaMotion.STAGGER).toLong())
+                delay((index * KhazenaMotion.STAGGER).milliseconds)
                 grow.animateTo(value.toFloat() / max, tween(KhazenaMotion.LONG + 150, easing = KhazenaMotion.EmphasizedDecelerate))
             }
             Column(Modifier.weight(1f).fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally) {

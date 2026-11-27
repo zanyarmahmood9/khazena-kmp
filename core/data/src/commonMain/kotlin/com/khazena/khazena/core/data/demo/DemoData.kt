@@ -4,6 +4,7 @@ import com.khazena.khazena.core.domain.DataError
 import com.khazena.khazena.core.domain.Result
 import com.khazena.khazena.core.domain.demo.DemoDataMode
 import com.khazena.khazena.core.domain.demo.DemoDataSettings
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,10 +18,10 @@ class InMemoryDemoDataSettings : DemoDataSettings {
     }
 }
 
-private const val DEMO_LATENCY_MS = 900L
+private val DEMO_LATENCY = 900.milliseconds
 
 suspend fun <T> DemoDataSettings.demoResult(empty: T, data: () -> T): Result<T, DataError> {
-    delay(DEMO_LATENCY_MS)
+    delay(DEMO_LATENCY)
     return when (mode.value) {
         DemoDataMode.Normal -> Result.Success(data())
         DemoDataMode.Empty -> Result.Success(empty)

@@ -5,9 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.khazena.khazena.core.presentation.state.ContentLoader
 import com.khazena.khazena.feature.search.domain.SearchRepository
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -20,7 +23,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 
 private const val QUERY_KEY = "query"
-private const val SEARCH_DEBOUNCE_MS = 350L
+private val SEARCH_DEBOUNCE = 350.milliseconds
 
 @OptIn(FlowPreview::class)
 class SearchViewModel(
@@ -45,14 +48,14 @@ class SearchViewModel(
             .map { it.trim() }
             .distinctUntilChanged()
             .drop(1)
-            .debounce(SEARCH_DEBOUNCE_MS)
+            .debounce(SEARCH_DEBOUNCE)
             .onEach { results.load() }
             .launchIn(viewModelScope)
     }
 
     val state = combine(query, results.state, ::SearchState)
         .onStart { results.loadOnce() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SearchState())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5.seconds), SearchState())
 
     fun onAction(action: SearchAction) {
         when (action) {

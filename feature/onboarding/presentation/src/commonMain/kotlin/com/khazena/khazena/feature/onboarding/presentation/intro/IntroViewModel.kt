@@ -3,8 +3,10 @@ package com.khazena.khazena.feature.onboarding.presentation.intro
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -19,7 +21,7 @@ class IntroViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
 
     val state = savedStateHandle.getStateFlow(PAGE_KEY, 0)
         .map { IntroState(page = it) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), IntroState(page = savedStateHandle[PAGE_KEY] ?: 0))
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5.seconds), IntroState(page = savedStateHandle[PAGE_KEY] ?: 0))
 
     fun onAction(action: IntroAction) {
         when (action) {

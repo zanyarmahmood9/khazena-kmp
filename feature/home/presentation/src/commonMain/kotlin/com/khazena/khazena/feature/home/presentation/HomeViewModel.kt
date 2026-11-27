@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.khazena.khazena.core.presentation.state.ContentLoader
 import com.khazena.khazena.feature.home.domain.HomeRepository
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -26,7 +28,7 @@ class HomeViewModel(repository: HomeRepository) : ViewModel() {
     val state = deals.state
         .map { HomeState(deals = it) }
         .onStart { deals.loadOnce() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeState())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5.seconds), HomeState())
 
     fun onAction(action: HomeAction) {
         when (action) {

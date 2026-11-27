@@ -1,38 +1,5 @@
 package com.khazena.khazena.feature.scanme.presentation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.khazena.khazena.core.designsystem.KhazenaTheme
-import com.khazena.khazena.core.designsystem.revealOnAppear
-import com.khazena.khazena.core.presentation.ObserveAsEvents
-import com.khazena.khazena.core.presentation.state.ContentState
-import com.khazena.khazena.core.presentation.state.LoadState
-import com.khazena.khazena.core.presentation.state.MessageToastState
-import com.khazena.khazena.core.presentation.state.StateScreen
-import com.khazena.khazena.core.presentation.state.rememberMessageToastState
-import khazena.feature.scanme.presentation.generated.resources.Res
-import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
-import androidx.compose.material3.Text
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
-
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
-import com.khazena.khazena.core.designsystem.component.IconButtonStyle
-import com.khazena.khazena.core.designsystem.component.KhazenaIconButton
-import khazena.core.presentation.generated.resources.Res as CoreRes
-import khazena.core.presentation.generated.resources.back
-
-import com.khazena.khazena.core.designsystem.component.KhazenaIcons
-import com.khazena.khazena.core.designsystem.component.KhazenaStateCard
-import com.khazena.khazena.core.designsystem.component.StateTone
-
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -41,24 +8,58 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.khazena.khazena.core.designsystem.KhazenaMotion
 import com.khazena.khazena.core.designsystem.KhazenaRadius
+import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.component.IconButtonStyle
+import com.khazena.khazena.core.designsystem.component.KhazenaIconButton
+import com.khazena.khazena.core.designsystem.component.KhazenaIcons
+import com.khazena.khazena.core.designsystem.component.KhazenaStateCard
 import com.khazena.khazena.core.designsystem.component.KhazenaTag
+import com.khazena.khazena.core.designsystem.component.StateTone
 import com.khazena.khazena.core.designsystem.component.TagType
+import com.khazena.khazena.core.designsystem.revealOnAppear
 import com.khazena.khazena.core.domain.LocalizedText
+import com.khazena.khazena.core.presentation.ObserveAsEvents
 import com.khazena.khazena.core.presentation.localized
+import com.khazena.khazena.core.presentation.state.ContentState
+import com.khazena.khazena.core.presentation.state.LoadState
+import com.khazena.khazena.core.presentation.state.MessageToastState
+import com.khazena.khazena.core.presentation.state.StateScreen
+import com.khazena.khazena.core.presentation.state.rememberMessageToastState
 import com.khazena.khazena.feature.scanme.domain.MemberCode
-import kotlinx.coroutines.delay
+import khazena.core.presentation.generated.resources.Res as CoreRes
+import khazena.core.presentation.generated.resources.back
 import khazena.feature.scanme.presentation.generated.resources.*
+import khazena.feature.scanme.presentation.generated.resources.Res
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+
+
+
 
 @Composable
 fun ScanMeRoot(
@@ -131,7 +132,7 @@ private fun LiveCode(code: MemberCode, modifier: Modifier, onExpired: () -> Unit
     var remaining by remember(code.code) { mutableIntStateOf(code.validForSeconds) }
     LaunchedEffect(code.code) {
         while (remaining > 0) {
-            delay(1_000)
+            delay(1.seconds)
             remaining--
         }
         onExpired()

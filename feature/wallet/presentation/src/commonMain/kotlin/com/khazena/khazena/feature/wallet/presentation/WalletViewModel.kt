@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.khazena.khazena.core.presentation.state.ContentLoader
 import com.khazena.khazena.feature.wallet.domain.WalletRepository
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -26,7 +28,7 @@ class WalletViewModel(repository: WalletRepository) : ViewModel() {
     val state = loader.state
         .map { WalletState(content = it) }
         .onStart { loader.loadOnce() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), WalletState())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5.seconds), WalletState())
 
     fun onAction(action: WalletAction) {
         when (action) {

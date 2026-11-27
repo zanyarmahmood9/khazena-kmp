@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 
 object KhazenaMotion {
@@ -24,7 +25,7 @@ object KhazenaMotion {
 fun Modifier.revealOnAppear(index: Int = 0): Modifier = composed {
     val progress = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
-        delay((index * KhazenaMotion.STAGGER).coerceAtMost(KhazenaMotion.MAX_STAGGER).toLong())
+        delay((index * KhazenaMotion.STAGGER).coerceAtMost(KhazenaMotion.MAX_STAGGER).milliseconds)
         progress.animateTo(1f, tween(KhazenaMotion.LONG, easing = KhazenaMotion.EmphasizedDecelerate))
     }
     graphicsLayer {

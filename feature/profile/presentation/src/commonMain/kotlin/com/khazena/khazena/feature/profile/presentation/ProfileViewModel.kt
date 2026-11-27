@@ -7,9 +7,11 @@ import com.khazena.khazena.core.domain.demo.DemoDataSettings
 import com.khazena.khazena.core.domain.language.LanguageRepository
 import com.khazena.khazena.core.presentation.state.ContentLoader
 import com.khazena.khazena.feature.profile.domain.ProfileRepository
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -44,7 +46,7 @@ class ProfileViewModel(
         )
     }
         .onStart { profile.loadOnce() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ProfileState())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5.seconds), ProfileState())
 
     fun onAction(action: ProfileAction) {
         when (action) {

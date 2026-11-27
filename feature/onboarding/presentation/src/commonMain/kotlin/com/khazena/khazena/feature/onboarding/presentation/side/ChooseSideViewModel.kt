@@ -3,8 +3,10 @@ package com.khazena.khazena.feature.onboarding.presentation.side
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -19,7 +21,7 @@ class ChooseSideViewModel(private val savedStateHandle: SavedStateHandle) : View
 
     val state = savedStateHandle.getStateFlow(SIDE_KEY, Side.Customer.name)
         .map { ChooseSideState(Side.valueOf(it)) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ChooseSideState())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5.seconds), ChooseSideState())
 
     fun onAction(action: ChooseSideAction) {
         when (action) {
