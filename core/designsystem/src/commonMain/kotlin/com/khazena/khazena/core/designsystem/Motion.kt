@@ -87,11 +87,13 @@ fun <S> AnimatedContentTransitionScope<S>.pushPopEnter(): EnterTransition =
 fun <S> AnimatedContentTransitionScope<S>.pushPopExit(): ExitTransition =
     slideOutOfContainer(SlideDirection.End, tween(PUSH_DURATION, easing = PushEasing))
 
-// Skeleton → content (and any loading-state swap): a soft cross-fade in place. The skeleton lingers while the
-// content fades in over it from the same top edge, so there is no blank frame, no slide and no scale jump; rows
-// that use revealOnAppear add their own gentle rise. The container takes the new height at once (no resize wobble).
+// Skeleton → content (and any loading-state swap): a soft cross-fade in place, from the same top edge, with no
+// slide or scale; rows that use revealOnAppear add their own gentle rise. The container takes the new height at
+// once (no resize wobble). Skeletons match their content's geometry, so nothing shifts as it fades.
 private val RevealEasing = CubicBezierEasing(0.25f, 0.1f, 0.25f, 1f)
 
 fun <S> AnimatedContentTransitionScope<S>.softReveal(): ContentTransform =
-    (fadeIn(tween(KhazenaMotion.LONG, easing = RevealEasing)) togetherWith fadeOut(tween(KhazenaMotion.MEDIUM, easing = RevealEasing)))
+    // A true cross-fade: same duration, same curve, no delay, so the two opacities always add up to one. Never a
+    // blank frame (the white hero showing empty), and the overlap is short enough not to read as ghosting.
+    (fadeIn(tween(KhazenaMotion.MEDIUM, easing = RevealEasing)) togetherWith fadeOut(tween(KhazenaMotion.MEDIUM, easing = RevealEasing)))
         .using(SizeTransform(clip = false) { _, _ -> snap() })

@@ -209,24 +209,24 @@ fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction
         ) {
             Column(Modifier.fillMaxSize().verticalScroll(scroll).navigationBarsPadding().padding(bottom = 32.dp)) {
                 Hero(detail, loading = state.detail.content is LoadState.Loading, onTitleBottom = { heroTitleBottom = it })
-                // Same soft cross-fade as the hero above, so skeleton and content swap as one page.
+                // One cross-fade per state change, in step with the hero's. (A loading container nested in here would
+                // fade the skeleton out twice, so it vanished before the content arrived.)
                 AnimatedContent(
-                    targetState = detail,
+                    targetState = state.detail.content,
                     modifier = Modifier.onGloballyPositioned { bodyTop = it.positionInParent().y },
-                    contentKey = { it != null },
+                    contentKey = { it::class },
                     transitionSpec = { softReveal() },
                     contentAlignment = Alignment.TopCenter,
                     label = "category-body",
-                ) { loaded ->
-                    if (loaded != null) {
-                        Column(Modifier.fillMaxWidth()) { CategoryBody(loaded, state, onAction) }
-                    } else {
-                        LoadStateContent(
-                            state = state.detail.content,
+                ) { content ->
+                    when (content) {
+                        is LoadState.Data -> Column(Modifier.fillMaxWidth()) { CategoryBody(content.value, state, onAction) }
+                        LoadState.Loading -> BodySkeleton(Modifier.padding(horizontal = KhazenaSpacing.screenMargin).padding(top = 18.dp))
+                        else -> LoadStateContent(
+                            state = content,
                             onRetry = { onAction(CategoryAction.OnRetry) },
                             empty = {},
                             modifier = Modifier.fillMaxWidth().padding(horizontal = KhazenaSpacing.screenMargin).padding(top = 18.dp),
-                            loading = { BodySkeleton() },
                         ) {}
                     }
                 }
@@ -387,8 +387,8 @@ private fun HeroSkeleton() {
 
 // Chips, sort line and rated place rows, at the loaded body's spacing.
 @Composable
-private fun BodySkeleton() {
-    KhazenaShimmer(stringResource(CoreRes.string.loading)) {
+private fun BodySkeleton(modifier: Modifier = Modifier) {
+    KhazenaShimmer(stringResource(CoreRes.string.loading), modifier) {
         Column {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 listOf(49, 105, 67, 77, 88).forEach { width ->
