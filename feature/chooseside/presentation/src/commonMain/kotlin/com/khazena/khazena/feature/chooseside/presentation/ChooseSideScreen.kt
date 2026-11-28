@@ -26,10 +26,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
@@ -224,9 +226,11 @@ private fun SideCard(
     Column(
         Modifier
             .fillMaxWidth()
-            .background(container, KhazenaRadius.hero)
+            .clip(KhazenaRadius.hero)
+            .background(container)
             .border(3.dp, if (selected) colors.borderSelected else Color.Transparent, KhazenaRadius.hero)
-            .selectable(selected = selected, role = Role.RadioButton, onClick = onSelect)
+            // Ripple clipped to the card's corners and tinted with its own content colour instead of the default grey.
+            .selectable(selected = selected, interactionSource = null, indication = ripple(color = content), role = Role.RadioButton, onClick = onSelect)
             .padding(20.dp),
     ) {
         Row(verticalAlignment = Alignment.Top) {

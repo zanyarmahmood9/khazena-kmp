@@ -80,15 +80,15 @@ fun KhazenaButton(
         horizontalArrangement = Arrangement.spacedBy(size.gap, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (icon != null) {
-            Icon(painterResource(icon), null, Modifier.size(size.iconSize), tint = content)
-        }
         Text(
             text = text,
             style = textStyle,
             color = content,
             maxLines = 1,
         )
+        if (icon != null) {
+            Icon(painterResource(icon), null, Modifier.size(size.iconSize), tint = content)
+        }
     }
 }
 

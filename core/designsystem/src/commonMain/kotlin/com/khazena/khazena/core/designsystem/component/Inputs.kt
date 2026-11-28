@@ -26,6 +26,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -35,12 +36,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import org.jetbrains.compose.resources.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 
 private val SearchFieldShape = RoundedCornerShape(18.dp)
 
@@ -163,6 +164,9 @@ fun KhazenaToggle(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier
 }
 
 /** 28pt radio: Ink disc with a check when on, 2pt Strong ring when off. */
+// Round press feedback around the mark instead of a square filling the 48dp touch target.
+private val MarkRipple = ripple(bounded = false, radius = 20.dp)
+
 @Composable
 fun KhazenaRadio(selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     SelectionMark(
@@ -170,7 +174,7 @@ fun KhazenaRadio(selected: Boolean, onClick: () -> Unit, modifier: Modifier = Mo
         size = 28.dp,
         shape = CircleShape,
         offBackground = null,
-        modifier = modifier.selectable(selected = selected, role = Role.RadioButton, onClick = onClick),
+        modifier = modifier.selectable(selected = selected, interactionSource = null, indication = MarkRipple, role = Role.RadioButton, onClick = onClick),
     )
 }
 
@@ -181,7 +185,7 @@ fun KhazenaCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifi
         size = 24.dp,
         shape = RoundedCornerShape(7.dp),
         offBackground = KhazenaTheme.colors.surfaceCard,
-        modifier = modifier.toggleable(value = checked, role = Role.Checkbox, onValueChange = onCheckedChange),
+        modifier = modifier.toggleable(value = checked, interactionSource = null, indication = MarkRipple, role = Role.Checkbox, onValueChange = onCheckedChange),
     )
 }
 
