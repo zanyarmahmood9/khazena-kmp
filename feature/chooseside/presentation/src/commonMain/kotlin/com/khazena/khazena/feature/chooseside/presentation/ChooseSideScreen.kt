@@ -1,5 +1,10 @@
 package com.khazena.khazena.feature.chooseside.presentation
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -223,12 +229,18 @@ private fun SideCard(
     tags: List<String>,
 ) {
     val colors = KhazenaTheme.colors
+    val border by animateColorAsState(if (selected) colors.borderSelected else Color.Transparent, tween(durationMillis = 300))
+    val scale by animateFloatAsState(if (selected) 1f else 0.98f, spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessLow))
     Column(
         Modifier
             .fillMaxWidth()
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .clip(KhazenaRadius.hero)
             .background(container)
-            .border(3.dp, if (selected) colors.borderSelected else Color.Transparent, KhazenaRadius.hero)
+            .border(3.dp, border, KhazenaRadius.hero)
             // Ripple clipped to the card's corners and tinted with its own content colour instead of the default grey.
             .selectable(selected = selected, interactionSource = null, indication = ripple(color = content), role = Role.RadioButton, onClick = onSelect)
             .padding(20.dp),
@@ -260,12 +272,21 @@ private fun SideCard(
 @Composable
 private fun SelectionMark(selected: Boolean, outline: Color) {
     val colors = KhazenaTheme.colors
-    if (selected) {
-        Box(Modifier.size(28.dp).background(colors.blockInk, CircleShape), contentAlignment = Alignment.Center) {
+    val fill by animateFloatAsState(if (selected) 1f else 0f, spring(dampingRatio = 0.7f, stiffness = Spring.StiffnessMediumLow))
+    Box(Modifier.size(28.dp).border(2.dp, outline.copy(alpha = 0.7f * (1f - fill)), CircleShape), contentAlignment = Alignment.Center) {
+        Box(
+            Modifier
+                .matchParentSize()
+                .graphicsLayer {
+                    scaleX = fill
+                    scaleY = fill
+                    alpha = fill.coerceIn(0f, 1f)
+                }
+                .background(colors.blockInk, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
             Icon(painterResource(KhazenaIcons.Check), null, Modifier.size(14.dp), tint = colors.textOnDark)
         }
-    } else {
-        Box(Modifier.size(28.dp).border(2.dp, outline.copy(alpha = 0.7f), CircleShape))
     }
 }
 

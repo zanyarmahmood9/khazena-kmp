@@ -1,5 +1,12 @@
 package com.khazena.khazena.core.designsystem.component
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -80,14 +87,28 @@ fun KhazenaButton(
         horizontalArrangement = Arrangement.spacedBy(size.gap, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = text,
-            style = textStyle,
-            color = content,
-            maxLines = 1,
-        )
-        if (icon != null) {
-            Icon(painterResource(icon), null, Modifier.size(size.iconSize), tint = content)
+        // Label and icon change as one unit: the old pair fades out before the new one fades in, so they never overlap,
+        // and the size animates so the centred content glides instead of jumping.
+        AnimatedContent(
+            targetState = text to icon,
+            transitionSpec = {
+                fadeIn(tween(durationMillis = 200, delayMillis = 120)) togetherWith fadeOut(tween(durationMillis = 120)) using
+                    SizeTransform(clip = false) { _, _ -> tween(durationMillis = 320, easing = FastOutSlowInEasing) }
+            },
+            contentAlignment = Alignment.Center,
+            label = "button-content",
+        ) { (label, labelIcon) ->
+            Row(horizontalArrangement = Arrangement.spacedBy(size.gap), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = label,
+                    style = textStyle,
+                    color = content,
+                    maxLines = 1,
+                )
+                if (labelIcon != null) {
+                    Icon(painterResource(labelIcon), null, Modifier.size(size.iconSize), tint = content)
+                }
+            }
         }
     }
 }

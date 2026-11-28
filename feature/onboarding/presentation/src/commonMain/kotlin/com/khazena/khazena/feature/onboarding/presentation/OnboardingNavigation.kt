@@ -1,5 +1,6 @@
 package com.khazena.khazena.feature.onboarding.presentation
 
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -40,6 +41,8 @@ fun NavGraphBuilder.onboardingGraph(
                 fadeIn(tween(durationMillis = 600, delayMillis = 150)) +
                     scaleIn(tween(durationMillis = 600, delayMillis = 150, easing = FastOutSlowInEasing), initialScale = 0.97f)
             },
+            // Leaving onboarding continues the pager's motion: the last page pushes off towards the start.
+            exitTransition = { slideOutOfContainer(SlideDirection.Start, tween(durationMillis = 450, easing = FastOutSlowInEasing)) },
         ) {
             IntroRoot(onFinished = onFinished)
         }
