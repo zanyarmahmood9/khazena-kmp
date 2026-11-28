@@ -1,8 +1,6 @@
 package com.khazena.khazena.feature.home.presentation.categories
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -15,28 +13,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaTheme
-import com.khazena.khazena.core.designsystem.component.IconButtonStyle
 import com.khazena.khazena.core.designsystem.component.KhazenaCategoryCard
-import com.khazena.khazena.core.designsystem.component.KhazenaIconButton
+import com.khazena.khazena.core.designsystem.component.KhazenaCategoryCardSkeleton
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaSearchField
 import com.khazena.khazena.core.designsystem.component.KhazenaShimmer
 import com.khazena.khazena.core.designsystem.component.KhazenaSkeleton
 import com.khazena.khazena.core.designsystem.component.KhazenaStateCard
+import com.khazena.khazena.core.designsystem.component.KhazenaTopBar
 import com.khazena.khazena.core.designsystem.component.StateTone
 import com.khazena.khazena.core.designsystem.revealOnAppear
 import com.khazena.khazena.core.presentation.ObserveAsEvents
@@ -96,33 +87,22 @@ fun CategoriesScreen(state: CategoriesState, toastState: MessageToastState, onAc
         onRetry = { onAction(CategoriesAction.OnRetry) },
         toastState = toastState,
         bottomClearance = 48.dp,
+        // Figma 02a: 44dp bar, 16dp to the search field (8 below the bar + 8 above the content).
+        topBar = { scrolled ->
+            KhazenaTopBar(
+                title = stringResource(Res.string.categories_title),
+                backLabel = stringResource(CoreRes.string.back),
+                onBack = { onAction(CategoriesAction.OnBackClick) },
+                scrolled = scrolled,
+            )
+        },
         header = {
-            // Figma 02a: 44dp top bar, 16dp to the search field.
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    KhazenaIconButton(
-                        KhazenaIcons.ArrowLeftRegular,
-                        stringResource(CoreRes.string.back),
-                        { onAction(CategoriesAction.OnBackClick) },
-                        Modifier.align(Alignment.CenterStart),
-                        style = IconButtonStyle.Outlined,
-                    )
-                    Text(
-                        stringResource(Res.string.categories_title),
-                        style = KhazenaTheme.typography.headingH4.copy(fontSize = 20.sp),
-                        color = KhazenaTheme.colors.textPrimary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(horizontal = 56.dp).semantics { heading() },
-                    )
-                }
-                KhazenaSearchField(
-                    value = state.query,
-                    onValueChange = { onAction(CategoriesAction.OnQueryChange(it)) },
-                    placeholder = stringResource(Res.string.categories_search_hint),
-                    clearContentDescription = stringResource(Res.string.categories_search_clear),
-                )
-            }
+            KhazenaSearchField(
+                value = state.query,
+                onValueChange = { onAction(CategoriesAction.OnQueryChange(it)) },
+                placeholder = stringResource(Res.string.categories_search_hint),
+                clearContentDescription = stringResource(Res.string.categories_search_clear),
+            )
         },
         loading = { CategoriesSkeleton() },
         empty = {
@@ -172,7 +152,7 @@ private fun CategoriesContent(directory: CategoryDirectory, query: String, onAct
     }
 }
 
-// Mirrors CategoriesContent + KhazenaCategoryCard geometry (summary line, 2-column 176dp cards).
+// Mirrors CategoriesContent: summary line, then 2-column cards with the card's own skeleton.
 @Composable
 private fun CategoriesSkeleton() {
     KhazenaShimmer(stringResource(CoreRes.string.loading)) {
@@ -182,23 +162,10 @@ private fun CategoriesSkeleton() {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 repeat(4) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        repeat(2) { CategoryCardSkeleton(Modifier.weight(1f)) }
+                        repeat(2) { KhazenaCategoryCardSkeleton(Modifier.weight(1f)) }
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun CategoryCardSkeleton(modifier: Modifier = Modifier) {
-    Box(modifier.height(176.dp).clip(KhazenaRadius.card).background(KhazenaTheme.colors.surfaceCard)) {
-        KhazenaSkeleton(Modifier.padding(10.dp).size(width = 78.dp, height = 22.dp), KhazenaRadius.pill)
-        KhazenaSkeleton(Modifier.align(Alignment.TopEnd).padding(10.dp).size(28.dp), KhazenaRadius.pill)
-        Column(Modifier.fillMaxWidth().padding(top = 26.dp)) {
-            KhazenaSkeleton(Modifier.align(Alignment.CenterHorizontally).size(84.dp), KhazenaRadius.card)
-            KhazenaSkeleton(Modifier.padding(start = 14.dp, top = 14.dp).size(width = 96.dp, height = 14.dp))
-            KhazenaSkeleton(Modifier.padding(start = 14.dp, top = 7.dp).size(width = 60.dp, height = 11.dp))
         }
     }
 }

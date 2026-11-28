@@ -37,30 +37,36 @@ fun <T> StateScreen(
     empty: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     bottomClearance: Dp = TabBarClearance,
+    // Pinned above the scrolling content; `scrolled` is true once content has moved under it.
+    topBar: @Composable (scrolled: Boolean) -> Unit = {},
     header: @Composable ColumnScope.() -> Unit = {},
     footer: @Composable ColumnScope.() -> Unit = {},
     loading: @Composable () -> Unit = { KhazenaSkeletonList(stringResource(Res.string.loading)) },
     content: @Composable ColumnScope.(T) -> Unit,
 ) {
+    val scroll = rememberScrollState()
     Box(modifier.fillMaxSize().background(KhazenaTheme.colors.surfaceBackground)) {
-        PullToRefreshBox(
-            isRefreshing = state.isRefreshing,
-            onRefresh = onRefresh,
-            modifier = Modifier.fillMaxSize().statusBarsPadding(),
-        ) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = KhazenaSpacing.screenMargin)
-                    .padding(top = 8.dp, bottom = bottomClearance),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+        Column(Modifier.fillMaxSize().statusBarsPadding()) {
+            topBar(scroll.value > 0)
+            PullToRefreshBox(
+                isRefreshing = state.isRefreshing,
+                onRefresh = onRefresh,
+                modifier = Modifier.fillMaxSize(),
             ) {
-                header()
-                LoadStateContent(state.content, onRetry, empty, Modifier.fillMaxWidth(), loading) { data ->
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) { content(data) }
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scroll)
+                        .padding(horizontal = KhazenaSpacing.screenMargin)
+                        .padding(top = 8.dp, bottom = bottomClearance),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                ) {
+                    header()
+                    LoadStateContent(state.content, onRetry, empty, Modifier.fillMaxWidth(), loading) { data ->
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) { content(data) }
+                    }
+                    footer()
                 }
-                footer()
             }
         }
         MessageToastHost(toastState, Modifier.align(Alignment.BottomCenter).padding(bottom = bottomClearance - 24.dp))

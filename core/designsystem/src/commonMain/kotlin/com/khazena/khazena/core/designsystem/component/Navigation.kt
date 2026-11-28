@@ -1,5 +1,7 @@
 package com.khazena.khazena.core.designsystem.component
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,19 +22,28 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.draw.innerShadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.khazena.khazena.core.designsystem.KhazenaMotion
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import com.khazena.khazena.core.designsystem.textClickable
@@ -61,6 +72,47 @@ fun KhazenaSectionHeader(
                 modifier = Modifier.textClickable(onClick = onLinkClick),
             )
         }
+    }
+}
+
+// iOS-style navigation bar: back button, centred title, optional trailing action. It stays pinned while the
+// page scrolls; the hairline (and, when asked, the title) fades in once content has moved underneath.
+@Composable
+fun KhazenaTopBar(
+    title: String,
+    backLabel: String,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    scrolled: Boolean = false,
+    titleVisible: Boolean = true,
+    backStyle: IconButtonStyle = IconButtonStyle.Outlined,
+    action: (@Composable () -> Unit)? = null,
+) {
+    val colors = KhazenaTheme.colors
+    val dividerAlpha by animateFloatAsState(if (scrolled) 1f else 0f, tween(KhazenaMotion.SHORT), label = "top-bar-divider")
+    val titleAlpha by animateFloatAsState(if (titleVisible) 1f else 0f, tween(KhazenaMotion.MEDIUM), label = "top-bar-title")
+    Box(
+        modifier
+            .fillMaxWidth()
+            .drawBehind {
+                drawLine(colors.borderDefault.copy(alpha = dividerAlpha), Offset(0f, size.height), Offset(size.width, size.height), 1.dp.toPx())
+            }
+            .padding(horizontal = 20.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        KhazenaIconButton(KhazenaIcons.ArrowLeftRegular, backLabel, onBack, Modifier.align(Alignment.CenterStart), style = backStyle)
+        Text(
+            title,
+            style = KhazenaTheme.typography.headingH4.copy(fontSize = 20.sp),
+            color = colors.textPrimary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .padding(horizontal = 56.dp)
+                .graphicsLayer { alpha = titleAlpha }
+                .semantics { heading() },
+        )
+        if (action != null) Box(Modifier.align(Alignment.CenterEnd)) { action() }
     }
 }
 

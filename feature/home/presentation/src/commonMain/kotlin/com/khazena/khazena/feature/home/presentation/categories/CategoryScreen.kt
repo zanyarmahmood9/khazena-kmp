@@ -34,12 +34,18 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -56,6 +62,7 @@ import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.component.IconButtonStyle
 import com.khazena.khazena.core.designsystem.component.KhazenaBottomSheet
 import com.khazena.khazena.core.designsystem.component.KhazenaChip
 import com.khazena.khazena.core.designsystem.component.KhazenaIconButton
@@ -66,6 +73,8 @@ import com.khazena.khazena.core.designsystem.component.KhazenaSheetTitle
 import com.khazena.khazena.core.designsystem.component.KhazenaShimmer
 import com.khazena.khazena.core.designsystem.component.KhazenaSkeleton
 import com.khazena.khazena.core.designsystem.component.KhazenaSkeletonRow
+import com.khazena.khazena.core.designsystem.component.KhazenaTopBar
+import com.khazena.khazena.core.designsystem.component.multiplySafe
 import com.khazena.khazena.core.designsystem.revealOnAppear
 import com.khazena.khazena.core.designsystem.textClickable
 import com.khazena.khazena.core.domain.LocalizedText
@@ -132,12 +141,22 @@ fun CategoryRoot(onBack: () -> Unit, onOpenSearch: () -> Unit, viewModel: Catego
 // Figma 02b: no tab bar; the white hero runs under the status bar with 36dp bottom corners.
 private val HeroShape = RoundedCornerShape(bottomStart = 36.dp, bottomEnd = 36.dp)
 
+// KhazenaTopBar: 8 + 44 + 8. The hero starts under it so its kicker keeps the Figma offset.
+private val TopBarHeight = 60.dp
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction: (CategoryAction) -> Unit) {
     val detail = (state.detail.content as? LoadState.Data)?.value
+    val colors = KhazenaTheme.colors
     val refreshState = rememberPullToRefreshState()
-    Box(Modifier.fillMaxSize().background(KhazenaTheme.colors.surfaceBackground)) {
+    val scroll = rememberScrollState()
+    // Once the hero title has slid under the pinned bar, the bar shows the name instead, as iOS does.
+    // Measured, not a fixed offset, so it holds for long names, larger text and Arabic/Kurdish line heights.
+    var barBottom by remember { mutableFloatStateOf(0f) }
+    var heroTitleBottom by remember { mutableFloatStateOf(Float.MAX_VALUE) }
+    val titleUnderBar = heroTitleBottom <= barBottom
+    Box(Modifier.fillMaxSize().background(colors.surfaceBackground)) {
         PullToRefreshBox(
             isRefreshing = state.detail.isRefreshing,
             onRefresh = { onAction(CategoryAction.OnRefresh) },
@@ -147,12 +166,12 @@ fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction
                 PullToRefreshDefaults.Indicator(
                     state = refreshState,
                     isRefreshing = state.detail.isRefreshing,
-                    modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding(),
+                    modifier = Modifier.align(Alignment.TopCenter).statusBarsPadding().padding(top = TopBarHeight),
                 )
             },
         ) {
-            Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).navigationBarsPadding().padding(bottom = 32.dp)) {
-                Hero(detail, loading = state.detail.content is LoadState.Loading, onAction = onAction)
+            Column(Modifier.fillMaxSize().verticalScroll(scroll).navigationBarsPadding().padding(bottom = 32.dp)) {
+                Hero(detail, loading = state.detail.content is LoadState.Loading, onTitleBottom = { heroTitleBottom = it })
                 if (detail != null) {
                     CategoryBody(detail, state, onAction)
                 } else {
@@ -166,27 +185,40 @@ fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction
                 }
             }
         }
+        // White like the hero, so at rest the bar and hero read as one surface.
+        KhazenaTopBar(
+            title = detail?.name?.localized().orEmpty(),
+            backLabel = stringResource(CoreRes.string.back),
+            onBack = { onAction(CategoryAction.OnBackClick) },
+            modifier = Modifier
+                .onGloballyPositioned { barBottom = it.boundsInRoot().bottom }
+                .background(colors.surfaceCard)
+                .statusBarsPadding(),
+            scrolled = titleUnderBar,
+            titleVisible = titleUnderBar,
+            backStyle = IconButtonStyle.Paper,
+            action = {
+                KhazenaIconButton(KhazenaIcons.MagnifyingGlassRegular, stringResource(Res.string.category_search), { onAction(CategoryAction.OnSearchClick) })
+            },
+        )
         MessageToastHost(toastState, Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 24.dp))
     }
     if (state.isSortSheetOpen) SortSheet(state.sort, onAction)
 }
 
 @Composable
-private fun Hero(detail: CategoryDetail?, loading: Boolean, onAction: (CategoryAction) -> Unit) {
+private fun Hero(detail: CategoryDetail?, loading: Boolean, onTitleBottom: (Float) -> Unit) {
     val colors = KhazenaTheme.colors
     val type = KhazenaTheme.typography
     Column(
         Modifier
             .fillMaxWidth()
+            .multiplySafe()
             .clip(HeroShape)
             .background(colors.surfaceCard)
             .statusBarsPadding()
-            .padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 16.dp),
+            .padding(start = 20.dp, end = 20.dp, top = TopBarHeight, bottom = 16.dp),
     ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            KhazenaIconButton(KhazenaIcons.ArrowLeftRegular, stringResource(CoreRes.string.back), { onAction(CategoryAction.OnBackClick) })
-            KhazenaIconButton(KhazenaIcons.MagnifyingGlassRegular, stringResource(Res.string.category_search), { onAction(CategoryAction.OnSearchClick) })
-        }
         if (detail == null) {
             if (loading) HeroSkeleton()
             return@Column
@@ -215,7 +247,11 @@ private fun Hero(detail: CategoryDetail?, loading: Boolean, onAction: (CategoryA
                     color = colors.textPrimary,
                     maxLines = if (singleWord) 1 else 3,
                     autoSize = if (singleWord) TextAutoSize.StepBased(minFontSize = 20.sp, maxFontSize = titleStyle.fontSize) else null,
-                    modifier = Modifier.padding(top = 2.dp).widthIn(max = 150.dp).semantics { heading() },
+                    modifier = Modifier
+                        .padding(top = 2.dp)
+                        .widthIn(max = 150.dp)
+                        .onGloballyPositioned { onTitleBottom(it.positionInRoot().y + it.size.height) }
+                        .semantics { heading() },
                 )
                 Text(
                     detail.description.localized(),

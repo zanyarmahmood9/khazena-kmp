@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Icon
@@ -27,9 +26,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.sp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaTheme
-import com.khazena.khazena.core.designsystem.rememberThrottledClick
 import com.khazena.khazena.core.designsystem.pressScale
+import com.khazena.khazena.core.designsystem.rememberThrottledClick
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -180,8 +180,10 @@ fun KhazenaCategoryTile(
     }
 }
 
-// Large category card from the "All categories" grid (Figma 02a): 84dp art, name, place count,
-// a discount badge and an arrow in the top corners.
+// Large category card from the "All categories" grid (Figma 02a): art, name, place count,
+// a discount badge and an arrow in the top corners. Figma tucks the art up into the badge (26dp);
+// here it starts 6dp under it and is 80dp, keeping the 176dp card.
+
 @Composable
 fun KhazenaCategoryCard(
     art: Painter,
@@ -196,21 +198,22 @@ fun KhazenaCategoryCard(
     val interaction = remember { MutableInteractionSource() }
     Box(
         modifier
-            .heightIn(min = 176.dp)
+            .heightIn(min = CategoryCardHeight)
             .pressScale(interaction)
+            .multiplySafe()
             .clip(KhazenaRadius.card)
             .background(colors.surfaceCard)
             .clickable(interaction, LocalIndication.current, role = Role.Button, onClick = rememberThrottledClick(onClick)),
     ) {
-        Column(Modifier.fillMaxWidth().padding(top = 26.dp, bottom = 19.dp)) {
+        Column(Modifier.fillMaxWidth().padding(top = CategoryCardArtTop, bottom = 15.dp)) {
             // Figma multiplies the art onto the card so its near-white backdrop disappears.
             Image(
                 art,
                 null,
-                Modifier.size(84.dp).align(Alignment.CenterHorizontally).graphicsLayer { blendMode = BlendMode.Multiply },
+                Modifier.size(CategoryCardArt).align(Alignment.CenterHorizontally).graphicsLayer { blendMode = BlendMode.Multiply },
                 contentScale = ContentScale.Crop,
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(CategoryCardArtToName))
             Text(
                 label,
                 style = type.labelMSemiBold.copy(lineHeight = 19.sp),
@@ -244,6 +247,30 @@ fun KhazenaCategoryCard(
         Image(painterResource(KhazenaIcons.CaretCircleRight), null, Modifier.align(Alignment.TopEnd).padding(10.dp).size(28.dp))
     }
 }
+
+// Loading placeholder with the exact geometry of KhazenaCategoryCard.
+@Composable
+fun KhazenaCategoryCardSkeleton(modifier: Modifier = Modifier) {
+    Box(modifier.heightIn(min = CategoryCardHeight).clip(KhazenaRadius.card).background(KhazenaTheme.colors.surfaceCard)) {
+        KhazenaSkeleton(Modifier.padding(10.dp).size(width = 78.dp, height = 22.dp), KhazenaRadius.pill)
+        KhazenaSkeleton(Modifier.align(Alignment.TopEnd).padding(10.dp).size(28.dp), KhazenaRadius.pill)
+        Column(Modifier.fillMaxWidth().padding(top = CategoryCardArtTop)) {
+            KhazenaSkeleton(Modifier.align(Alignment.CenterHorizontally).size(CategoryCardArt), KhazenaRadius.card)
+            KhazenaSkeleton(Modifier.padding(start = 14.dp, top = CategoryCardArtToName + 3.dp).size(width = 96.dp, height = 14.dp))
+            KhazenaSkeleton(Modifier.padding(start = 14.dp, top = 6.dp).size(width = 60.dp, height = 11.dp))
+        }
+    }
+}
+
+private val CategoryCardHeight = 176.dp
+private val CategoryCardArtTop = 38.dp
+private val CategoryCardArt = 80.dp
+private val CategoryCardArtToName = 8.dp
+
+// Art drawn with BlendMode.Multiply must blend against its own card, not whatever is behind it.
+// Without an offscreen layer, a parent fade (reveal, screen transition) draws each piece translucent and the
+// art's near-white backdrop shows as a pale square over the badge until the fade ends.
+fun Modifier.multiplySafe(): Modifier = graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
 
 @Composable
 fun KhazenaDealCard(

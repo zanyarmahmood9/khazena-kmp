@@ -1,5 +1,6 @@
 package com.khazena.khazena.feature.home.presentation
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,14 +8,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
@@ -24,6 +31,8 @@ import com.khazena.khazena.core.designsystem.component.KhazenaDealCard
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaPlaceRow
 import com.khazena.khazena.core.designsystem.component.KhazenaSectionHeader
+import com.khazena.khazena.core.designsystem.component.KhazenaShimmer
+import com.khazena.khazena.core.designsystem.component.KhazenaSkeleton
 import com.khazena.khazena.core.designsystem.component.KhazenaStateCard
 import com.khazena.khazena.core.designsystem.component.StateTone
 import com.khazena.khazena.core.designsystem.revealOnAppear
@@ -41,6 +50,7 @@ import com.khazena.khazena.feature.home.domain.HomeCategory
 import com.khazena.khazena.feature.home.domain.HomeFeed
 import com.khazena.khazena.feature.home.domain.NearbyPlace
 import com.khazena.khazena.feature.home.domain.TopDeal
+import khazena.core.presentation.generated.resources.loading
 import khazena.feature.home.presentation.generated.resources.Res
 import khazena.feature.home.presentation.generated.resources.home_category_badge
 import khazena.feature.home.presentation.generated.resources.home_deal_off
@@ -58,6 +68,7 @@ import khazena.feature.home.presentation.generated.resources.home_see_all
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import khazena.core.presentation.generated.resources.Res as CoreRes
 
 @Composable
 fun HomeRoot(
@@ -106,6 +117,7 @@ fun HomeScreen(state: HomeState, toastState: MessageToastState, locationOn: Bool
         onRetry = { onAction(HomeAction.OnRetry) },
         toastState = toastState,
         header = { HomeHeader(feed, state.daypart, onAction) },
+        loading = { HomeSkeleton() },
         empty = {
             KhazenaStateCard(
                 icon = KhazenaIcons.MapPin,
@@ -122,6 +134,10 @@ fun HomeScreen(state: HomeState, toastState: MessageToastState, locationOn: Bool
 private val SectionGap = 30.dp
 private val HeaderGap = 8.dp
 
+// A category tile's discount badge rides 10dp above the tile, so the grid keeps that much extra room
+// to leave the badge the same 8dp under the section title as everything else.
+private val CategoryBadgeOverhang = 10.dp
+
 @Composable
 private fun HomeContent(feed: HomeFeed, locationOn: Boolean, onAction: (HomeAction) -> Unit) {
     Column(Modifier.fillMaxWidth()) {
@@ -134,7 +150,7 @@ private fun HomeContent(feed: HomeFeed, locationOn: Boolean, onAction: (HomeActi
                 linkLabel = stringResource(Res.string.home_see_all),
                 onLinkClick = { onAction(HomeAction.OnSeeAllCategoriesClick) },
             )
-            Spacer(Modifier.height(HeaderGap))
+            Spacer(Modifier.height(HeaderGap + CategoryBadgeOverhang))
             CategoryGrid(feed.categories, onAction, Modifier.revealOnAppear(1))
         }
 
@@ -172,6 +188,48 @@ private fun HomeContent(feed: HomeFeed, locationOn: Boolean, onAction: (HomeActi
 
         Spacer(Modifier.height(18.dp))
         InviteCard()
+    }
+}
+
+// Same blocks and spacing as HomeContent: membership card, categories, member offer, deals carousel.
+@Composable
+private fun HomeSkeleton() {
+    KhazenaShimmer(stringResource(CoreRes.string.loading)) {
+        Column(Modifier.fillMaxWidth()) {
+            KhazenaSkeleton(Modifier.fillMaxWidth().height(196.dp), KhazenaRadius.block)
+            Spacer(Modifier.height(SectionGap))
+            SectionHeaderSkeleton(titleWidth = 120.dp)
+            Spacer(Modifier.height(HeaderGap + CategoryBadgeOverhang))
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                repeat(2) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        repeat(4) { KhazenaSkeleton(Modifier.size(80.dp), KhazenaRadius.tile) }
+                    }
+                }
+            }
+            Spacer(Modifier.height(32.dp))
+            KhazenaSkeleton(Modifier.fillMaxWidth().height(236.dp), KhazenaRadius.block)
+            Spacer(Modifier.height(SectionGap))
+            SectionHeaderSkeleton(titleWidth = 190.dp)
+            Spacer(Modifier.height(HeaderGap))
+            Row(
+                Modifier
+                    .bleedHorizontally(KhazenaSpacing.screenMargin)
+                    .horizontalScroll(rememberScrollState(), enabled = false)
+                    .padding(horizontal = KhazenaSpacing.screenMargin),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                repeat(3) { KhazenaSkeleton(Modifier.size(width = 164.dp, height = 201.dp), KhazenaRadius.block) }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SectionHeaderSkeleton(titleWidth: Dp) {
+    Row(Modifier.fillMaxWidth().height(30.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        KhazenaSkeleton(Modifier.size(width = titleWidth, height = 22.dp))
+        KhazenaSkeleton(Modifier.size(width = 48.dp, height = 14.dp))
     }
 }
 
