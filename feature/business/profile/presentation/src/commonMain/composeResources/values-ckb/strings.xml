@@ -1,0 +1,9 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="store_title">فرۆشگا</string>
+    <string name="store_discount_kicker">داشکانی ئەندامان · هەموو سەردانێک</string>
+    <string name="store_discount_body">کاتێک کۆدی ئەندامێک سکان دەکەیت خۆکارانە جێبەجێ دەبێت.</string>
+    <string name="store_empty_badge">ڕێکنەخراوە</string>
+    <string name="store_empty_title">فرۆشگاکەت ڕێکبخە.</string>
+    <string name="store_empty_body">ناونیشان، کاتی کارکردن و داشکانی ئەندامان زیاد بکە بۆ ئەوەی ئەندامان بتدۆزنەوە.</string>
+</resources>

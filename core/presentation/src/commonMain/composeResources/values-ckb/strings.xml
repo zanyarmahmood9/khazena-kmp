@@ -1,0 +1,35 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="error_no_internet">ئینتەرنێت نییە. پەیوەندییەکەت بپشکنە و دووبارە هەوڵ بدەرەوە.</string>
+    <string name="error_request_timeout">ئەمە زۆری خایاند. تکایە دووبارە هەوڵ بدەرەوە.</string>
+    <string name="error_unauthorized">تکایە دووبارە بچۆ ژوورەوە.</string>
+    <string name="error_too_many_requests">هەوڵدانەکان زۆر بوون. کەمێک چاوەڕێ بکە و دووبارە هەوڵ بدەرەوە.</string>
+    <string name="error_server">کێشەیەک لە لایەن ئێمەوە ڕوویدا. تکایە کەمێکی تر هەوڵ بدەرەوە.</string>
+    <string name="error_disk_full">بیرگەی مۆبایلەکەت پڕ بووە.</string>
+    <string name="error_unknown">کێشەیەک ڕوویدا. تکایە دووبارە هەوڵ بدەرەوە.</string>
+    <string name="tab_home">سەرەکی</string>
+    <string name="tab_search">گەڕان</string>
+    <string name="tab_wallet">جزدان</string>
+    <string name="tab_profile">پرۆفایل</string>
+    <string name="tab_scan_me">سکانم بکە</string>
+    <string name="tab_services">خزمەتگوزارییەکان</string>
+    <string name="tab_reports">ڕاپۆرتەکان</string>
+    <string name="tab_store">فرۆشگا</string>
+    <string name="tab_scan_member">سکانی ئەندام</string>
+    <string name="coming_soon">بەم زووانە.</string>
+    <string name="notifications">ئاگادارکردنەوەکان</string>
+    <string name="switch_to_business">بگۆڕە بۆ بازرگانی</string>
+    <string name="switch_to_personal">بگۆڕە بۆ کەسی</string>
+    <string name="mode_personal">کەسی</string>
+    <string name="mode_business">بازرگانی</string>
+    <string name="back">گەڕانەوە</string>
+    <string name="close">داخستن</string>
+    <string name="loading">بارکردن</string>
+    <string name="try_again">دووبارە هەوڵ بدەرەوە</string>
+    <string name="state_error_badge">دەرەوەی هێڵ</string>
+    <string name="state_error_title">نەمانتوانی ئەمە بار بکەین.</string>
+    <string name="refresh_failed">نوێکردنەوە سەرکەوتوو نەبوو. ئەوەی هەیە پیشان دەدەین.</string>
+    <string name="price_iqd">%1$s د.ع</string>
+    <string name="distance_km">%1$s کم</string>
+    <string name="discount_label">-%1$d%</string>
+</resources>

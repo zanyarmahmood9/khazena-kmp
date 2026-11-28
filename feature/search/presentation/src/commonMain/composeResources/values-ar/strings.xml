@@ -1,0 +1,13 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="search_placeholder">ابحث عن مطاعم، صالونات، خدمات…</string>
+    <string name="search_clear">مسح البحث</string>
+    <string name="search_popular">الأكثر شهرة بالقرب منك.</string>
+    <string name="search_results">النتائج.</string>
+    <string name="search_empty_badge">لا تطابق</string>
+    <string name="search_empty_title">لا نتائج لـ «%1$s».</string>
+    <string name="search_empty_body">لم نجد مكانًا أو خدمة بهذا الاسم. تحقّق من الإملاء أو جرّب كلمة أخرى.</string>
+    <string name="search_empty_action">مسح البحث</string>
+    <string name="search_nothing_title">لا شيء لعرضه بعد.</string>
+    <string name="search_nothing_body">ستظهر الأماكن هنا عند انضمامها إلى خزينة. اسحب للأسفل للتحقق مجددًا.</string>
+</resources>

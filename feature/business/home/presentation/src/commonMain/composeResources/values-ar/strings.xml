@@ -1,0 +1,12 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="business_home_greeting">جاهز للمسح؟</string>
+    <string name="business_home_scans_today">عمليات المسح اليوم</string>
+    <string name="business_home_new_members">أعضاء جدد هذا الأسبوع</string>
+    <string name="business_home_savings_given">ما وفّره أعضاؤك هذا الأسبوع</string>
+    <string name="business_home_recent">آخر عمليات المسح.</string>
+    <string name="business_home_empty_badge">لا مسح بعد</string>
+    <string name="business_home_empty_title">لا زيارات اليوم بعد.</string>
+    <string name="business_home_empty_body">عندما يعرض العضو رمزه، امسحه. تظهر زيارات اليوم هنا.</string>
+    <string name="business_home_empty_action">مسح عضو</string>
+</resources>

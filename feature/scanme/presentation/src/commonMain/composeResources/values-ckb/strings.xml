@@ -1,0 +1,10 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="scanme_title">سکانم بکە</string>
+    <string name="scanme_live">کۆدی زیندوو</string>
+    <string name="scanme_refreshes_in">نوێ دەبێتەوە لە %1$s</string>
+    <string name="scanme_hint">ئەم کۆدە لە کاتی پارەدان پیشان بدە. کاشێرەکە سکانی دەکات و نرخی ئەندامێتی جێبەجێ دەبێت.</string>
+    <string name="scanme_empty_badge">ئەندامێتی نییە</string>
+    <string name="scanme_empty_title">ئەندامێتی چالاکت نییە.</string>
+    <string name="scanme_empty_body">ئەندامێتی خەزێنە وەربگرە بۆ کردنەوەی کۆدی زیندوو و نرخی ئەندامان.</string>
+</resources>

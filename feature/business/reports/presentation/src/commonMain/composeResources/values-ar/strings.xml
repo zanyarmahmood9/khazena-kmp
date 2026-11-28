@@ -1,0 +1,22 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="reports_title">التقارير</string>
+    <string name="reports_subtitle">هذا الأسبوع، من السبت إلى الجمعة.</string>
+    <string name="reports_visits">زيارات الأعضاء</string>
+    <string name="reports_new_members">أعضاء جدد</string>
+    <string name="reports_savings">ما وفّره الأعضاء</string>
+    <string name="reports_returning">عادوا مجددًا</string>
+    <string name="reports_per_day">الزيارات يوميًا.</string>
+    <string name="reports_empty_badge">لا بيانات</string>
+    <string name="reports_empty_title">لا زيارات هذا الأسبوع بعد.</string>
+    <string name="reports_empty_body">تمتلئ تقاريرك عندما يزورك الأعضاء وتمسح رموزهم.</string>
+    <string-array name="reports_days">
+        <item>سب</item>
+        <item>أح</item>
+        <item>اث</item>
+        <item>ثل</item>
+        <item>أر</item>
+        <item>خم</item>
+        <item>جم</item>
+    </string-array>
+</resources>

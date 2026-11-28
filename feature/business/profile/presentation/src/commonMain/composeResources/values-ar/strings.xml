@@ -1,0 +1,9 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="store_title">المتجر</string>
+    <string name="store_discount_kicker">خصم الأعضاء · في كل زيارة</string>
+    <string name="store_discount_body">يُطبَّق تلقائيًا عند مسح رمز العضو.</string>
+    <string name="store_empty_badge">غير مُعدّ</string>
+    <string name="store_empty_title">أعِدّ متجرك.</string>
+    <string name="store_empty_body">أضف عنوانك وساعات العمل وخصم الأعضاء ليتمكن الأعضاء من إيجادك.</string>
+</resources>

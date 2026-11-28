@@ -1,0 +1,29 @@
+<resources>
+    <string name="splash_tagline">Not a coupon app.\nA membership that pays you back.</string>
+    <string name="splash_footer">One membership · everywhere</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="intro_1_kicker">01 / 03 · Save local</string>
+    <string name="intro_1_title">Save at places\nyou already love.</string>
+    <string name="intro_1_body">One membership unlocks member prices at restaurants, markets, salons and shops near you.</string>
+    <string name="intro_1_stat_places">1,200+ places</string>
+    <string name="intro_1_stat_categories">8 categories</string>
+    <string name="intro_1_card_food">Food &amp; Cafes</string>
+    <string name="intro_1_card_markets">Markets &amp; Groceries</string>
+    <string name="intro_1_card_beauty">Health &amp; Beauty</string>
+    <string name="intro_1_card_places">%1$d places</string>
+    <string name="intro_2_kicker">02 / 03 · Show · Scan · Save</string>
+    <string name="intro_2_title">Show your code.\nSave on the spot.</string>
+    <string name="intro_2_body">Open Scan Me at the counter. The cashier scans your live code and your member price is applied instantly.</string>
+    <string name="intro_2_stat_counter">At the counter</string>
+    <string name="intro_2_live_code">Live code</string>
+    <string name="intro_2_applied">%1$s applied</string>
+    <string name="intro_3_kicker">03 / 03 · Near you</string>
+    <string name="intro_3_title">See what’s\nclose to you.</string>
+    <string name="intro_3_body">Allow location to see the places, distances and deals around you. You can change this any time in Settings.</string>
+    <string name="intro_3_stat_near">Near you</string>
+    <string name="intro_3_stat_location">Location</string>
+    <string name="intro_3_distance_m">%1$d m</string>
+    <string name="not_now">Not now</string>
+    <string name="allow_location">Allow location</string>
+</resources>

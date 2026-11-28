@@ -1,0 +1,35 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="error_no_internet">لا يوجد اتصال بالإنترنت. تحقّق من اتصالك وحاول مرة أخرى.</string>
+    <string name="error_request_timeout">استغرق الأمر وقتًا طويلًا. يرجى المحاولة مرة أخرى.</string>
+    <string name="error_unauthorized">يرجى تسجيل الدخول مرة أخرى.</string>
+    <string name="error_too_many_requests">محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.</string>
+    <string name="error_server">حدث خطأ من جهتنا. يرجى المحاولة بعد قليل.</string>
+    <string name="error_disk_full">مساحة التخزين في هاتفك ممتلئة.</string>
+    <string name="error_unknown">حدث خطأ ما. يرجى المحاولة مرة أخرى.</string>
+    <string name="tab_home">الرئيسية</string>
+    <string name="tab_search">البحث</string>
+    <string name="tab_wallet">المحفظة</string>
+    <string name="tab_profile">الملف الشخصي</string>
+    <string name="tab_scan_me">امسح رمزي</string>
+    <string name="tab_services">الخدمات</string>
+    <string name="tab_reports">التقارير</string>
+    <string name="tab_store">المتجر</string>
+    <string name="tab_scan_member">مسح عضو</string>
+    <string name="coming_soon">قريبًا.</string>
+    <string name="notifications">الإشعارات</string>
+    <string name="switch_to_business">التبديل إلى حساب الأعمال</string>
+    <string name="switch_to_personal">التبديل إلى الحساب الشخصي</string>
+    <string name="mode_personal">شخصي</string>
+    <string name="mode_business">أعمال</string>
+    <string name="back">رجوع</string>
+    <string name="close">إغلاق</string>
+    <string name="loading">جارٍ التحميل</string>
+    <string name="try_again">حاول مرة أخرى</string>
+    <string name="state_error_badge">غير متصل</string>
+    <string name="state_error_title">تعذّر تحميل هذا.</string>
+    <string name="refresh_failed">تعذّر التحديث. نعرض ما لدينا.</string>
+    <string name="price_iqd">%1$s د.ع</string>
+    <string name="distance_km">%1$s كم</string>
+    <string name="discount_label">-%1$d%</string>
+</resources>

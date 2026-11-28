@@ -1,0 +1,9 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="scan_member_title">سکانی ئەندام</string>
+    <string name="scan_member_camera_hint">کامێراکە بەرەو کۆدی زیندووی ئەندامەکە بگرە. سکانی کامێرا بەم زووانە دێت.</string>
+    <string name="scan_member_recent">سکانکراوەکانی ئەمڕۆ.</string>
+    <string name="scan_member_empty_badge">سکان نییە</string>
+    <string name="scan_member_empty_title">ئەمڕۆ هێشتا سکان نەکراوە.</string>
+    <string name="scan_member_empty_body">ئەو ئەندامانەی ئەمڕۆ سکانیان دەکەیت لێرە دەردەکەون، لەگەڵ ئەوەی پاشەکەوتیان کردووە.</string>
+</resources>

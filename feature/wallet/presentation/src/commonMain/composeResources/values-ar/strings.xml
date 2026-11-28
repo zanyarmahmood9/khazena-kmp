@@ -1,0 +1,15 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="wallet_title">المحفظة</string>
+    <string name="wallet_badge">PRO</string>
+    <string name="wallet_active">نشط</string>
+    <string name="wallet_member">العضو</string>
+    <string name="wallet_plan">الخطة</string>
+    <string name="wallet_valid_until">صالح حتى</string>
+    <string name="wallet_total_saved">وفّرت حتى الآن</string>
+    <string name="wallet_visits">زيارات العضوية</string>
+    <string name="wallet_recent">آخر التوفيرات.</string>
+    <string name="wallet_empty_badge">لا توفير بعد</string>
+    <string name="wallet_empty_title">ستظهر توفيراتك هنا.</string>
+    <string name="wallet_empty_body">امسح رمزك في أي مكان مشترك في خزينة وسيظهر ما وفّرته هنا.</string>
+</resources>

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_language">App language</string>
+    <string name="language_sheet_subtitle">Choose how Khazena speaks to you</string>
+    <string name="language_ckb_description">Kurdish · Sorani</string>
+    <string name="language_ar_description">Arabic</string>
+    <string name="language_en_description">English</string>
+    <string name="language_direction_note">Kurdish and Arabic switch the whole app to right-to-left. Store names and menus show in the language you pick when the merchant provides it.</string>
+    <string name="apply">Apply</string>
+    <string name="component_gallery">Component gallery (debug)</string>
+    <string name="demo_data">Demo data (debug)</string>
+    <string name="profile_signed_out_badge">Signed out</string>
+    <string name="profile_signed_out_title">Sign in to see your profile.</string>
+    <string name="profile_signed_out_body">Your membership, saved places and Scan Me code live here once you sign in.</string>
+    <string name="profile_signed_out_action">Sign in</string>
+</resources>

@@ -1,0 +1,8 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="services_title">الخدمات</string>
+    <string name="services_subtitle">ما يراه الأعضاء في صفحتك، مع سعر العضو.</string>
+    <string name="services_empty_badge">لا قائمة بعد</string>
+    <string name="services_empty_title">لا توجد قائمة خدمات بعد.</string>
+    <string name="services_empty_body">أضف ما تقدّمه وسيرى الأعضاء سعر العضو لكل عنصر.</string>
+</resources>

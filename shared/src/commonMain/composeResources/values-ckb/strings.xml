@@ -1,0 +1,10 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="account_kicker">هەژمار پێویستە</string>
+    <string name="account_title">بۆ بەردەوامبوون هەژمارێک دروست بکە.</string>
+    <string name="account_body">بچۆ ژوورەوە بۆ پاشەکەوتکردنی شوێنە دڵخوازەکانت و وەرگرتنی کۆدی «سکانم بکە». تەنها چەند چرکەیەک دەخایەنێت.</string>
+    <string name="sign_in_apple">چوونەژوورەوە بە Apple</string>
+    <string name="sign_in_google">بەردەوامبوون بە Google</string>
+    <string name="account_terms">بە بەردەوامبوون ڕازی دەبیت بە مەرجەکانی خزمەتگوزاری و سیاسەتی تایبەتمەندی.</string>
+    <string name="sign_in">چوونەژوورەوە</string>
+</resources>

@@ -1,0 +1,10 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="account_kicker">الحساب مطلوب</string>
+    <string name="account_title">أنشئ حسابًا للمتابعة.</string>
+    <string name="account_body">سجّل الدخول لحفظ أماكنك المفضلة والحصول على رمز «امسح رمزي». يستغرق الأمر ثوانٍ فقط.</string>
+    <string name="sign_in_apple">تسجيل الدخول باستخدام Apple</string>
+    <string name="sign_in_google">المتابعة باستخدام Google</string>
+    <string name="account_terms">بالمتابعة، فإنك توافق على شروط الخدمة وسياسة الخصوصية.</string>
+    <string name="sign_in">تسجيل الدخول</string>
+</resources>

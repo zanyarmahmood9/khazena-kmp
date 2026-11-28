@@ -1,0 +1,9 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="scan_member_title">مسح عضو</string>
+    <string name="scan_member_camera_hint">وجّه الكاميرا نحو الرمز المباشر للعضو. المسح بالكاميرا قريبًا.</string>
+    <string name="scan_member_recent">تم مسحهم اليوم.</string>
+    <string name="scan_member_empty_badge">لا مسح</string>
+    <string name="scan_member_empty_title">لا عمليات مسح اليوم بعد.</string>
+    <string name="scan_member_empty_body">يظهر هنا الأعضاء الذين تمسحهم اليوم مع ما وفّروه.</string>
+</resources>

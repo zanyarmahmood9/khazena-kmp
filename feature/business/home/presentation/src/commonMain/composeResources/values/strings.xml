@@ -1,0 +1,11 @@
+<resources>
+    <string name="business_home_greeting">Ready to scan?</string>
+    <string name="business_home_scans_today">Scans today</string>
+    <string name="business_home_new_members">New members this week</string>
+    <string name="business_home_savings_given">Saved by your members this week</string>
+    <string name="business_home_recent">Recent scans.</string>
+    <string name="business_home_empty_badge">No scans yet</string>
+    <string name="business_home_empty_title">No visits today yet.</string>
+    <string name="business_home_empty_body">When a member shows their code, scan it. Today’s visits show up here.</string>
+    <string name="business_home_empty_action">Scan member</string>
+</resources>

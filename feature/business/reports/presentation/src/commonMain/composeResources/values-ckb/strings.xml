@@ -1,0 +1,22 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="reports_title">ڕاپۆرتەکان</string>
+    <string name="reports_subtitle">ئەم هەفتەیە، لە شەممەوە بۆ هەینی.</string>
+    <string name="reports_visits">سەردانی ئەندامان</string>
+    <string name="reports_new_members">ئەندامی نوێ</string>
+    <string name="reports_savings">پاشەکەوتی ئەندامان</string>
+    <string name="reports_returning">گەڕانەوە</string>
+    <string name="reports_per_day">سەردان بۆ هەر ڕۆژێک.</string>
+    <string name="reports_empty_badge">داتا نییە</string>
+    <string name="reports_empty_title">ئەم هەفتەیە هێشتا سەردان نییە.</string>
+    <string name="reports_empty_body">ڕاپۆرتەکانت پڕ دەبنەوە کاتێک ئەندامان سەردان دەکەن و کۆدەکانیان سکان دەکەیت.</string>
+    <string-array name="reports_days">
+        <item>ش</item>
+        <item>ی</item>
+        <item>د</item>
+        <item>س</item>
+        <item>چ</item>
+        <item>پ</item>
+        <item>هـ</item>
+    </string-array>
+</resources>

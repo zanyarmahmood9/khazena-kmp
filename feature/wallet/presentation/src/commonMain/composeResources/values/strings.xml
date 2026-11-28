@@ -1,0 +1,14 @@
+<resources>
+    <string name="wallet_title">Wallet</string>
+    <string name="wallet_badge">PRO</string>
+    <string name="wallet_active">Active</string>
+    <string name="wallet_member">Member</string>
+    <string name="wallet_plan">Plan</string>
+    <string name="wallet_valid_until">Valid until</string>
+    <string name="wallet_total_saved">Saved so far</string>
+    <string name="wallet_visits">Member visits</string>
+    <string name="wallet_recent">Recent savings.</string>
+    <string name="wallet_empty_badge">No savings yet</string>
+    <string name="wallet_empty_title">Your savings show up here.</string>
+    <string name="wallet_empty_body">Scan your code at any Khazena place and what you save lands here.</string>
+</resources>

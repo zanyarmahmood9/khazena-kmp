@@ -1,0 +1,21 @@
+<resources>
+    <string name="reports_title">Reports</string>
+    <string name="reports_subtitle">This week, Saturday to Friday.</string>
+    <string name="reports_visits">Member visits</string>
+    <string name="reports_new_members">New members</string>
+    <string name="reports_savings">Saved by members</string>
+    <string name="reports_returning">Came back</string>
+    <string name="reports_per_day">Visits per day.</string>
+    <string name="reports_empty_badge">No data</string>
+    <string name="reports_empty_title">No visits this week yet.</string>
+    <string name="reports_empty_body">Your reports fill in as members visit and you scan their codes.</string>
+    <string-array name="reports_days">
+        <item>Sa</item>
+        <item>Su</item>
+        <item>Mo</item>
+        <item>Tu</item>
+        <item>We</item>
+        <item>Th</item>
+        <item>Fr</item>
+    </string-array>
+</resources>

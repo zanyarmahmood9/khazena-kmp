@@ -1,0 +1,12 @@
+<resources>
+    <string name="search_placeholder">Search restaurants, salons, services…</string>
+    <string name="search_clear">Clear search</string>
+    <string name="search_popular">Popular near you.</string>
+    <string name="search_results">Results.</string>
+    <string name="search_empty_badge">No match</string>
+    <string name="search_empty_title">No results for “%1$s”.</string>
+    <string name="search_empty_body">We couldn’t find a place or service with that name. Check the spelling or try another word.</string>
+    <string name="search_empty_action">Clear search</string>
+    <string name="search_nothing_title">Nothing to show yet.</string>
+    <string name="search_nothing_body">Places will show up here as they join Khazena. Pull down to check again.</string>
+</resources>

@@ -1,0 +1,9 @@
+<resources>
+    <string name="account_kicker">Account needed</string>
+    <string name="account_title">Create an account to continue.</string>
+    <string name="account_body">Sign in to save your favourite places and get your Scan Me code. It takes a few seconds.</string>
+    <string name="sign_in_apple">Sign in with Apple</string>
+    <string name="sign_in_google">Continue with Google</string>
+    <string name="account_terms">By continuing you agree to the Terms of Service and Privacy Policy.</string>
+    <string name="sign_in">Sign in</string>
+</resources>

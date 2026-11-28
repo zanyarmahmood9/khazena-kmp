@@ -1,0 +1,30 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="splash_tagline">ليس تطبيق كوبونات.\nعضوية تردّ لك من مالك.</string>
+    <string name="splash_footer">عضوية واحدة · في كل مكان</string>
+    <string name="skip">تخطٍّ</string>
+    <string name="next">التالي</string>
+    <string name="intro_1_kicker">01 / 03 · وفّر محليًا</string>
+    <string name="intro_1_title">وفّر في الأماكن\nالتي تحبها.</string>
+    <string name="intro_1_body">عضوية واحدة تفتح لك أسعار الأعضاء في المطاعم والأسواق والصالونات والمحلات القريبة منك.</string>
+    <string name="intro_1_stat_places">+١٬٢٠٠ مكان</string>
+    <string name="intro_1_stat_categories">٨ فئات</string>
+    <string name="intro_1_card_food">مطاعم ومقاهٍ</string>
+    <string name="intro_1_card_markets">أسواق وبقالة</string>
+    <string name="intro_1_card_beauty">صحة وجمال</string>
+    <string name="intro_1_card_places">%1$d مكانًا</string>
+    <string name="intro_2_kicker">02 / 03 · اعرض · امسح · وفّر</string>
+    <string name="intro_2_title">اعرض رمزك.\nووفّر فورًا.</string>
+    <string name="intro_2_body">افتح «امسح رمزي» عند الصندوق. يمسح الكاشير رمزك المباشر ويُطبَّق سعر العضو فورًا.</string>
+    <string name="intro_2_stat_counter">عند الصندوق</string>
+    <string name="intro_2_live_code">رمز مباشر</string>
+    <string name="intro_2_applied">%1$s مُطبَّق</string>
+    <string name="intro_3_kicker">03 / 03 · بالقرب منك</string>
+    <string name="intro_3_title">اكتشف ما هو\nقريب منك.</string>
+    <string name="intro_3_body">اسمح بالوصول إلى الموقع لرؤية الأماكن والمسافات والعروض من حولك. يمكنك تغيير ذلك في أي وقت من الإعدادات.</string>
+    <string name="intro_3_stat_near">بالقرب منك</string>
+    <string name="intro_3_stat_location">الموقع</string>
+    <string name="intro_3_distance_m">%1$d م</string>
+    <string name="not_now">ليس الآن</string>
+    <string name="allow_location">السماح بالموقع</string>
+</resources>

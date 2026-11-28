@@ -1,0 +1,8 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="services_title">خزمەتگوزارییەکان</string>
+    <string name="services_subtitle">ئەوەی ئەندامان لە پەڕەکەت دەیبینن، لەگەڵ نرخی ئەندامێتی.</string>
+    <string name="services_empty_badge">هێشتا لیست نییە</string>
+    <string name="services_empty_title">هێشتا لیستی خزمەتگوزاری نییە.</string>
+    <string name="services_empty_body">ئەوەی پێشکەشی دەکەیت زیاد بکە و ئەندامان نرخی ئەندامێتی هەر یەکێکیان دەبینن.</string>
+</resources>

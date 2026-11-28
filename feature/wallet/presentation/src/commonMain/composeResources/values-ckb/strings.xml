@@ -1,0 +1,15 @@
+<!-- DRAFT: needs native review -->
+<resources>
+    <string name="wallet_title">جزدان</string>
+    <string name="wallet_badge">PRO</string>
+    <string name="wallet_active">چالاک</string>
+    <string name="wallet_member">ئەندام</string>
+    <string name="wallet_plan">پلان</string>
+    <string name="wallet_valid_until">بەسەرچوون</string>
+    <string name="wallet_total_saved">تا ئێستا پاشەکەوت کراوە</string>
+    <string name="wallet_visits">سەردانی ئەندامێتی</string>
+    <string name="wallet_recent">دوایین پاشەکەوتەکان.</string>
+    <string name="wallet_empty_badge">هێشتا هیچ نییە</string>
+    <string name="wallet_empty_title">پاشەکەوتەکانت لێرە دەردەکەون.</string>
+    <string name="wallet_empty_body">کۆدەکەت لە هەر شوێنێکی خەزێنە سکان بکە و ئەوەی پاشەکەوتی دەکەیت لێرە دەبینیت.</string>
+</resources>
