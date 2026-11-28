@@ -78,6 +78,7 @@ fun HomeRoot(
     onScanMe: () -> Unit,
     onOpenCategories: () -> Unit,
     onOpenCategory: (String) -> Unit,
+    onOpenStore: (String) -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -101,6 +102,7 @@ fun HomeRoot(
                 HomeAction.OnScanToSaveClick -> onScanMe()
                 HomeAction.OnSeeAllCategoriesClick -> onOpenCategories()
                 is HomeAction.OnCategoryClick -> onOpenCategory(action.id)
+                is HomeAction.OnStoreClick -> onOpenStore(action.id)
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -156,7 +158,7 @@ private fun HomeContent(feed: HomeFeed, locationOn: Boolean, onAction: (HomeActi
 
         feed.featuredOffer?.let { offer ->
             Spacer(Modifier.height(32.dp))
-            FeaturedOfferCard(offer, Modifier.revealOnAppear(2))
+            FeaturedOfferCard(offer, { onAction(HomeAction.OnStoreClick(offer.storeId)) }, Modifier.revealOnAppear(2))
         }
 
         if (feed.topDeals.isNotEmpty()) {
@@ -168,7 +170,7 @@ private fun HomeContent(feed: HomeFeed, locationOn: Boolean, onAction: (HomeActi
                 contentPadding = PaddingValues(horizontal = KhazenaSpacing.screenMargin),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                items(feed.topDeals, key = { it.id }) { deal -> TopDealCard(deal) }
+                items(feed.topDeals, key = { it.id }) { deal -> TopDealCard(deal) { onAction(HomeAction.OnStoreClick(deal.id)) } }
             }
         }
 
@@ -182,7 +184,7 @@ private fun HomeContent(feed: HomeFeed, locationOn: Boolean, onAction: (HomeActi
             KhazenaSectionHeader(stringResource(Res.string.home_section_near_you), linkLabel = stringResource(Res.string.home_map))
             Spacer(Modifier.height(HeaderGap))
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                feed.nearby.forEachIndexed { index, place -> NearbyRow(place, Modifier.revealOnAppear(index + 4)) }
+                feed.nearby.forEachIndexed { index, place -> NearbyRow(place, { onAction(HomeAction.OnStoreClick(place.id)) }, Modifier.revealOnAppear(index + 4)) }
             }
         }
 
@@ -252,7 +254,7 @@ private fun CategoryGrid(categories: List<HomeCategory>, onAction: (HomeAction) 
 }
 
 @Composable
-private fun TopDealCard(deal: TopDeal) {
+private fun TopDealCard(deal: TopDeal, onClick: () -> Unit) {
     val rating = stringResource(Res.string.home_rating, deal.rating.toString())
     val area = deal.area
     KhazenaDealCard(
@@ -262,16 +264,18 @@ private fun TopDealCard(deal: TopDeal) {
         discountLabel = stringResource(Res.string.home_deal_off, deal.discountPercent),
         actionLabel = stringResource(Res.string.home_redeem),
         ratingLabel = if (area != null) rating else null,
+        onClick = onClick,
     )
 }
 
 @Composable
-private fun NearbyRow(place: NearbyPlace, modifier: Modifier = Modifier) {
+private fun NearbyRow(place: NearbyPlace, onClick: () -> Unit, modifier: Modifier = Modifier) {
     KhazenaPlaceRow(
         photo = painterResource(homeImage(place.imageKey)),
         title = place.name.localized(),
         meta = "${place.kind.localized()} · ${formatDistance(place.distanceKm)}",
         discountLabel = stringResource(Res.string.home_save_percent, place.discountPercent),
+        onClick = onClick,
         modifier = modifier,
     )
 }

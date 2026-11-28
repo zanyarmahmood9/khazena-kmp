@@ -1,6 +1,7 @@
 package com.khazena.khazena.feature.home.presentation
 
 import com.khazena.khazena.core.domain.LocalizedText
+import com.khazena.khazena.core.presentation.demoPhoto
 import com.khazena.khazena.feature.home.domain.FeaturedOffer
 import com.khazena.khazena.feature.home.domain.HomeCategory
 import com.khazena.khazena.feature.home.domain.HomeFeed
@@ -16,17 +17,9 @@ import khazena.feature.home.presentation.generated.resources.home_cat_fashion
 import khazena.feature.home.presentation.generated.resources.home_cat_food
 import khazena.feature.home.presentation.generated.resources.home_cat_markets
 import khazena.feature.home.presentation.generated.resources.home_cat_services
-import khazena.feature.home.presentation.generated.resources.home_photo_azmar
-import khazena.feature.home.presentation.generated.resources.home_photo_bazaar
-import khazena.feature.home.presentation.generated.resources.home_photo_goizha
-import khazena.feature.home.presentation.generated.resources.home_photo_kebab
-import khazena.feature.home.presentation.generated.resources.home_photo_lavender
-import khazena.feature.home.presentation.generated.resources.home_photo_naz
-import khazena.feature.home.presentation.generated.resources.home_photo_shifa
-import khazena.feature.home.presentation.generated.resources.home_photo_shirin
 import org.jetbrains.compose.resources.DrawableResource
 
-// shortcut: demo images are bundled and looked up by key; switch to Coil URLs when the feed comes from the API.
+// shortcut: category art is bundled and looked up by key (place photos come from core's demoPhoto); switch to Coil URLs when the feed comes from the API.
 private val homeImages = mapOf(
     "cat_food" to Res.drawable.home_cat_food,
     "cat_markets" to Res.drawable.home_cat_markets,
@@ -36,17 +29,9 @@ private val homeImages = mapOf(
     "cat_electronics" to Res.drawable.home_cat_electronics,
     "cat_services" to Res.drawable.home_cat_services,
     "cat_entertainment" to Res.drawable.home_cat_entertainment,
-    "photo_azmar" to Res.drawable.home_photo_azmar,
-    "photo_lavender" to Res.drawable.home_photo_lavender,
-    "photo_goizha" to Res.drawable.home_photo_goizha,
-    "photo_naz" to Res.drawable.home_photo_naz,
-    "photo_shirin" to Res.drawable.home_photo_shirin,
-    "photo_bazaar" to Res.drawable.home_photo_bazaar,
-    "photo_shifa" to Res.drawable.home_photo_shifa,
-    "photo_kebab" to Res.drawable.home_photo_kebab,
 )
 
-internal fun homeImage(key: String): DrawableResource = homeImages[key] ?: Res.drawable.home_photo_azmar
+internal fun homeImage(key: String): DrawableResource = homeImages[key] ?: demoPhoto(key) ?: Res.drawable.home_cat_food
 
 internal val previewFeed = HomeFeed(
     member = MemberSummary("Bandy", "BK", LocalizedText("پریمیەم", "Premium", "بريميوم"), LocalizedText("تشرینی ٢", "Nov", "نوفمبر"), 48_500, 12, 5),
@@ -70,6 +55,7 @@ internal val previewFeed = HomeFeed(
         30,
         "photo_azmar",
         sponsored = true,
+        storeId = "azmar",
     ),
     topDeals = listOf(
         TopDeal("azmar", LocalizedText("ئازمەڕ گریل", "Azmar Grill", "أزمر غريل"), LocalizedText("گریل", "Grill", "مشاوي"), 4.8, 30, "photo_azmar"),

@@ -63,6 +63,7 @@ private val DemoFeed = HomeFeed(
         discountPercent = 30,
         imageKey = "photo_azmar",
         sponsored = true,
+        storeId = "azmar",
     ),
     topDeals = listOf(
         TopDeal("azmar", LocalizedText("ئازمەڕ گریل", "Azmar Grill", "أزمر غريل"), LocalizedText("گریل", "Grill", "مشاوي"), 4.8, 30, "photo_azmar"),

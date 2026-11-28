@@ -51,7 +51,6 @@ import com.khazena.khazena.core.presentation.localized
 import com.khazena.khazena.feature.home.domain.FeaturedOffer
 import com.khazena.khazena.feature.home.domain.HomeFeed
 import com.khazena.khazena.feature.home.domain.MemberSummary
-import khazena.core.presentation.generated.resources.Res as CoreRes
 import khazena.core.presentation.generated.resources.switch_to_business
 import khazena.feature.home.presentation.generated.resources.Res
 import khazena.feature.home.presentation.generated.resources.home_change_city
@@ -75,6 +74,7 @@ import khazena.feature.home.presentation.generated.resources.home_sponsored
 import khazena.feature.home.presentation.generated.resources.home_view_offer
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import khazena.core.presentation.generated.resources.Res as CoreRes
 
 // Positions below are Figma's (02 Home · Customer, 390pt frame), measured from each block's top-start corner.
 // Texts whose Figma line height is "normal" use the font's own metrics (TextUnit.Unspecified), as Figma does.
@@ -264,7 +264,7 @@ internal fun MembershipCard(member: MemberSummary, onAction: (HomeAction) -> Uni
 private val MembershipButtonGap = 8.dp
 
 @Composable
-internal fun FeaturedOfferCard(offer: FeaturedOffer, modifier: Modifier = Modifier) {
+internal fun FeaturedOfferCard(offer: FeaturedOffer, onViewOffer: () -> Unit, modifier: Modifier = Modifier) {
     val colors = KhazenaTheme.colors
     val type = KhazenaTheme.typography
     val kicker = type.monoKicker.copy(lineHeight = TextUnit.Unspecified)
@@ -317,7 +317,7 @@ internal fun FeaturedOfferCard(offer: FeaturedOffer, modifier: Modifier = Modifi
         }
         KhazenaButton(
             stringResource(Res.string.home_view_offer),
-            {},
+            onViewOffer,
             Modifier.padding(start = 16.dp, top = 172.dp),
             size = ButtonSize.Block,
         )

@@ -45,6 +45,7 @@ data class FeaturedOffer(
     val discountPercent: Int,
     val imageKey: String,
     val sponsored: Boolean,
+    val storeId: String,
 )
 
 /** [area] is shown instead of the rating in the meta line; the rating then moves to a chip on the photo. */

@@ -54,6 +54,7 @@ internal fun CustomerShell(
     onOpenGallery: (() -> Unit)?,
     onOpenCategories: () -> Unit,
     onOpenCategory: (String) -> Unit,
+    onOpenStore: (String) -> Unit,
 ) = TabShell(
     tabs = customerTabs,
     savedStateHandle = savedStateHandle,
@@ -68,6 +69,7 @@ internal fun CustomerShell(
         onScanMe = onScanMe,
         onOpenCategories = onOpenCategories,
         onOpenCategory = onOpenCategory,
+        onOpenStore = onOpenStore,
     )
     searchGraph()
     walletGraph()

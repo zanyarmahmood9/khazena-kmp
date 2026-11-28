@@ -17,31 +17,46 @@ import com.khazena.khazena.core.designsystem.KhazenaTheme
 import khazena.core.designsystem.generated.resources.Res
 import khazena.core.designsystem.generated.resources.ic_arrow_left
 import khazena.core.designsystem.generated.resources.ic_arrow_left_regular
-import khazena.core.designsystem.generated.resources.ic_caret_circle_right
-import khazena.core.designsystem.generated.resources.ic_caret_down
-import khazena.core.designsystem.generated.resources.ic_magnifying_glass_regular
-import khazena.core.designsystem.generated.resources.ic_star_small
 import khazena.core.designsystem.generated.resources.ic_arrow_right
+import khazena.core.designsystem.generated.resources.ic_arrow_right_line
 import khazena.core.designsystem.generated.resources.ic_bell
 import khazena.core.designsystem.generated.resources.ic_bookmark
+import khazena.core.designsystem.generated.resources.ic_caret_circle_right
+import khazena.core.designsystem.generated.resources.ic_caret_down
 import khazena.core.designsystem.generated.resources.ic_caret_down_small
+import khazena.core.designsystem.generated.resources.ic_caret_right_line
 import khazena.core.designsystem.generated.resources.ic_chart_bar
 import khazena.core.designsystem.generated.resources.ic_check
+import khazena.core.designsystem.generated.resources.ic_check_line
 import khazena.core.designsystem.generated.resources.ic_clock
+import khazena.core.designsystem.generated.resources.ic_copy
 import khazena.core.designsystem.generated.resources.ic_crosshair
 import khazena.core.designsystem.generated.resources.ic_export
+import khazena.core.designsystem.generated.resources.ic_facebook
+import khazena.core.designsystem.generated.resources.ic_fire
 import khazena.core.designsystem.generated.resources.ic_heart_fill
 import khazena.core.designsystem.generated.resources.ic_house
 import khazena.core.designsystem.generated.resources.ic_house_fill
+import khazena.core.designsystem.generated.resources.ic_instagram
 import khazena.core.designsystem.generated.resources.ic_list
+import khazena.core.designsystem.generated.resources.ic_lock
 import khazena.core.designsystem.generated.resources.ic_magnifying_glass
 import khazena.core.designsystem.generated.resources.ic_magnifying_glass_fill
+import khazena.core.designsystem.generated.resources.ic_magnifying_glass_regular
 import khazena.core.designsystem.generated.resources.ic_map_pin
+import khazena.core.designsystem.generated.resources.ic_map_pin_line
+import khazena.core.designsystem.generated.resources.ic_navigation
+import khazena.core.designsystem.generated.resources.ic_phone
 import khazena.core.designsystem.generated.resources.ic_qr_code
+import khazena.core.designsystem.generated.resources.ic_qr_code_line
 import khazena.core.designsystem.generated.resources.ic_scan
+import khazena.core.designsystem.generated.resources.ic_shield_check
 import khazena.core.designsystem.generated.resources.ic_shopping_bag
 import khazena.core.designsystem.generated.resources.ic_star_fill
+import khazena.core.designsystem.generated.resources.ic_star_small
 import khazena.core.designsystem.generated.resources.ic_storefront
+import khazena.core.designsystem.generated.resources.ic_tag
+import khazena.core.designsystem.generated.resources.ic_tiktok
 import khazena.core.designsystem.generated.resources.ic_user
 import khazena.core.designsystem.generated.resources.ic_user_fill
 import khazena.core.designsystem.generated.resources.ic_wallet
@@ -71,6 +86,22 @@ object KhazenaIcons {
     val CaretDown = Res.drawable.ic_caret_down
     val MagnifyingGlassRegular = Res.drawable.ic_magnifying_glass_regular
     val StarSmall = Res.drawable.ic_star_small
+    // Outline set used on the store screens (02c–02e).
+    val QrCodeLine = Res.drawable.ic_qr_code_line
+    val Fire = Res.drawable.ic_fire
+    val ShieldCheck = Res.drawable.ic_shield_check
+    val Lock = Res.drawable.ic_lock
+    val CheckLine = Res.drawable.ic_check_line
+    val Tag = Res.drawable.ic_tag
+    val MapPinLine = Res.drawable.ic_map_pin_line
+    val Navigation = Res.drawable.ic_navigation
+    val Copy = Res.drawable.ic_copy
+    val Phone = Res.drawable.ic_phone
+    val CaretRightLine = Res.drawable.ic_caret_right_line
+    val Instagram = Res.drawable.ic_instagram
+    val Facebook = Res.drawable.ic_facebook
+    val TikTok = Res.drawable.ic_tiktok
+    val ArrowRightLine = Res.drawable.ic_arrow_right_line
     val ArrowRight = Res.drawable.ic_arrow_right
     val Export = Res.drawable.ic_export
     val Bookmark = Res.drawable.ic_bookmark

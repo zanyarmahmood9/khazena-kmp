@@ -37,7 +37,9 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -142,11 +144,13 @@ fun KhazenaSegmentedControl(
                     },
                 contentAlignment = Alignment.Center,
             ) {
+                // Figma: 13pt, semibold on the selected segment, medium on the others.
                 Text(
                     label,
-                    style = KhazenaTheme.typography.labelMSemiBold,
+                    style = KhazenaTheme.typography.labelSMedium.copy(fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium),
                     color = if (selected) colors.actionOnSelected else colors.textSecondary,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }

@@ -9,6 +9,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,6 +35,8 @@ import com.khazena.khazena.feature.onboarding.presentation.OnboardingGraphRoute
 import com.khazena.khazena.feature.onboarding.presentation.onboardingGraph
 import com.khazena.khazena.feature.scanme.presentation.ScanMeRoute
 import com.khazena.khazena.feature.scanme.presentation.scanMeGraph
+import com.khazena.khazena.feature.store.presentation.StoreDetailRoute
+import com.khazena.khazena.feature.store.presentation.storeDetailGraph
 import khazena.core.presentation.generated.resources.back
 import khazena.core.presentation.generated.resources.coming_soon
 import khazena.shared.generated.resources.Res
@@ -89,8 +93,8 @@ internal fun AppNavHost(
             onSignIn = { navController.navigateOnce(SignInRoute) },
         )
         composable<CustomerRoute>(
-            exitTransition = { if (targetState.destination.isCategoryScreen()) pushExit() else null },
-            popEnterTransition = { if (initialState.destination.isCategoryScreen()) pushPopEnter() else null },
+            exitTransition = { if (targetState.destination.isPushedOverTabs()) pushExit() else null },
+            popEnterTransition = { if (initialState.destination.isPushedOverTabs()) pushPopEnter() else null },
         ) { entry ->
             CustomerShell(
                 savedStateHandle = entry.savedStateHandle,
@@ -109,6 +113,7 @@ internal fun AppNavHost(
                 },
                 onOpenCategories = { navController.navigateOnce(CategoriesRoute) },
                 onOpenCategory = { navController.navigateOnce(CategoryRoute(it)) },
+                onOpenStore = { navController.navigateOnce(StoreDetailRoute(it)) },
             )
         }
         composable<BusinessRoute> { entry ->
@@ -125,6 +130,11 @@ internal fun AppNavHost(
         categoryGraph(
             onBack = navController::navigateUpOnce,
             onOpenCategory = { navController.navigateOnce(CategoryRoute(it)) },
+            onOpenStore = { navController.navigateOnce(StoreDetailRoute(it)) },
+        )
+        storeDetailGraph(
+            onBack = navController::navigateUpOnce,
+            onScanMe = { requireAccount { navController.navigateOnce(ScanMeRoute) } },
         )
         scanMemberGraph(onBack = navController::navigateUpOnce)
         composable<SignInRoute> { SignInStub(onBack = navController::navigateUpOnce) }
@@ -154,3 +164,6 @@ private fun SignInStub(onBack: () -> Unit) = Box {
         Modifier.statusBarsPadding().padding(KhazenaSpacing.screenMargin),
     )
 }
+
+// Screens pushed over the customer tabs slide in iOS-style, and Home drifts underneath them.
+private fun NavDestination.isPushedOverTabs(): Boolean = isCategoryScreen() || hasRoute<StoreDetailRoute>()

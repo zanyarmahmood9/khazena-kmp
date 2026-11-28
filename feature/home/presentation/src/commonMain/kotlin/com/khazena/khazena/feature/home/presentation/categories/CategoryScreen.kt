@@ -146,7 +146,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import khazena.core.presentation.generated.resources.Res as CoreRes
 
 @Composable
-fun CategoryRoot(onBack: () -> Unit, viewModel: CategoryViewModel = koinViewModel()) {
+fun CategoryRoot(onBack: () -> Unit, onOpenStore: (String) -> Unit, viewModel: CategoryViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val toast = rememberMessageToastState()
     ObserveAsEvents(viewModel.events) { event ->
@@ -157,7 +157,7 @@ fun CategoryRoot(onBack: () -> Unit, viewModel: CategoryViewModel = koinViewMode
     CategoryScreen(state, toast) { action ->
         when (action) {
             CategoryAction.OnBackClick -> onBack()
-            // shortcut: the store screen isn't built yet, so a place tap does nothing.
+            is CategoryAction.OnPlaceClick -> onOpenStore(action.id)
             else -> Unit
         }
         viewModel.onAction(action)

@@ -36,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -89,23 +90,38 @@ fun KhazenaMenuItem(
     modifier: Modifier = Modifier,
     originalPrice: String? = null,
     savingLabel: String? = null,
+    onClick: (() -> Unit)? = null,
 ) {
     val colors = KhazenaTheme.colors
-    CardRow(photo, modifier) {
+    val type = KhazenaTheme.typography
+    CardRow(photo, if (onClick != null) modifier.clip(KhazenaRadius.card).clickable(role = Role.Button, onClick = onClick) else modifier) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(title, style = KhazenaTheme.typography.labelLBold, color = colors.textPrimary)
-            Text(description, style = KhazenaTheme.typography.bodyS, color = colors.textSecondary)
+            Text(title, style = type.labelLBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(description, style = type.bodyS.copy(lineHeight = 16.sp), color = colors.textSecondary)
+            // Figma 02c: member price, the struck-through original, then the saving pinned to the end.
             Row(
-                Modifier.fillMaxWidth().padding(top = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                Modifier.fillMaxWidth().padding(top = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(price, style = KhazenaTheme.typography.labelPrice, color = colors.textPrimary)
+                Text(price, style = type.labelPrice, color = colors.textPrimary, maxLines = 1)
                 if (originalPrice != null) {
-                    Text(originalPrice, style = KhazenaTheme.typography.labelXSMedium, color = colors.textPlaceholder)
+                    Text(
+                        originalPrice,
+                        style = type.bodyS.copy(fontSize = 12.sp, textDecoration = TextDecoration.LineThrough),
+                        color = colors.textPlaceholder,
+                        maxLines = 1,
+                    )
                 }
                 Spacer(Modifier.weight(1f))
-                if (savingLabel != null) KhazenaTag(savingLabel)
+                if (savingLabel != null) {
+                    Box(
+                        Modifier.height(24.dp).clip(KhazenaRadius.pill).background(colors.tagDiscount).padding(horizontal = 8.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(savingLabel, style = type.monoTagS.copy(letterSpacing = 0.sp), color = colors.textPrimary, maxLines = 1)
+                    }
+                }
             }
         }
     }

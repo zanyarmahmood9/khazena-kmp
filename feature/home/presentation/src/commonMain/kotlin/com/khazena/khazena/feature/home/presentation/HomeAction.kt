@@ -10,4 +10,5 @@ sealed interface HomeAction {
     data object OnTurnOnLocationClick : HomeAction
     data object OnSeeAllCategoriesClick : HomeAction
     data class OnCategoryClick(val id: String) : HomeAction
+    data class OnStoreClick(val id: String) : HomeAction
 }
