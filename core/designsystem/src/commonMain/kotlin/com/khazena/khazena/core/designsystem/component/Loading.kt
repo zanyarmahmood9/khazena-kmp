@@ -25,11 +25,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 
@@ -65,6 +68,26 @@ fun KhazenaSkeleton(modifier: Modifier = Modifier, shape: Shape = KhazenaRadius.
             if (brush != null) Modifier.background(brush) else Modifier.background(KhazenaTheme.colors.surfaceTile),
         ),
     )
+}
+
+// Placeholder lines that take exactly the height the real text will: one line box per entry in [widths],
+// using [style]'s line height (so it follows the user's text size), with a bar the size of the type inside.
+// Content then fades in over the skeleton without anything below it shifting.
+@Composable
+fun KhazenaSkeletonText(style: TextStyle, widths: List<Dp>, modifier: Modifier = Modifier) {
+    val density = LocalDensity.current
+    val lineHeight = with(density) {
+        val line = if (style.lineHeight.isEm) style.fontSize.value * style.lineHeight.value else style.lineHeight.value
+        line.sp.toDp()
+    }
+    val barHeight = with(density) { (style.fontSize.value * 0.8f).sp.toDp() }
+    Column(modifier) {
+        widths.forEach { width ->
+            Box(Modifier.height(lineHeight), contentAlignment = Alignment.CenterStart) {
+                KhazenaSkeleton(Modifier.size(width = width, height = barHeight))
+            }
+        }
+    }
 }
 
 // Same frame as KhazenaPlaceRow (11dp padding, 64dp photo, 14dp gap) so content lands where the skeleton was.

@@ -33,7 +33,7 @@ fun NavGraphBuilder.homeGraph(
 }
 
 // Lives outside the tab shell: the category screens have no tab bar.
-fun NavGraphBuilder.categoryGraph(onBack: () -> Unit, onOpenCategory: (String) -> Unit, onOpenSearch: () -> Unit) {
+fun NavGraphBuilder.categoryGraph(onBack: () -> Unit, onOpenCategory: (String) -> Unit) {
     composable<CategoriesRoute>(
         enterTransition = { pushEnter() },
         exitTransition = { pushExit() },
@@ -45,7 +45,7 @@ fun NavGraphBuilder.categoryGraph(onBack: () -> Unit, onOpenCategory: (String) -
         exitTransition = { pushExit() },
         popEnterTransition = { pushPopEnter() },
         popExitTransition = { pushPopExit() },
-    ) { CategoryRoot(onBack, onOpenSearch) }
+    ) { CategoryRoot(onBack) }
 }
 
 // The screen underneath (Home) drifts with the push so the pair moves like an iOS navigation stack.

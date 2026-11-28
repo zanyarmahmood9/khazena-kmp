@@ -65,4 +65,8 @@
     <string name="category_sort_change">ڕیزکردن بەپێی، %1$s</string>
     <string name="category_rating">%1$s (%2$d)</string>
     <string name="category_no_places">هێشتا هیچ شوێنێک لێرە نییە. هەموو هەفتەیەک شوێنی نوێ زیاد دەکەین.</string>
+    <string name="category_search_hint">بگەڕێ بۆ شوێن لە %1$s…</string>
+    <string name="category_search_cancel">پاشگەزبوونەوە</string>
+    <string name="category_search_clear">سڕینەوەی گەڕان</string>
+    <string name="category_no_match">هیچ شوێنێک لەگەڵ «%1$s» ناگونجێت.</string>
 </resources>

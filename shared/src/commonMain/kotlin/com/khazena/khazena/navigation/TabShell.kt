@@ -32,7 +32,7 @@ internal class ShellTab(
     val selectedIcon: DrawableResource = icon,
 )
 
-internal const val SELECTED_TAB = "selectedTab"
+private const val SELECTED_TAB = "selectedTab"
 
 @Composable
 internal fun TabShell(
@@ -51,7 +51,7 @@ internal fun TabShell(
             restoreState = true
         }
     }
-    // The language switch rebuilds the tree (and a screen above the shell can pick a tab); return to that tab.
+    // The language switch rebuilds the tree; return to the tab the user was on.
     val restoredTab = remember { savedStateHandle.get<Int>(SELECTED_TAB) ?: 0 }
     LaunchedEffect(Unit) { if (restoredTab != 0) selectTab(restoredTab) }
     val entry by tabNavController.currentBackStackEntryAsState()

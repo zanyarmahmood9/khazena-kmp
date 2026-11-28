@@ -55,6 +55,7 @@ fun KhazenaSearchField(
     clearContentDescription: String,
     modifier: Modifier = Modifier,
     onSearch: () -> Unit = {},
+    height: Dp = 52.dp,
 ) {
     val colors = KhazenaTheme.colors
     val interaction = remember { MutableInteractionSource() }
@@ -72,7 +73,7 @@ fun KhazenaSearchField(
         decorationBox = { innerField ->
             Row(
                 modifier = Modifier
-                    .height(52.dp)
+                    .height(height)
                     .clip(SearchFieldShape)
                     .background(colors.surfaceCard)
                     .border(

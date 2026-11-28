@@ -125,10 +125,6 @@ internal fun AppNavHost(
         categoryGraph(
             onBack = navController::navigateUpOnce,
             onOpenCategory = { navController.navigateOnce(CategoryRoute(it)) },
-            onOpenSearch = {
-                navController.getBackStackEntry<CustomerRoute>().savedStateHandle[SELECTED_TAB] = CustomerSearchTab
-                navController.navigateUpOnce()
-            },
         )
         scanMemberGraph(onBack = navController::navigateUpOnce)
         composable<SignInRoute> { SignInStub(onBack = navController::navigateUpOnce) }

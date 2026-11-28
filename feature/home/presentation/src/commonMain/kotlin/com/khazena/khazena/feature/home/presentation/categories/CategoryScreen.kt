@@ -50,11 +50,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
@@ -70,12 +73,16 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import com.khazena.khazena.core.designsystem.KhazenaMotion
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.clearFocusOnTap
 import com.khazena.khazena.core.designsystem.component.IconButtonStyle
 import com.khazena.khazena.core.designsystem.component.KhazenaBottomSheet
 import com.khazena.khazena.core.designsystem.component.KhazenaChip
@@ -83,10 +90,12 @@ import com.khazena.khazena.core.designsystem.component.KhazenaIconButton
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaPlaceRow
 import com.khazena.khazena.core.designsystem.component.KhazenaRadio
+import com.khazena.khazena.core.designsystem.component.KhazenaSearchField
 import com.khazena.khazena.core.designsystem.component.KhazenaSheetTitle
 import com.khazena.khazena.core.designsystem.component.KhazenaShimmer
 import com.khazena.khazena.core.designsystem.component.KhazenaSkeleton
 import com.khazena.khazena.core.designsystem.component.KhazenaSkeletonRow
+import com.khazena.khazena.core.designsystem.component.KhazenaSkeletonText
 import com.khazena.khazena.core.designsystem.component.KhazenaTopBar
 import com.khazena.khazena.core.designsystem.component.multiplySafe
 import com.khazena.khazena.core.designsystem.softReveal
@@ -111,9 +120,13 @@ import khazena.core.presentation.generated.resources.loading
 import khazena.feature.home.presentation.generated.resources.Res
 import khazena.feature.home.presentation.generated.resources.category_all
 import khazena.feature.home.presentation.generated.resources.category_kicker
+import khazena.feature.home.presentation.generated.resources.category_no_match
 import khazena.feature.home.presentation.generated.resources.category_no_places
 import khazena.feature.home.presentation.generated.resources.category_rating
 import khazena.feature.home.presentation.generated.resources.category_search
+import khazena.feature.home.presentation.generated.resources.category_search_cancel
+import khazena.feature.home.presentation.generated.resources.category_search_clear
+import khazena.feature.home.presentation.generated.resources.category_search_hint
 import khazena.feature.home.presentation.generated.resources.category_sort_change
 import khazena.feature.home.presentation.generated.resources.category_sort_discount
 import khazena.feature.home.presentation.generated.resources.category_sort_distance
@@ -133,7 +146,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import khazena.core.presentation.generated.resources.Res as CoreRes
 
 @Composable
-fun CategoryRoot(onBack: () -> Unit, onOpenSearch: () -> Unit, viewModel: CategoryViewModel = koinViewModel()) {
+fun CategoryRoot(onBack: () -> Unit, viewModel: CategoryViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val toast = rememberMessageToastState()
     ObserveAsEvents(viewModel.events) { event ->
@@ -144,7 +157,6 @@ fun CategoryRoot(onBack: () -> Unit, onOpenSearch: () -> Unit, viewModel: Catego
     CategoryScreen(state, toast) { action ->
         when (action) {
             CategoryAction.OnBackClick -> onBack()
-            CategoryAction.OnSearchClick -> onOpenSearch()
             // shortcut: the store screen isn't built yet, so a place tap does nothing.
             else -> Unit
         }
@@ -170,7 +182,18 @@ fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction
     var barBottom by remember { mutableFloatStateOf(0f) }
     var heroTitleBottom by remember { mutableFloatStateOf(Float.MAX_VALUE) }
     val titleUnderBar = heroTitleBottom <= barBottom
-    Box(Modifier.fillMaxSize().background(colors.surfaceBackground)) {
+    // Where the chips start inside the scrolling column, so opening search can lift the places up under the bar.
+    var bodyTop by remember { mutableFloatStateOf(0f) }
+    LaunchedEffect(state.isSearchOpen) {
+        if (state.isSearchOpen) scroll.animateScrollTo((bodyTop - barBottom).toInt().coerceAtLeast(0))
+    }
+    // Back closes the search first, as the Cancel button does.
+    NavigationBackHandler(
+        state = rememberNavigationEventState(NavigationEventInfo.None),
+        isBackEnabled = state.isSearchOpen,
+        onBackCompleted = { onAction(CategoryAction.OnCloseSearch) },
+    )
+    Box(Modifier.fillMaxSize().background(colors.surfaceBackground).clearFocusOnTap()) {
         PullToRefreshBox(
             isRefreshing = state.detail.isRefreshing,
             onRefresh = { onAction(CategoryAction.OnRefresh) },
@@ -189,6 +212,7 @@ fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction
                 // Same soft cross-fade as the hero above, so skeleton and content swap as one page.
                 AnimatedContent(
                     targetState = detail,
+                    modifier = Modifier.onGloballyPositioned { bodyTop = it.positionInParent().y },
                     contentKey = { it != null },
                     transitionSpec = { softReveal() },
                     contentAlignment = Alignment.TopCenter,
@@ -208,25 +232,62 @@ fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction
                 }
             }
         }
-        // White like the hero, so at rest the bar and hero read as one surface.
-        KhazenaTopBar(
-            title = detail?.name?.localized().orEmpty(),
-            backLabel = stringResource(CoreRes.string.back),
-            onBack = { onAction(CategoryAction.OnBackClick) },
+        // White like the hero, so at rest the bar and hero read as one surface. The search icon swaps the bar
+        // for a field that filters this category's places, iOS-style, with Cancel to return.
+        AnimatedContent(
+            targetState = state.isSearchOpen,
             modifier = Modifier
                 .onGloballyPositioned { barBottom = it.boundsInRoot().bottom }
                 .background(colors.surfaceCard)
                 .statusBarsPadding(),
-            scrolled = titleUnderBar,
-            titleVisible = titleUnderBar,
-            backStyle = IconButtonStyle.Paper,
-            action = {
-                KhazenaIconButton(KhazenaIcons.MagnifyingGlassRegular, stringResource(Res.string.category_search), { onAction(CategoryAction.OnSearchClick) })
-            },
-        )
+            transitionSpec = { fadeIn(tween(KhazenaMotion.MEDIUM)) togetherWith fadeOut(tween(KhazenaMotion.SHORT)) },
+            label = "category-bar",
+        ) { searching ->
+            if (searching) {
+                SearchBar(detail?.name?.localized().orEmpty(), state.query, onAction)
+            } else {
+                KhazenaTopBar(
+                    title = detail?.name?.localized().orEmpty(),
+                    backLabel = stringResource(CoreRes.string.back),
+                    onBack = { onAction(CategoryAction.OnBackClick) },
+                    scrolled = titleUnderBar,
+                    titleVisible = titleUnderBar,
+                    backStyle = IconButtonStyle.Paper,
+                    action = {
+                        KhazenaIconButton(KhazenaIcons.MagnifyingGlassRegular, stringResource(Res.string.category_search), { onAction(CategoryAction.OnSearchClick) })
+                    },
+                )
+            }
+        }
         MessageToastHost(toastState, Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 24.dp))
     }
     if (state.isSortSheetOpen) SortSheet(state.sort, onAction)
+}
+
+@Composable
+private fun SearchBar(categoryName: String, query: String, onAction: (CategoryAction) -> Unit) {
+    val focus = remember { FocusRequester() }
+    LaunchedEffect(Unit) { focus.requestFocus() }
+    Row(
+        Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        KhazenaSearchField(
+            value = query,
+            onValueChange = { onAction(CategoryAction.OnQueryChange(it)) },
+            placeholder = stringResource(Res.string.category_search_hint, categoryName),
+            clearContentDescription = stringResource(Res.string.category_search_clear),
+            modifier = Modifier.weight(1f).focusRequester(focus),
+            height = KhazenaSize.tapMin,
+        )
+        Text(
+            stringResource(Res.string.category_search_cancel),
+            style = KhazenaTheme.typography.labelMSemiBold,
+            color = KhazenaTheme.colors.textPrimary,
+            modifier = Modifier.textClickable(onClick = { onAction(CategoryAction.OnCloseSearch) }),
+        )
+    }
 }
 
 @Composable
@@ -274,7 +335,7 @@ private fun HeroContent(detail: CategoryDetail, onTitleBottom: (Float) -> Unit) 
                 // ("Entertainment") shrinks to one line instead of breaking mid-word.
                 val name = detail.name.localized()
                 val singleWord = ' ' !in name.trim()
-                val titleStyle = type.headingH2.copy(fontSize = 30.sp, lineHeight = 33.sp)
+                val titleStyle = heroTitleStyle()
                 Text(
                     name,
                     style = titleStyle,
@@ -289,7 +350,7 @@ private fun HeroContent(detail: CategoryDetail, onTitleBottom: (Float) -> Unit) 
                 )
                 Text(
                     detail.description.localized(),
-                    style = type.bodyS.copy(lineHeight = 18.sp),
+                    style = heroDescriptionStyle(),
                     color = colors.textSecondary,
                     modifier = Modifier.padding(top = 6.dp).widthIn(max = 190.dp),
                 )
@@ -310,12 +371,11 @@ private fun HeroSkeleton() {
         Column {
             Box(Modifier.fillMaxWidth()) {
                 KhazenaSkeleton(Modifier.align(Alignment.TopEnd).offset(y = (-4).dp).size(140.dp), KhazenaRadius.hero)
+                // Same text styles and paddings as HeroContent, so every line lands where its text will.
                 Column(Modifier.padding(top = 21.dp, bottom = 8.dp)) {
-                    KhazenaSkeleton(Modifier.size(width = 64.dp, height = 11.dp))
-                    KhazenaSkeleton(Modifier.padding(top = 8.dp).size(width = 140.dp, height = 26.dp))
-                    KhazenaSkeleton(Modifier.padding(top = 7.dp).size(width = 100.dp, height = 26.dp))
-                    KhazenaSkeleton(Modifier.padding(top = 12.dp).size(width = 180.dp, height = 12.dp))
-                    KhazenaSkeleton(Modifier.padding(top = 6.dp).size(width = 140.dp, height = 12.dp))
+                    KhazenaSkeletonText(KhazenaTheme.typography.monoKicker, listOf(64.dp))
+                    KhazenaSkeletonText(heroTitleStyle(), listOf(140.dp, 100.dp), Modifier.padding(top = 2.dp))
+                    KhazenaSkeletonText(heroDescriptionStyle(), listOf(180.dp, 140.dp), Modifier.padding(top = 6.dp))
                 }
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -335,9 +395,14 @@ private fun BodySkeleton() {
                     KhazenaSkeleton(Modifier.size(width = width.dp, height = KhazenaSize.chip), KhazenaRadius.pill)
                 }
             }
-            Row(Modifier.fillMaxWidth().padding(top = 26.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                KhazenaSkeleton(Modifier.size(width = 200.dp, height = 11.dp))
-                KhazenaSkeleton(Modifier.size(width = 110.dp, height = 13.dp))
+            // SortRow: kicker on the start, the sort label on the end, centred in one row.
+            Row(
+                Modifier.fillMaxWidth().padding(top = 26.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                KhazenaSkeletonText(KhazenaTheme.typography.monoTagS, listOf(200.dp))
+                KhazenaSkeletonText(KhazenaTheme.typography.labelSMedium, listOf(110.dp))
             }
             Column(Modifier.padding(top = 18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 repeat(4) { KhazenaSkeletonRow(rating = true, tag = true) }
@@ -345,6 +410,12 @@ private fun BodySkeleton() {
         }
     }
 }
+
+@Composable
+private fun heroTitleStyle() = KhazenaTheme.typography.headingH2.copy(fontSize = 30.sp, lineHeight = 33.sp)
+
+@Composable
+private fun heroDescriptionStyle() = KhazenaTheme.typography.bodyS.copy(lineHeight = 18.sp)
 
 @Composable
 private fun HeroStat(value: String, label: String, modifier: Modifier = Modifier, live: Boolean = false) {
@@ -375,12 +446,15 @@ private fun HeroStat(value: String, label: String, modifier: Modifier = Modifier
 
 @Composable
 private fun CategoryBody(detail: CategoryDetail, state: CategoryState, onAction: (CategoryAction) -> Unit) {
-    // "All" first, then the business sub-categories; the index drives scrolling and slide direction.
-    val order = remember(detail.subcategories) { listOf<String?>(null) + detail.subcategories.map { it.id } }
+    // "All" first, then the business sub-categories that have places; the index drives scrolling and slide direction.
+    val subcategories = remember(detail) { detail.subcategoriesWithPlaces }
+    val order = remember(subcategories) { listOf<String?>(null) + subcategories.map { it.id } }
+    // A saved pick whose chip is now hidden falls back to "All".
+    val subcategoryId = state.subcategoryId?.takeIf { it in order }
     // Chips lay out at the 48dp touch target around their 36dp pill, so the Figma gaps (18 above, 26 below) lose 6dp each side.
-    if (detail.subcategories.isNotEmpty()) {
+    if (subcategories.isNotEmpty()) {
         val chips = rememberLazyListState()
-        val selectedIndex = order.indexOf(state.subcategoryId).coerceAtLeast(0)
+        val selectedIndex = order.indexOf(subcategoryId).coerceAtLeast(0)
         // Centre the picked chip, so tapping one near either edge brings its neighbours into view.
         LaunchedEffect(selectedIndex) {
             val info = chips.layoutInfo
@@ -395,21 +469,23 @@ private fun CategoryBody(detail: CategoryDetail, state: CategoryState, onAction:
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item(key = "all") {
-                KhazenaChip(stringResource(Res.string.category_all), state.subcategoryId == null, { onAction(CategoryAction.OnSubcategoryClick(null)) })
+                KhazenaChip(stringResource(Res.string.category_all), subcategoryId == null, { onAction(CategoryAction.OnSubcategoryClick(null)) })
             }
-            items(detail.subcategories, key = { it.id }) { sub ->
-                KhazenaChip(sub.name.localized(), state.subcategoryId == sub.id, { onAction(CategoryAction.OnSubcategoryClick(sub.id)) })
+            items(subcategories, key = { it.id }) { sub ->
+                KhazenaChip(sub.name.localized(), subcategoryId == sub.id, { onAction(CategoryAction.OnSubcategoryClick(sub.id)) })
             }
         }
         Spacer(Modifier.height(20.dp))
     } else {
         Spacer(Modifier.height(26.dp))
     }
-    SortRow(detail.countFor(state.subcategoryId), state.sort, onAction)
+    val query = state.query.trim()
+    val count = if (query.isEmpty()) detail.countFor(subcategoryId) else detail.placesFor(subcategoryId, state.sort).matching(query).size
+    SortRow(count, state.sort, onAction)
     Spacer(Modifier.height(18.dp))
     val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     AnimatedContent(
-        targetState = state.subcategoryId to state.sort,
+        targetState = subcategoryId to state.sort,
         transitionSpec = {
             val from = order.indexOf(initialState.first)
             val to = order.indexOf(targetState.first)
@@ -427,16 +503,27 @@ private fun CategoryBody(detail: CategoryDetail, state: CategoryState, onAction:
         contentAlignment = Alignment.TopCenter,
         label = "category-places",
     ) { (subcategoryId, sort) ->
-        PlacesList(detail.placesFor(subcategoryId, sort), onAction)
+        PlacesList(detail.placesFor(subcategoryId, sort).matching(query), query, onAction)
     }
 }
 
+// Search inside this category: the place's name, type or area, in the reader's language.
 @Composable
-private fun PlacesList(places: List<CategoryPlace>, onAction: (CategoryAction) -> Unit) {
+private fun List<CategoryPlace>.matching(query: String): List<CategoryPlace> =
+    if (query.isEmpty()) {
+        this
+    } else {
+        filter { place ->
+            listOf(place.name, place.kind, place.area).any { it.localized().contains(query, ignoreCase = true) }
+        }
+    }
+
+@Composable
+private fun PlacesList(places: List<CategoryPlace>, query: String, onAction: (CategoryAction) -> Unit) {
     Column(Modifier.fillMaxWidth().padding(horizontal = KhazenaSpacing.screenMargin), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         if (places.isEmpty()) {
             Text(
-                stringResource(Res.string.category_no_places),
+                if (query.isEmpty()) stringResource(Res.string.category_no_places) else stringResource(Res.string.category_no_match, query),
                 style = KhazenaTheme.typography.bodyM,
                 color = KhazenaTheme.colors.textSecondary,
                 textAlign = TextAlign.Center,

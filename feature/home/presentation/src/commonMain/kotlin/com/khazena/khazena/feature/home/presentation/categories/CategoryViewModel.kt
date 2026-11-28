@@ -7,7 +7,6 @@ import androidx.navigation.toRoute
 import com.khazena.khazena.core.presentation.state.ContentLoader
 import com.khazena.khazena.feature.home.domain.HomeRepository
 import com.khazena.khazena.feature.home.presentation.CategoryRoute
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,9 +15,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlin.time.Duration.Companion.seconds
 
 private const val SUBCATEGORY_KEY = "subcategory"
 private const val SORT_KEY = "sort"
+private const val SEARCH_OPEN_KEY = "searchOpen"
+private const val QUERY_KEY = "query"
 
 class CategoryViewModel(
     repository: HomeRepository,
@@ -33,6 +35,8 @@ class CategoryViewModel(
     private val subcategoryId = savedStateHandle.getStateFlow<String?>(SUBCATEGORY_KEY, null)
     private val sort = savedStateHandle.getStateFlow(SORT_KEY, PlaceSort.Discount.name)
     private val sortSheetOpen = MutableStateFlow(false)
+    private val searchOpen = savedStateHandle.getStateFlow(SEARCH_OPEN_KEY, false)
+    private val query = savedStateHandle.getStateFlow(QUERY_KEY, "")
 
     private val detail = ContentLoader(
         scope = viewModelScope,
@@ -42,8 +46,13 @@ class CategoryViewModel(
         fetch = { repository.getCategory(categoryId) },
     )
 
-    val state = combine(detail.state, subcategoryId, sort, sortSheetOpen) { detail, subcategory, sort, sheetOpen ->
-        CategoryState(detail, subcategory, PlaceSort.valueOf(sort), sheetOpen)
+    val state = combine(
+        combine(detail.state, subcategoryId, sort, ::Triple),
+        sortSheetOpen,
+        searchOpen,
+        query,
+    ) { (detail, subcategory, sort), sheetOpen, isSearchOpen, query ->
+        CategoryState(detail, subcategory, PlaceSort.valueOf(sort), sheetOpen, isSearchOpen, query)
     }
         .onStart { detail.loadOnce() }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5.seconds), CategoryState())
@@ -57,6 +66,12 @@ class CategoryViewModel(
             }
             CategoryAction.OnSortClick -> sortSheetOpen.value = true
             CategoryAction.OnDismissSort -> sortSheetOpen.value = false
+            CategoryAction.OnSearchClick -> savedStateHandle[SEARCH_OPEN_KEY] = true
+            CategoryAction.OnCloseSearch -> {
+                savedStateHandle[SEARCH_OPEN_KEY] = false
+                savedStateHandle[QUERY_KEY] = ""
+            }
+            is CategoryAction.OnQueryChange -> savedStateHandle[QUERY_KEY] = action.query
             CategoryAction.OnRetry -> detail.load()
             CategoryAction.OnRefresh -> detail.refresh()
             else -> Unit

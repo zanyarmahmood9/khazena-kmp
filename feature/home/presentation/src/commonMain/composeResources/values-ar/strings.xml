@@ -69,4 +69,8 @@
     <string name="category_sort_change">الترتيب حسب، %1$s</string>
     <string name="category_rating">%1$s (%2$d)</string>
     <string name="category_no_places">لا توجد أماكن هنا بعد. نضيف أماكن جديدة كل أسبوع.</string>
+    <string name="category_search_hint">ابحث عن أماكن في %1$s…</string>
+    <string name="category_search_cancel">إلغاء</string>
+    <string name="category_search_clear">مسح البحث</string>
+    <string name="category_no_match">لا توجد أماكن تطابق «%1$s».</string>
 </resources>
