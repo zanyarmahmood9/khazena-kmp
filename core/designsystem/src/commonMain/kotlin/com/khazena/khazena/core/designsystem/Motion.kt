@@ -1,5 +1,9 @@
 package com.khazena.khazena.core.designsystem
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -16,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 object KhazenaMotion {
     val EmphasizedDecelerate = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
@@ -58,3 +62,21 @@ fun Modifier.pressScale(interactionSource: InteractionSource, pressedScale: Floa
         scaleY = scale
     }
 }
+
+// iOS navigation push: the new screen slides in from the trailing edge while the one below
+// drifts 30% the other way; back reverses it. Direction follows the layout (mirrors in RTL).
+private val PushEasing = CubicBezierEasing(0.2f, 0.9f, 0.3f, 1f)
+private const val PUSH_DURATION = 420
+private const val PUSH_PARALLAX = 0.3f
+
+fun <S> AnimatedContentTransitionScope<S>.pushEnter(): EnterTransition =
+    slideIntoContainer(SlideDirection.Start, tween(PUSH_DURATION, easing = PushEasing))
+
+fun <S> AnimatedContentTransitionScope<S>.pushExit(): ExitTransition =
+    slideOutOfContainer(SlideDirection.Start, tween(PUSH_DURATION, easing = PushEasing)) { (it * PUSH_PARALLAX).toInt() }
+
+fun <S> AnimatedContentTransitionScope<S>.pushPopEnter(): EnterTransition =
+    slideIntoContainer(SlideDirection.End, tween(PUSH_DURATION, easing = PushEasing)) { (it * PUSH_PARALLAX).toInt() }
+
+fun <S> AnimatedContentTransitionScope<S>.pushPopExit(): ExitTransition =
+    slideOutOfContainer(SlideDirection.End, tween(PUSH_DURATION, easing = PushEasing))

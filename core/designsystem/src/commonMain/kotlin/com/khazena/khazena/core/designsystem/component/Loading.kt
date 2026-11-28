@@ -22,9 +22,9 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.tooling.preview.Preview
@@ -67,22 +67,25 @@ fun KhazenaSkeleton(modifier: Modifier = Modifier, shape: Shape = KhazenaRadius.
     )
 }
 
+// Same frame as KhazenaPlaceRow (11dp padding, 64dp photo, 14dp gap) so content lands where the skeleton was.
 @Composable
-fun KhazenaSkeletonRow(modifier: Modifier = Modifier, thumb: Dp = 64.dp) {
+fun KhazenaSkeletonRow(modifier: Modifier = Modifier, thumb: Dp = 64.dp, rating: Boolean = false, tag: Boolean = false) {
     Row(
         modifier
             .fillMaxWidth()
             .clip(KhazenaRadius.card)
             .background(KhazenaTheme.colors.surfaceCard)
-            .padding(10.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+            .padding(11.dp),
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         KhazenaSkeleton(Modifier.size(thumb), KhazenaRadius.sm)
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             KhazenaSkeleton(Modifier.fillMaxWidth(0.7f).height(14.dp))
             KhazenaSkeleton(Modifier.fillMaxWidth(0.45f).height(12.dp))
+            if (rating) KhazenaSkeleton(Modifier.size(width = 56.dp, height = 10.dp))
         }
+        if (tag) KhazenaSkeleton(Modifier.size(width = 84.dp, height = 28.dp), KhazenaRadius.pill)
     }
 }
 

@@ -17,6 +17,8 @@ import com.khazena.khazena.core.designsystem.component.KhazenaComponentGallery
 import com.khazena.khazena.core.designsystem.component.KhazenaIconButton
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaPlaceholder
+import com.khazena.khazena.core.designsystem.pushExit
+import com.khazena.khazena.core.designsystem.pushPopEnter
 import com.khazena.khazena.core.domain.onboarding.AppSide
 import com.khazena.khazena.core.domain.onboarding.OnboardingProgress
 import com.khazena.khazena.feature.business.scan.presentation.ScanMemberRoute
@@ -26,6 +28,7 @@ import com.khazena.khazena.feature.chooseside.presentation.chooseSideGraph
 import com.khazena.khazena.feature.home.presentation.CategoriesRoute
 import com.khazena.khazena.feature.home.presentation.CategoryRoute
 import com.khazena.khazena.feature.home.presentation.categoryGraph
+import com.khazena.khazena.feature.home.presentation.isCategoryScreen
 import com.khazena.khazena.feature.onboarding.presentation.OnboardingGraphRoute
 import com.khazena.khazena.feature.onboarding.presentation.onboardingGraph
 import com.khazena.khazena.feature.scanme.presentation.ScanMeRoute
@@ -85,7 +88,10 @@ internal fun AppNavHost(
             },
             onSignIn = { navController.navigateOnce(SignInRoute) },
         )
-        composable<CustomerRoute> { entry ->
+        composable<CustomerRoute>(
+            exitTransition = { if (targetState.destination.isCategoryScreen()) pushExit() else null },
+            popEnterTransition = { if (initialState.destination.isCategoryScreen()) pushPopEnter() else null },
+        ) { entry ->
             CustomerShell(
                 savedStateHandle = entry.savedStateHandle,
                 onScanMe = { requireAccount { navController.navigateOnce(ScanMeRoute) } },

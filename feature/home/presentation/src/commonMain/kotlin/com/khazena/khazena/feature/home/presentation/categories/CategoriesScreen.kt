@@ -1,5 +1,6 @@
 package com.khazena.khazena.feature.home.presentation.categories
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,11 +11,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -23,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import com.khazena.khazena.core.designsystem.component.IconButtonStyle
@@ -30,6 +34,8 @@ import com.khazena.khazena.core.designsystem.component.KhazenaCategoryCard
 import com.khazena.khazena.core.designsystem.component.KhazenaIconButton
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaSearchField
+import com.khazena.khazena.core.designsystem.component.KhazenaShimmer
+import com.khazena.khazena.core.designsystem.component.KhazenaSkeleton
 import com.khazena.khazena.core.designsystem.component.KhazenaStateCard
 import com.khazena.khazena.core.designsystem.component.StateTone
 import com.khazena.khazena.core.designsystem.revealOnAppear
@@ -45,6 +51,7 @@ import com.khazena.khazena.feature.home.domain.HomeCategory
 import com.khazena.khazena.feature.home.presentation.homeImage
 import com.khazena.khazena.feature.home.presentation.previewFeed
 import khazena.core.presentation.generated.resources.back
+import khazena.core.presentation.generated.resources.loading
 import khazena.feature.home.presentation.generated.resources.Res
 import khazena.feature.home.presentation.generated.resources.categories_empty_badge
 import khazena.feature.home.presentation.generated.resources.categories_empty_body
@@ -117,6 +124,7 @@ fun CategoriesScreen(state: CategoriesState, toastState: MessageToastState, onAc
                 )
             }
         },
+        loading = { CategoriesSkeleton() },
         empty = {
             KhazenaStateCard(
                 icon = KhazenaIcons.Storefront,
@@ -164,6 +172,37 @@ private fun CategoriesContent(directory: CategoryDirectory, query: String, onAct
     }
 }
 
+// Mirrors CategoriesContent + KhazenaCategoryCard geometry (summary line, 2-column 176dp cards).
+@Composable
+private fun CategoriesSkeleton() {
+    KhazenaShimmer(stringResource(CoreRes.string.loading)) {
+        Column(Modifier.fillMaxWidth()) {
+            KhazenaSkeleton(Modifier.padding(top = 2.dp).size(width = 240.dp, height = 11.dp))
+            Spacer(Modifier.height(17.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                repeat(4) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        repeat(2) { CategoryCardSkeleton(Modifier.weight(1f)) }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CategoryCardSkeleton(modifier: Modifier = Modifier) {
+    Box(modifier.height(176.dp).clip(KhazenaRadius.card).background(KhazenaTheme.colors.surfaceCard)) {
+        KhazenaSkeleton(Modifier.padding(10.dp).size(width = 78.dp, height = 22.dp), KhazenaRadius.pill)
+        KhazenaSkeleton(Modifier.align(Alignment.TopEnd).padding(10.dp).size(28.dp), KhazenaRadius.pill)
+        Column(Modifier.fillMaxWidth().padding(top = 26.dp)) {
+            KhazenaSkeleton(Modifier.align(Alignment.CenterHorizontally).size(84.dp), KhazenaRadius.card)
+            KhazenaSkeleton(Modifier.padding(start = 14.dp, top = 14.dp).size(width = 96.dp, height = 14.dp))
+            KhazenaSkeleton(Modifier.padding(start = 14.dp, top = 7.dp).size(width = 60.dp, height = 11.dp))
+        }
+    }
+}
+
 @Composable
 private fun CategoryCard(category: HomeCategory, onAction: (CategoriesAction) -> Unit, modifier: Modifier = Modifier) {
     KhazenaCategoryCard(
@@ -196,3 +235,7 @@ private fun CategoriesPreview() = KhazenaTheme { CategoriesScreen(previewState, 
 @Preview(name = "02a Categories · RTL", widthDp = 390, heightDp = 1080)
 @Composable
 private fun CategoriesRtlPreview() = KhazenaRtlPreview { CategoriesScreen(previewState, rememberMessageToastState()) {} }
+
+@Preview(name = "02a Categories · loading", widthDp = 390, heightDp = 1080)
+@Composable
+private fun CategoriesLoadingPreview() = KhazenaTheme { CategoriesScreen(CategoriesState(), rememberMessageToastState()) {} }

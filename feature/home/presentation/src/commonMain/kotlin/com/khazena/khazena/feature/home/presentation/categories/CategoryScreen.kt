@@ -53,9 +53,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
+import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
-import com.khazena.khazena.core.designsystem.component.IconButtonStyle
 import com.khazena.khazena.core.designsystem.component.KhazenaBottomSheet
 import com.khazena.khazena.core.designsystem.component.KhazenaChip
 import com.khazena.khazena.core.designsystem.component.KhazenaIconButton
@@ -63,8 +63,12 @@ import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaPlaceRow
 import com.khazena.khazena.core.designsystem.component.KhazenaRadio
 import com.khazena.khazena.core.designsystem.component.KhazenaSheetTitle
+import com.khazena.khazena.core.designsystem.component.KhazenaShimmer
+import com.khazena.khazena.core.designsystem.component.KhazenaSkeleton
+import com.khazena.khazena.core.designsystem.component.KhazenaSkeletonRow
 import com.khazena.khazena.core.designsystem.revealOnAppear
 import com.khazena.khazena.core.designsystem.textClickable
+import com.khazena.khazena.core.domain.LocalizedText
 import com.khazena.khazena.core.presentation.ObserveAsEvents
 import com.khazena.khazena.core.presentation.formatDistance
 import com.khazena.khazena.core.presentation.localized
@@ -77,10 +81,10 @@ import com.khazena.khazena.core.presentation.state.rememberMessageToastState
 import com.khazena.khazena.feature.home.domain.CategoryDetail
 import com.khazena.khazena.feature.home.domain.CategoryPlace
 import com.khazena.khazena.feature.home.domain.Subcategory
-import com.khazena.khazena.core.domain.LocalizedText
 import com.khazena.khazena.feature.home.presentation.homeImage
 import khazena.core.presentation.generated.resources.back
 import khazena.core.presentation.generated.resources.close
+import khazena.core.presentation.generated.resources.loading
 import khazena.feature.home.presentation.generated.resources.Res
 import khazena.feature.home.presentation.generated.resources.category_all
 import khazena.feature.home.presentation.generated.resources.category_kicker
@@ -148,7 +152,7 @@ fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction
             },
         ) {
             Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).navigationBarsPadding().padding(bottom = 32.dp)) {
-                Hero(detail, onAction)
+                Hero(detail, loading = state.detail.content is LoadState.Loading, onAction = onAction)
                 if (detail != null) {
                     CategoryBody(detail, state, onAction)
                 } else {
@@ -157,6 +161,7 @@ fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction
                         onRetry = { onAction(CategoryAction.OnRetry) },
                         empty = {},
                         modifier = Modifier.fillMaxWidth().padding(horizontal = KhazenaSpacing.screenMargin).padding(top = 18.dp),
+                        loading = { BodySkeleton() },
                     ) {}
                 }
             }
@@ -167,7 +172,7 @@ fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction
 }
 
 @Composable
-private fun Hero(detail: CategoryDetail?, onAction: (CategoryAction) -> Unit) {
+private fun Hero(detail: CategoryDetail?, loading: Boolean, onAction: (CategoryAction) -> Unit) {
     val colors = KhazenaTheme.colors
     val type = KhazenaTheme.typography
     Column(
@@ -182,7 +187,10 @@ private fun Hero(detail: CategoryDetail?, onAction: (CategoryAction) -> Unit) {
             KhazenaIconButton(KhazenaIcons.ArrowLeftRegular, stringResource(CoreRes.string.back), { onAction(CategoryAction.OnBackClick) })
             KhazenaIconButton(KhazenaIcons.MagnifyingGlassRegular, stringResource(Res.string.category_search), { onAction(CategoryAction.OnSearchClick) })
         }
-        if (detail == null) return@Column
+        if (detail == null) {
+            if (loading) HeroSkeleton()
+            return@Column
+        }
         Box(Modifier.fillMaxWidth()) {
             Image(
                 painterResource(homeImage(detail.imageKey)),
@@ -221,6 +229,49 @@ private fun Hero(detail: CategoryDetail?, onAction: (CategoryAction) -> Unit) {
             HeroStat(detail.placeCount.toString(), stringResource(Res.string.category_stat_places), Modifier.weight(1f))
             HeroStat("${detail.topDiscountPercent}%", stringResource(Res.string.category_stat_top_discount), Modifier.weight(1f))
             HeroStat(detail.openNow.toString(), stringResource(Res.string.category_stat_open_now), Modifier.weight(1f), live = true)
+        }
+    }
+}
+
+// Same blocks as the loaded hero: kicker, two-line title, two-line description beside the 140dp art, three stats.
+@Composable
+private fun HeroSkeleton() {
+    KhazenaShimmer(stringResource(CoreRes.string.loading)) {
+        Column {
+            Box(Modifier.fillMaxWidth()) {
+                KhazenaSkeleton(Modifier.align(Alignment.TopEnd).offset(y = (-4).dp).size(140.dp), KhazenaRadius.hero)
+                Column(Modifier.padding(top = 21.dp, bottom = 8.dp)) {
+                    KhazenaSkeleton(Modifier.size(width = 64.dp, height = 11.dp))
+                    KhazenaSkeleton(Modifier.padding(top = 8.dp).size(width = 140.dp, height = 26.dp))
+                    KhazenaSkeleton(Modifier.padding(top = 7.dp).size(width = 100.dp, height = 26.dp))
+                    KhazenaSkeleton(Modifier.padding(top = 12.dp).size(width = 180.dp, height = 12.dp))
+                    KhazenaSkeleton(Modifier.padding(top = 6.dp).size(width = 140.dp, height = 12.dp))
+                }
+            }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                repeat(3) { KhazenaSkeleton(Modifier.weight(1f).height(50.dp), RoundedCornerShape(16.dp)) }
+            }
+        }
+    }
+}
+
+// Chips, sort line and rated place rows, at the loaded body's spacing.
+@Composable
+private fun BodySkeleton() {
+    KhazenaShimmer(stringResource(CoreRes.string.loading)) {
+        Column {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf(49, 105, 67, 77, 88).forEach { width ->
+                    KhazenaSkeleton(Modifier.size(width = width.dp, height = KhazenaSize.chip), KhazenaRadius.pill)
+                }
+            }
+            Row(Modifier.fillMaxWidth().padding(top = 26.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                KhazenaSkeleton(Modifier.size(width = 200.dp, height = 11.dp))
+                KhazenaSkeleton(Modifier.size(width = 110.dp, height = 13.dp))
+            }
+            Column(Modifier.padding(top = 18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                repeat(4) { KhazenaSkeletonRow(rating = true, tag = true) }
+            }
         }
     }
 }
@@ -415,3 +466,7 @@ private fun CategoryPreview() = KhazenaTheme { CategoryScreen(previewState, reme
 @Preview(name = "02b Category · RTL", widthDp = 390, heightDp = 1012)
 @Composable
 private fun CategoryRtlPreview() = KhazenaRtlPreview { CategoryScreen(previewState, rememberMessageToastState()) {} }
+
+@Preview(name = "02b Category · loading", widthDp = 390, heightDp = 1012)
+@Composable
+private fun CategoryLoadingPreview() = KhazenaTheme { CategoryScreen(CategoryState(), rememberMessageToastState()) {} }
