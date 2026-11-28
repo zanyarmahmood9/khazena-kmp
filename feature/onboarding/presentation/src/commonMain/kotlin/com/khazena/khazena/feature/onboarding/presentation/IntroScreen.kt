@@ -1,6 +1,5 @@
 package com.khazena.khazena.feature.onboarding.presentation
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -8,6 +7,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -43,12 +43,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.util.lerp
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
@@ -59,9 +58,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.math.PI
-import kotlin.math.absoluteValue
-import kotlin.math.sin
+import androidx.compose.ui.util.lerp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.khazena.khazena.core.designsystem.KhazenaColors
 import com.khazena.khazena.core.designsystem.KhazenaRadius
@@ -74,6 +71,7 @@ import com.khazena.khazena.core.designsystem.component.KhazenaTag
 import com.khazena.khazena.core.designsystem.component.TagType
 import com.khazena.khazena.core.presentation.ObserveAsEvents
 import com.khazena.khazena.core.presentation.formatDiscount
+import com.khazena.khazena.core.presentation.permission.rememberLocationPermission
 import com.khazena.khazena.feature.onboarding.presentation.intro.IntroAction
 import com.khazena.khazena.feature.onboarding.presentation.intro.IntroEvent
 import com.khazena.khazena.feature.onboarding.presentation.intro.IntroState
@@ -113,6 +111,9 @@ import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.math.PI
+import kotlin.math.absoluteValue
+import kotlin.math.sin
 
 private class IntroPage(
     val kicker: StringResource,
@@ -137,11 +138,16 @@ internal fun IntroRoot(onFinished: () -> Unit, viewModel: IntroViewModel = koinV
             IntroEvent.Finished -> onFinished()
         }
     }
-    IntroScreen(state, viewModel::onAction)
+    val location = rememberLocationPermission()
+    IntroScreen(
+        state = state,
+        onAction = viewModel::onAction,
+        onAllowLocation = { location.request { viewModel.onAction(IntroAction.OnNextClick) } },
+    )
 }
 
 @Composable
-internal fun IntroScreen(state: IntroState, onAction: (IntroAction) -> Unit) {
+internal fun IntroScreen(state: IntroState, onAction: (IntroAction) -> Unit, onAllowLocation: () -> Unit) {
     val pagerState = rememberPagerState(initialPage = state.page) { state.pageCount }
     LaunchedEffect(state.page) {
         if (pagerState.currentPage != state.page) {
@@ -172,9 +178,8 @@ internal fun IntroScreen(state: IntroState, onAction: (IntroAction) -> Unit) {
             IntroPageContent(pages[index]) { (pagerState.currentPage - index + pagerState.currentPageOffsetFraction).absoluteValue.coerceIn(0f, 1f) }
         }
         KhazenaButton(
-            // shortcut: "Allow location" only advances; wire a real permission request once a permissions lib is added.
             text = stringResource(if (locationPage) Res.string.allow_location else Res.string.next),
-            onClick = { onAction(IntroAction.OnNextClick) },
+            onClick = { if (locationPage) onAllowLocation() else onAction(IntroAction.OnNextClick) },
             modifier = Modifier.fillMaxWidth().padding(KhazenaSpacing.screenMargin),
             icon = if (locationPage) KhazenaIcons.Crosshair else KhazenaIcons.ArrowRight,
         )
@@ -458,4 +463,4 @@ private fun PlaceChip(dot: Color, name: StringResource, meters: Int) {
 
 @Preview(widthDp = 390, heightDp = 844)
 @Composable
-private fun IntroPreview() = KhazenaTheme { IntroScreen(IntroState()) {} }
+private fun IntroPreview() = KhazenaTheme { IntroScreen(IntroState(), onAction = {}, onAllowLocation = {}) }

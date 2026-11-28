@@ -1,44 +1,53 @@
 package com.khazena.khazena.feature.business.home.presentation
 
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.component.AccountMode
+import com.khazena.khazena.core.designsystem.component.KhazenaHomeHeader
+import com.khazena.khazena.core.designsystem.component.KhazenaIcons
+import com.khazena.khazena.core.designsystem.component.KhazenaPersonRow
+import com.khazena.khazena.core.designsystem.component.KhazenaSectionHeader
+import com.khazena.khazena.core.designsystem.component.KhazenaStatTile
+import com.khazena.khazena.core.designsystem.component.KhazenaStateCard
+import com.khazena.khazena.core.designsystem.component.StateTone
 import com.khazena.khazena.core.designsystem.revealOnAppear
+import com.khazena.khazena.core.domain.LocalizedText
 import com.khazena.khazena.core.presentation.ObserveAsEvents
+import com.khazena.khazena.core.presentation.formatGrouped
+import com.khazena.khazena.core.presentation.formatIqd
+import com.khazena.khazena.core.presentation.localized
+import com.khazena.khazena.core.presentation.permission.AskLocationOnce
 import com.khazena.khazena.core.presentation.state.ContentState
 import com.khazena.khazena.core.presentation.state.LoadState
 import com.khazena.khazena.core.presentation.state.MessageToastState
 import com.khazena.khazena.core.presentation.state.StateScreen
 import com.khazena.khazena.core.presentation.state.rememberMessageToastState
-import khazena.feature.business.home.presentation.generated.resources.Res
-import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
-import com.khazena.khazena.core.designsystem.component.KhazenaIcons
-import com.khazena.khazena.core.designsystem.component.KhazenaStateCard
-import com.khazena.khazena.core.designsystem.component.StateTone
-
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.ui.unit.dp
-import com.khazena.khazena.core.designsystem.component.AccountMode
-import com.khazena.khazena.core.designsystem.component.KhazenaHomeHeader
-import com.khazena.khazena.core.designsystem.component.KhazenaPersonRow
-import com.khazena.khazena.core.designsystem.component.KhazenaSectionHeader
-import com.khazena.khazena.core.designsystem.component.KhazenaStatTile
-import com.khazena.khazena.core.domain.LocalizedText
-import com.khazena.khazena.core.presentation.formatGrouped
-import com.khazena.khazena.core.presentation.formatIqd
-import com.khazena.khazena.core.presentation.localized
 import com.khazena.khazena.feature.business.home.domain.BusinessDashboard
 import com.khazena.khazena.feature.business.home.domain.ScanRecord
-import khazena.core.presentation.generated.resources.Res as CoreRes
 import khazena.core.presentation.generated.resources.notifications
 import khazena.core.presentation.generated.resources.switch_to_personal
-import khazena.feature.business.home.presentation.generated.resources.*
+import khazena.feature.business.home.presentation.generated.resources.Res
+import khazena.feature.business.home.presentation.generated.resources.business_home_empty_action
+import khazena.feature.business.home.presentation.generated.resources.business_home_empty_badge
+import khazena.feature.business.home.presentation.generated.resources.business_home_empty_body
+import khazena.feature.business.home.presentation.generated.resources.business_home_empty_title
+import khazena.feature.business.home.presentation.generated.resources.business_home_greeting
+import khazena.feature.business.home.presentation.generated.resources.business_home_new_members
+import khazena.feature.business.home.presentation.generated.resources.business_home_recent
+import khazena.feature.business.home.presentation.generated.resources.business_home_savings_given
+import khazena.feature.business.home.presentation.generated.resources.business_home_scans_today
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import khazena.core.presentation.generated.resources.Res as CoreRes
 
 @Composable
 fun BusinessHomeRoot(
@@ -53,6 +62,7 @@ fun BusinessHomeRoot(
             is BusinessHomeEvent.ShowMessage -> toast.show(event.message)
         }
     }
+    AskLocationOnce()
     BusinessHomeScreen(
         state = state,
         toastState = toast,

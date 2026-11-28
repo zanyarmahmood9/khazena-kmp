@@ -10,6 +10,8 @@
 		<string>ar</string>
 		<string>en</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Khazena uses your location to show member deals and places near you.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

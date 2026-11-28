@@ -20,6 +20,7 @@ import com.khazena.khazena.core.presentation.ObserveAsEvents
 import com.khazena.khazena.core.presentation.formatDiscount
 import com.khazena.khazena.core.presentation.formatDistance
 import com.khazena.khazena.core.presentation.localized
+import com.khazena.khazena.core.presentation.permission.AskLocationOnce
 import com.khazena.khazena.core.presentation.placeholderPhoto
 import com.khazena.khazena.core.presentation.state.ContentState
 import com.khazena.khazena.core.presentation.state.LoadState
@@ -27,7 +28,6 @@ import com.khazena.khazena.core.presentation.state.MessageToastState
 import com.khazena.khazena.core.presentation.state.StateScreen
 import com.khazena.khazena.core.presentation.state.rememberMessageToastState
 import com.khazena.khazena.feature.home.domain.Deal
-import khazena.core.presentation.generated.resources.Res as CoreRes
 import khazena.core.presentation.generated.resources.notifications
 import khazena.core.presentation.generated.resources.switch_to_business
 import khazena.feature.home.presentation.generated.resources.Res
@@ -41,6 +41,7 @@ import khazena.feature.home.presentation.generated.resources.home_offer_kicker
 import khazena.feature.home.presentation.generated.resources.home_section_deals
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import khazena.core.presentation.generated.resources.Res as CoreRes
 
 @Composable
 fun HomeRoot(
@@ -54,6 +55,7 @@ fun HomeRoot(
             is HomeEvent.ShowMessage -> toast.show(event.message)
         }
     }
+    AskLocationOnce()
     HomeScreen(
         state = state,
         toastState = toast,

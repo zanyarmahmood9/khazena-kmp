@@ -9,6 +9,9 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(libs.androidx.lifecycle.runtimeCompose)
         }
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
+        }
     }
 }
 
