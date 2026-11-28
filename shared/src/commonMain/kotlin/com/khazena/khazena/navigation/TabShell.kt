@@ -41,7 +41,7 @@ internal fun TabShell(
     actionIcon: DrawableResource,
     actionLabel: String,
     onAction: () -> Unit,
-    graph: NavGraphBuilder.() -> Unit,
+    graph: NavGraphBuilder.(selectTab: (Int) -> Unit) -> Unit,
 ) {
     val tabNavController = rememberNavController()
     val selectTab: (Int) -> Unit = { index ->
@@ -64,7 +64,7 @@ internal fun TabShell(
             startDestination = tabs.first().route,
             enterTransition = { EnterTransition.None },
             exitTransition = { ExitTransition.None },
-            builder = graph,
+            builder = { graph(selectTab) },
         )
         KhazenaTabBar(
             items = tabs.map { TabBarItem(stringResource(it.label), it.icon, it.selectedIcon) },

@@ -27,6 +27,7 @@ class CmpFeatureConventionPlugin : Plugin<Project> {
             "commonMainImplementation"(libs.lib("coil-compose"))
             "commonMainImplementation"(libs.lib("coil-network-ktor3"))
             "commonMainImplementation"(libs.lib("compottie"))
+            "commonMainImplementation"(libs.lib("kotlinx-datetime"))
         }
     }
 }

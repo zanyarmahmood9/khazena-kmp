@@ -11,15 +11,19 @@ interface LocationPermission {
     val status: LocationPermissionStatus
 
     fun request(onResult: (granted: Boolean) -> Unit = {})
+
+    /** For a "Turn on location" button: asks while the system still allows it, otherwise opens the app's settings. */
+    fun enable()
 }
 
 @Composable
 expect fun rememberLocationPermission(): LocationPermission
 
 @Composable
-fun AskLocationOnce() {
+fun AskLocationOnce(): LocationPermission {
     val location = rememberLocationPermission()
     LaunchedEffect(location) {
         if (location.status == LocationPermissionStatus.NotDetermined) location.request()
     }
+    return location
 }

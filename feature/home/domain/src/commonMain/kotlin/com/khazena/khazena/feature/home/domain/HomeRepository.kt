@@ -4,5 +4,5 @@ import com.khazena.khazena.core.domain.DataError
 import com.khazena.khazena.core.domain.Result
 
 interface HomeRepository {
-    suspend fun getNearbyDeals(): Result<List<Deal>, DataError>
+    suspend fun getHomeFeed(): Result<HomeFeed, DataError>
 }

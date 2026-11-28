@@ -2,7 +2,11 @@ package com.khazena.khazena.core.presentation.permission
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.Settings
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -22,6 +26,7 @@ private const val ASKED_KEY = "location_asked"
 @Composable
 actual fun rememberLocationPermission(): LocationPermission {
     val context = LocalContext.current.applicationContext
+    val activity = LocalActivity.current
     val status = remember { mutableStateOf(context.locationStatus()) }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val pending = remember { PendingPermissionResult() }
@@ -36,7 +41,7 @@ actual fun rememberLocationPermission(): LocationPermission {
         pending.deliver()
         onPauseOrDispose {}
     }
-    return remember(launcher) {
+    return remember(launcher, activity) {
         object : LocationPermission {
             override val status get() = status.value
 
@@ -48,6 +53,19 @@ actual fun rememberLocationPermission(): LocationPermission {
                 context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit { putBoolean(ASKED_KEY, true) }
                 pending.await(onResult)
                 launcher.launch(PERMISSIONS)
+            }
+
+            override fun enable() {
+                when {
+                    status.value == LocationPermissionStatus.NotDetermined -> request {}
+                    status.value == LocationPermissionStatus.Granted -> Unit
+                    // Android lets the app ask again after a single "Don't allow"; after that only Settings can change it.
+                    activity != null && PERMISSIONS.any { activity.shouldShowRequestPermissionRationale(it) } -> launcher.launch(PERMISSIONS)
+                    else -> context.startActivity(
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null))
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                    )
+                }
             }
         }
     }

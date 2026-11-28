@@ -105,7 +105,7 @@ fun KhazenaComponentGallery(modifier: Modifier = Modifier) {
                     KhazenaFactChip(FactKind.Hours, "Open · 11pm")
                 }
             }
-            KhazenaDealCard(photo, "Azmar Grill", "Grill · Salim St", "30% off", "★ 4.8", "Redeem in store →")
+            KhazenaDealCard(photo, "Azmar Grill", "Grill · Salim St", "30% off", "Redeem in store →", ratingLabel = "★ 4.8")
             KhazenaOfferBlock("Member offer · every item", "30% off\neverything.", "Member price is applied to every item")
             KhazenaMembershipCard(true, "Premium", "Active", "Member", "Bandy Kamal", "Plan", "1-Year Premium", "Valid until", "12 Oct 2027")
             KhazenaMembershipCard(false, "Premium", "Expired", "Member", "Bandy Kamal", "Plan", "1-Year Premium", "Expired on", "12 Oct 2026")

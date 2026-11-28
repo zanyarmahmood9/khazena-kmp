@@ -1,11 +1,39 @@
 <!-- DRAFT: needs native review -->
 <resources>
+    <string name="home_greeting_morning">بەیانیت باش، %1$s.</string>
+    <string name="home_greeting_afternoon">ڕۆژت باش، %1$s.</string>
+    <string name="home_greeting_evening">ئێوارەت باش، %1$s.</string>
     <string name="home_greeting">ئەمڕۆ لە کوێ پاشەکەوت دەکەیت؟</string>
-    <string name="home_offer_kicker">ئۆفەری ئەندامان · هەموو سەردانێک</string>
-    <string name="home_offer_headline">تا ٤٠٪ داشکان
-لە نزیکت.</string>
-    <string name="home_offer_body">کۆدی «سکانم بکە» لە کاتی پارەدان پیشان بدە.</string>
+    <string name="home_change_city">گۆڕینی شار، %1$s</string>
+    <string name="home_search_hint">بگەڕێ بۆ چێشتخانە، ساڵۆن، خزمەتگوزاری…</string>
+    <string name="home_notifications_unread">ئاگادارکردنەوەکان، %1$d نەخوێندراوە</string>
+    <string name="home_member_kicker">ئەندامی خەزێنە · %1$s</string>
+    <string name="home_saved_summary">ئەم مانگە پاشەکەوتت کرد. %1$d سەردان، %2$d فرۆشگا.</string>
+    <string name="home_scan_to_save">سکان بکە و پاشەکەوت بکە</string>
+    <string name="home_my_wallet">جزدانەکەم</string>
+    <string name="home_section_categories">پۆلەکان</string>
+    <string name="home_see_all">هەمووی ببینە</string>
+    <string name="home_category_badge">تا %1$d%</string>
+    <string name="home_featured_kicker">ئۆفەری ئەندامان</string>
+    <string name="home_sponsored">سپۆنسەر</string>
+    <string name="home_featured_meta">%1$s · %2$s</string>
+    <string name="home_view_offer">ئۆفەرەکە ببینە</string>
+    <string name="home_featured_discount">−%1$d%</string>
     <string name="home_section_deals">زۆرترین داشکان.</string>
+    <string name="home_deal_off">%1$d% داشکان</string>
+    <string name="home_rating">★ %1$s</string>
+    <string name="home_redeem">لە دوکان وەریبگرە ←</string>
+    <string name="home_section_near_you">نزیک تۆ.</string>
+    <string name="home_map">نەخشە</string>
+    <string name="home_save_percent">%1$d% پاشەکەوت</string>
+    <string name="home_location_off_tag">شوێن کوژاوەتەوە</string>
+    <string name="home_location_off_title">ئەوەی نزیکتە ببینە.</string>
+    <string name="home_location_off_body">شوێن چالاک بکە بۆ بینینی نزیکترین شوێن و دوکانەکان لەگەڵ داشکانی ئەندامان.</string>
+    <string name="home_turn_on_location">شوێن چالاک بکە</string>
+    <string name="home_invite_kicker">خەزێنە · بانگهێشت</string>
+    <string name="home_invite_title">دوو هاوڕێ بهێنە.
+بەخۆڕایی بەشداردەبن.</string>
+    <string name="home_share_invite">بانگهێشت بنێرە</string>
     <string name="home_empty_badge">هیچ نییە</string>
     <string name="home_empty_title">هێشتا هیچ ئۆفەرێک لە نزیکت نییە.</string>
     <string name="home_empty_body">هەموو هەفتەیەک شوێنی نوێ زیاد دەکەین. بۆ پشکنینەوە بۆ خوارەوە ڕابکێشە.</string>

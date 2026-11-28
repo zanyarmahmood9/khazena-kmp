@@ -1,10 +1,38 @@
 <resources>
+    <string name="home_greeting_morning">Morning, %1$s.</string>
+    <string name="home_greeting_afternoon">Afternoon, %1$s.</string>
+    <string name="home_greeting_evening">Evening, %1$s.</string>
     <string name="home_greeting">Where to save today?</string>
-    <string name="home_offer_kicker">Member offer · every visit</string>
-    <string name="home_offer_headline">Up to 40% off
-near you.</string>
-    <string name="home_offer_body">Show your Scan Me code at the counter.</string>
+    <string name="home_change_city">Change city, %1$s</string>
+    <string name="home_search_hint">Search restaurants, salons, services…</string>
+    <string name="home_notifications_unread">Notifications, %1$d unread</string>
+    <string name="home_member_kicker">Khazena member · %1$s</string>
+    <string name="home_saved_summary">saved this month. %1$d visits, %2$d stores.</string>
+    <string name="home_scan_to_save">Scan to save</string>
+    <string name="home_my_wallet">My wallet</string>
+    <string name="home_section_categories">Categories</string>
+    <string name="home_see_all">See all</string>
+    <string name="home_category_badge">Up to %1$d%</string>
+    <string name="home_featured_kicker">Member offer</string>
+    <string name="home_sponsored">Sponsored</string>
+    <string name="home_featured_meta">%1$s · %2$s</string>
+    <string name="home_view_offer">View offer</string>
+    <string name="home_featured_discount">−%1$d%</string>
     <string name="home_section_deals">Highest discounts.</string>
+    <string name="home_deal_off">%1$d% off</string>
+    <string name="home_rating">★ %1$s</string>
+    <string name="home_redeem">Redeem in store →</string>
+    <string name="home_section_near_you">Near you.</string>
+    <string name="home_map">Map</string>
+    <string name="home_save_percent">Save %1$d%</string>
+    <string name="home_location_off_tag">Location off</string>
+    <string name="home_location_off_title">See what’s near you.</string>
+    <string name="home_location_off_body">Turn on location to see the places and stores closest to you, with their member discounts.</string>
+    <string name="home_turn_on_location">Turn on location</string>
+    <string name="home_invite_kicker">Khazena · Invite</string>
+    <string name="home_invite_title">Bring 2 friends.
+They join free.</string>
+    <string name="home_share_invite">Share invite</string>
     <string name="home_empty_badge">Nothing nearby</string>
     <string name="home_empty_title">No deals near you yet.</string>
     <string name="home_empty_body">We add new places every week. Pull down to check again.</string>

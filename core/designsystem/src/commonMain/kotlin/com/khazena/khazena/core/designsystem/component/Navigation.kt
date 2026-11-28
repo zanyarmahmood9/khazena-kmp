@@ -24,17 +24,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.draw.innerShadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun KhazenaSectionHeader(
@@ -53,7 +55,7 @@ fun KhazenaSectionHeader(
         if (linkLabel != null) {
             Text(
                 linkLabel,
-                style = KhazenaTheme.typography.labelMSemiBold,
+                style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
                 color = colors.textPrimary,
                 modifier = Modifier.clickable(role = Role.Button, onClick = onLinkClick),
             )
@@ -97,7 +99,9 @@ fun KhazenaTabBar(
                 .dropShadow(KhazenaRadius.pill, Shadow(radius = 30.dp, offset = DpOffset(0.dp, 10.dp), color = TabBarShadow))
                 .clip(KhazenaRadius.pill)
                 .background(colors.surfaceCard)
-                .border(1.dp, colors.surfaceCard, KhazenaRadius.pill)
+                .innerShadow(KhazenaRadius.pill, Shadow(radius = 2.dp, offset = DpOffset(0.dp, (-1).dp), color = TabBarBevel))
+                .innerShadow(KhazenaRadius.pill, Shadow(radius = 1.dp, offset = DpOffset(0.dp, 1.5.dp), color = Color.White.copy(alpha = 0.9f)))
+                .border(1.dp, Color.White.copy(alpha = 0.85f), KhazenaRadius.pill)
                 .padding(6.dp)
                 .selectableGroup(),
         ) {
@@ -136,6 +140,7 @@ fun KhazenaTabBar(
 }
 
 private val TabBarShadow = Color(0x240D0D1A)
+private val TabBarBevel = Color(0x0F0D0D1A)
 
 @Preview(name = "Section header", widthDp = 390)
 @Composable

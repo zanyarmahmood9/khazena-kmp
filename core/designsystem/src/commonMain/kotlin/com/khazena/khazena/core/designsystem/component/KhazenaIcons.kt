@@ -19,6 +19,7 @@ import khazena.core.designsystem.generated.resources.ic_arrow_left
 import khazena.core.designsystem.generated.resources.ic_arrow_right
 import khazena.core.designsystem.generated.resources.ic_bell
 import khazena.core.designsystem.generated.resources.ic_bookmark
+import khazena.core.designsystem.generated.resources.ic_caret_down_small
 import khazena.core.designsystem.generated.resources.ic_chart_bar
 import khazena.core.designsystem.generated.resources.ic_check
 import khazena.core.designsystem.generated.resources.ic_clock
@@ -75,6 +76,7 @@ object KhazenaIcons {
     val ListBullets = Res.drawable.ic_list
     val ChartBar = Res.drawable.ic_chart_bar
     val Crosshair = Res.drawable.ic_crosshair
+    val CaretDownSmall = Res.drawable.ic_caret_down_small
 }
 
 object KhazenaLogo {
@@ -82,7 +84,7 @@ object KhazenaLogo {
     val MarkOnViolet = Res.drawable.kmark_on_violet
     val MarkOnInk = Res.drawable.kmark_on_ink
     val MarkOnEmber = Res.drawable.kmark_on_ember
-    internal val Watermark = Res.drawable.kmark_watermark
+    val Watermark = Res.drawable.kmark_watermark
 }
 
 // The mark as the native launch screens and the Lottie's first frame draw it, so launch → app has no visible jump.

@@ -48,12 +48,14 @@ import com.khazena.khazena.core.designsystem.rememberThrottledClick
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
-enum class ButtonVariant { Primary, Dark, Secondary, Ghost, Danger }
+enum class ButtonVariant { Primary, Dark, Secondary, Paper, Ghost, Danger }
 
 enum class ButtonSize(internal val height: Dp, internal val paddingX: Dp, internal val iconSize: Dp, internal val gap: Dp) {
     L(KhazenaSize.button, 28.dp, 20.dp, 8.dp),
     M(KhazenaSize.buttonSm, 20.dp, 18.dp, 8.dp),
     Compact(42.dp, 16.dp, 18.dp, 6.dp),
+    Block(48.dp, 22.dp, 18.dp, 8.dp),
+    Inline(40.dp, 16.dp, 16.dp, 6.dp),
     S(32.dp, 14.dp, 14.dp, 4.dp),
 }
 
@@ -66,6 +68,7 @@ fun KhazenaButton(
     size: ButtonSize = ButtonSize.L,
     icon: DrawableResource? = null,
     enabled: Boolean = true,
+    paddingX: Dp = size.paddingX,
 ) {
     val colors = KhazenaTheme.colors
     val (container, content) = when {
@@ -73,6 +76,7 @@ fun KhazenaButton(
         variant == ButtonVariant.Primary -> colors.actionPrimary to colors.actionOnPrimary
         variant == ButtonVariant.Dark -> colors.blockInk to colors.textOnDark
         variant == ButtonVariant.Secondary -> colors.surfaceCard to colors.textPrimary
+        variant == ButtonVariant.Paper -> colors.actionSecondary to colors.textPrimary
         variant == ButtonVariant.Danger -> colors.statusDanger to colors.surfaceCard
         else -> Color.Transparent to colors.textPrimary
     }
@@ -80,9 +84,10 @@ fun KhazenaButton(
     val textStyle = when (size) {
         ButtonSize.L -> type.buttonL
         ButtonSize.M -> type.buttonM
-        ButtonSize.Compact -> type.buttonM.copy(fontSize = 15.sp)
+        ButtonSize.Compact, ButtonSize.Block -> type.buttonM.copy(fontSize = 15.sp)
+        ButtonSize.Inline -> type.buttonM
         ButtonSize.S -> type.buttonM.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-    }
+    }.let { if (variant == ButtonVariant.Paper) it.copy(fontWeight = FontWeight.SemiBold) else it }
     val interaction = remember { MutableInteractionSource() }
     Row(
         modifier = modifier
@@ -96,7 +101,7 @@ fun KhazenaButton(
                 } else Modifier,
             )
             .clickable(interaction, LocalIndication.current, enabled = enabled, role = Role.Button, onClick = rememberThrottledClick(onClick))
-            .padding(PaddingValues(horizontal = size.paddingX)),
+            .padding(PaddingValues(horizontal = paddingX)),
         horizontalArrangement = Arrangement.spacedBy(size.gap, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {

@@ -11,6 +11,9 @@ import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
 import platform.CoreLocation.kCLAuthorizationStatusNotDetermined
+import platform.Foundation.NSURL
+import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationOpenSettingsURLString
 import platform.darwin.NSObject
 
 @Composable
@@ -46,6 +49,17 @@ private class IosLocationPermission(private val lifecycle: Lifecycle) : Location
         }
         pending.await(onResult)
         manager.requestWhenInUseAuthorization()
+    }
+
+    override fun enable() {
+        when (state.value) {
+            LocationPermissionStatus.NotDetermined -> request {}
+            LocationPermissionStatus.Granted -> Unit
+            // iOS shows its prompt only once; after a denial only Settings can turn location on.
+            LocationPermissionStatus.Denied -> NSURL.URLWithString(UIApplicationOpenSettingsURLString)?.let {
+                UIApplication.sharedApplication.openURL(it, options = emptyMap<Any?, Any>(), completionHandler = null)
+            }
+        }
     }
 
     fun refresh() {

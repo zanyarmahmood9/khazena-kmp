@@ -58,8 +58,13 @@ internal fun CustomerShell(
     actionIcon = KhazenaIcons.QrCode,
     actionLabel = stringResource(Res.string.tab_scan_me),
     onAction = onScanMe,
-) {
-    homeGraph(onSwitchAccount = onSwitchToBusiness)
+) { selectTab ->
+    homeGraph(
+        onSwitchAccount = onSwitchToBusiness,
+        onOpenSearch = { selectTab(customerTabs.indexOfFirst { it.route == SearchRoute }) },
+        onOpenWallet = { selectTab(customerTabs.indexOfFirst { it.route == WalletRoute }) },
+        onScanMe = onScanMe,
+    )
     searchGraph()
     walletGraph()
     profileGraph(onSignIn, onOpenGallery)

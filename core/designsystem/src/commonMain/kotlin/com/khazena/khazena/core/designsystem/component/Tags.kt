@@ -21,15 +21,29 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 
 enum class TagType { Discount, Live, Verified, Expired, Highlight, OnColourBlock }
 
+enum class TagSize(internal val height: Dp, internal val paddingX: Dp) {
+    S(KhazenaSize.tag, 10.dp),
+    M(28.dp, 12.dp),
+}
+
 @Composable
-fun KhazenaTag(label: String, modifier: Modifier = Modifier, type: TagType = TagType.Discount, contentColor: Color? = null) {
+fun KhazenaTag(
+    label: String,
+    modifier: Modifier = Modifier,
+    type: TagType = TagType.Discount,
+    contentColor: Color? = null,
+    size: TagSize = TagSize.S,
+    paddingX: Dp = size.paddingX,
+) {
     val colors = KhazenaTheme.colors
     val container = when (type) {
         TagType.Discount -> colors.tagDiscount
@@ -45,17 +59,17 @@ fun KhazenaTag(label: String, modifier: Modifier = Modifier, type: TagType = Tag
     }
     Row(
         modifier = modifier
-            .height(KhazenaSize.tag)
+            .height(size.height)
             .clip(KhazenaRadius.pill)
             .background(container)
-            .padding(start = if (dot != null) 9.dp else 10.dp, end = 10.dp),
+            .padding(start = if (dot != null) paddingX - 1.dp else paddingX, end = paddingX),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (dot != null) Box(Modifier.size(6.dp).background(dot, CircleShape))
         Text(
             text = label.uppercase(),
-            style = KhazenaTheme.typography.monoTagS,
+            style = if (size == TagSize.M) KhazenaTheme.typography.monoTagS.copy(fontSize = 12.sp) else KhazenaTheme.typography.monoTagS,
             color = contentColor ?: if (type == TagType.Highlight) colors.textOnDark else colors.textPrimary,
             maxLines = 1,
         )
