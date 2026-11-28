@@ -1,5 +1,13 @@
 package com.khazena.khazena.feature.home.presentation.categories
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +28,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -33,6 +42,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +56,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -54,9 +65,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.khazena.khazena.core.designsystem.KhazenaMotion
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaSize
@@ -75,7 +89,7 @@ import com.khazena.khazena.core.designsystem.component.KhazenaSkeleton
 import com.khazena.khazena.core.designsystem.component.KhazenaSkeletonRow
 import com.khazena.khazena.core.designsystem.component.KhazenaTopBar
 import com.khazena.khazena.core.designsystem.component.multiplySafe
-import com.khazena.khazena.core.designsystem.revealOnAppear
+import com.khazena.khazena.core.designsystem.softReveal
 import com.khazena.khazena.core.designsystem.textClickable
 import com.khazena.khazena.core.domain.LocalizedText
 import com.khazena.khazena.core.presentation.ObserveAsEvents
@@ -172,16 +186,25 @@ fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction
         ) {
             Column(Modifier.fillMaxSize().verticalScroll(scroll).navigationBarsPadding().padding(bottom = 32.dp)) {
                 Hero(detail, loading = state.detail.content is LoadState.Loading, onTitleBottom = { heroTitleBottom = it })
-                if (detail != null) {
-                    CategoryBody(detail, state, onAction)
-                } else {
-                    LoadStateContent(
-                        state = state.detail.content,
-                        onRetry = { onAction(CategoryAction.OnRetry) },
-                        empty = {},
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = KhazenaSpacing.screenMargin).padding(top = 18.dp),
-                        loading = { BodySkeleton() },
-                    ) {}
+                // Same soft cross-fade as the hero above, so skeleton and content swap as one page.
+                AnimatedContent(
+                    targetState = detail,
+                    contentKey = { it != null },
+                    transitionSpec = { softReveal() },
+                    contentAlignment = Alignment.TopCenter,
+                    label = "category-body",
+                ) { loaded ->
+                    if (loaded != null) {
+                        Column(Modifier.fillMaxWidth()) { CategoryBody(loaded, state, onAction) }
+                    } else {
+                        LoadStateContent(
+                            state = state.detail.content,
+                            onRetry = { onAction(CategoryAction.OnRetry) },
+                            empty = {},
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = KhazenaSpacing.screenMargin).padding(top = 18.dp),
+                            loading = { BodySkeleton() },
+                        ) {}
+                    }
                 }
             }
         }
@@ -208,21 +231,32 @@ fun CategoryScreen(state: CategoryState, toastState: MessageToastState, onAction
 
 @Composable
 private fun Hero(detail: CategoryDetail?, loading: Boolean, onTitleBottom: (Float) -> Unit) {
-    val colors = KhazenaTheme.colors
-    val type = KhazenaTheme.typography
     Column(
         Modifier
             .fillMaxWidth()
             .multiplySafe()
             .clip(HeroShape)
-            .background(colors.surfaceCard)
+            .background(KhazenaTheme.colors.surfaceCard)
             .statusBarsPadding()
             .padding(start = 20.dp, end = 20.dp, top = TopBarHeight, bottom = 16.dp),
     ) {
-        if (detail == null) {
-            if (loading) HeroSkeleton()
-            return@Column
+        AnimatedContent(
+            targetState = detail,
+            contentKey = { it != null },
+            transitionSpec = { softReveal() },
+            contentAlignment = Alignment.TopCenter,
+            label = "category-hero",
+        ) { loaded ->
+            if (loaded != null) HeroContent(loaded, onTitleBottom) else if (loading) HeroSkeleton()
         }
+    }
+}
+
+@Composable
+private fun HeroContent(detail: CategoryDetail, onTitleBottom: (Float) -> Unit) {
+    val colors = KhazenaTheme.colors
+    val type = KhazenaTheme.typography
+    Column(Modifier.fillMaxWidth()) {
         Box(Modifier.fillMaxWidth()) {
             Image(
                 painterResource(homeImage(detail.imageKey)),
@@ -341,12 +375,22 @@ private fun HeroStat(value: String, label: String, modifier: Modifier = Modifier
 
 @Composable
 private fun CategoryBody(detail: CategoryDetail, state: CategoryState, onAction: (CategoryAction) -> Unit) {
-    val colors = KhazenaTheme.colors
-    val places = detail.placesFor(state.subcategoryId, state.sort)
+    // "All" first, then the business sub-categories; the index drives scrolling and slide direction.
+    val order = remember(detail.subcategories) { listOf<String?>(null) + detail.subcategories.map { it.id } }
     // Chips lay out at the 48dp touch target around their 36dp pill, so the Figma gaps (18 above, 26 below) lose 6dp each side.
     if (detail.subcategories.isNotEmpty()) {
+        val chips = rememberLazyListState()
+        val selectedIndex = order.indexOf(state.subcategoryId).coerceAtLeast(0)
+        // Centre the picked chip, so tapping one near either edge brings its neighbours into view.
+        LaunchedEffect(selectedIndex) {
+            val info = chips.layoutInfo
+            val viewport = info.viewportEndOffset - info.viewportStartOffset
+            val chipWidth = info.visibleItemsInfo.firstOrNull { it.index == selectedIndex }?.size ?: 0
+            chips.animateScrollToItem(selectedIndex, -(viewport - chipWidth) / 2)
+        }
         LazyRow(
             Modifier.fillMaxWidth().padding(top = 12.dp).selectableGroup(),
+            state = chips,
             contentPadding = PaddingValues(horizontal = KhazenaSpacing.screenMargin),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -363,19 +407,43 @@ private fun CategoryBody(detail: CategoryDetail, state: CategoryState, onAction:
     }
     SortRow(detail.countFor(state.subcategoryId), state.sort, onAction)
     Spacer(Modifier.height(18.dp))
-    Column(Modifier.padding(horizontal = KhazenaSpacing.screenMargin), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    AnimatedContent(
+        targetState = state.subcategoryId to state.sort,
+        transitionSpec = {
+            val from = order.indexOf(initialState.first)
+            val to = order.indexOf(targetState.first)
+            if (from == to) {
+                // Same chip, new sort order: a quiet cross-fade.
+                fadeIn(tween(KhazenaMotion.MEDIUM)) togetherWith fadeOut(tween(KhazenaMotion.SHORT))
+            } else {
+                // The list follows the chip: a later chip brings places in from the trailing side, an earlier one from the leading side.
+                val fromEnd = (to > from) != rtl
+                val slide = tween<IntOffset>(KhazenaMotion.LONG, easing = KhazenaMotion.EmphasizedDecelerate)
+                (slideInHorizontally(slide) { if (fromEnd) it / 3 else -it / 3 } + fadeIn(tween(KhazenaMotion.MEDIUM))) togetherWith
+                    (slideOutHorizontally(slide) { if (fromEnd) -it / 3 else it / 3 } + fadeOut(tween(KhazenaMotion.SHORT)))
+            } using SizeTransform(clip = false)
+        },
+        contentAlignment = Alignment.TopCenter,
+        label = "category-places",
+    ) { (subcategoryId, sort) ->
+        PlacesList(detail.placesFor(subcategoryId, sort), onAction)
+    }
+}
+
+@Composable
+private fun PlacesList(places: List<CategoryPlace>, onAction: (CategoryAction) -> Unit) {
+    Column(Modifier.fillMaxWidth().padding(horizontal = KhazenaSpacing.screenMargin), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         if (places.isEmpty()) {
             Text(
                 stringResource(Res.string.category_no_places),
                 style = KhazenaTheme.typography.bodyM,
-                color = colors.textSecondary,
+                color = KhazenaTheme.colors.textSecondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
             )
         }
-        places.forEachIndexed { index, place ->
-            PlaceRow(place, onAction, Modifier.revealOnAppear(index))
-        }
+        places.forEach { place -> PlaceRow(place, onAction) }
     }
 }
 

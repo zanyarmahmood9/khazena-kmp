@@ -2,15 +2,21 @@ package com.khazena.khazena.core.designsystem
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.runtime.LaunchedEffect
@@ -80,3 +86,12 @@ fun <S> AnimatedContentTransitionScope<S>.pushPopEnter(): EnterTransition =
 
 fun <S> AnimatedContentTransitionScope<S>.pushPopExit(): ExitTransition =
     slideOutOfContainer(SlideDirection.End, tween(PUSH_DURATION, easing = PushEasing))
+
+// Skeleton → content (and any loading-state swap): a soft cross-fade in place. The skeleton lingers while the
+// content fades in over it from the same top edge, so there is no blank frame, no slide and no scale jump; rows
+// that use revealOnAppear add their own gentle rise. The container takes the new height at once (no resize wobble).
+private val RevealEasing = CubicBezierEasing(0.25f, 0.1f, 0.25f, 1f)
+
+fun <S> AnimatedContentTransitionScope<S>.softReveal(): ContentTransform =
+    (fadeIn(tween(KhazenaMotion.LONG, easing = RevealEasing)) togetherWith fadeOut(tween(KhazenaMotion.MEDIUM, easing = RevealEasing)))
+        .using(SizeTransform(clip = false) { _, _ -> snap() })

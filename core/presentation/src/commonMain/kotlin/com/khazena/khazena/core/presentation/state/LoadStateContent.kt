@@ -1,25 +1,18 @@
 package com.khazena.khazena.core.presentation.state
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.khazena.khazena.core.designsystem.KhazenaMotion
 import com.khazena.khazena.core.designsystem.component.ButtonVariant
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaSkeletonList
 import com.khazena.khazena.core.designsystem.component.KhazenaStateCard
 import com.khazena.khazena.core.designsystem.component.StateTone
 import com.khazena.khazena.core.designsystem.revealOnAppear
+import com.khazena.khazena.core.designsystem.softReveal
 import khazena.core.presentation.generated.resources.Res
 import khazena.core.presentation.generated.resources.loading
 import khazena.core.presentation.generated.resources.state_error_badge
@@ -41,13 +34,7 @@ fun <T> LoadStateContent(
         modifier = modifier,
         contentKey = { it::class },
         contentAlignment = Alignment.TopCenter,
-        transitionSpec = {
-            val enter = fadeIn(tween(KhazenaMotion.MEDIUM, delayMillis = 60, easing = KhazenaMotion.EmphasizedDecelerate)) +
-                slideInVertically(tween(KhazenaMotion.LONG, easing = KhazenaMotion.EmphasizedDecelerate)) { it / 16 } +
-                scaleIn(tween(KhazenaMotion.LONG, easing = KhazenaMotion.EmphasizedDecelerate), initialScale = 0.98f)
-            (enter togetherWith fadeOut(tween(KhazenaMotion.SHORT, easing = KhazenaMotion.EmphasizedAccelerate)))
-                .using(SizeTransform(clip = false))
-        },
+        transitionSpec = { softReveal() },
         label = "LoadState",
     ) { target ->
         Box(Modifier.fillMaxWidth()) {
