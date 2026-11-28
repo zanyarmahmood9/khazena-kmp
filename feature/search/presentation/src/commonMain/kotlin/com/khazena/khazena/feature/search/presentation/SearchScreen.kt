@@ -9,6 +9,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.clearFocusOnTap
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaPlaceRow
 import com.khazena.khazena.core.designsystem.component.KhazenaSearchField
@@ -28,7 +29,6 @@ import com.khazena.khazena.core.presentation.state.MessageToastState
 import com.khazena.khazena.core.presentation.state.StateScreen
 import com.khazena.khazena.core.presentation.state.rememberMessageToastState
 import com.khazena.khazena.feature.search.domain.Place
-import khazena.core.presentation.generated.resources.Res as CoreRes
 import khazena.core.presentation.generated.resources.tab_search
 import khazena.feature.search.presentation.generated.resources.Res
 import khazena.feature.search.presentation.generated.resources.search_clear
@@ -43,6 +43,7 @@ import khazena.feature.search.presentation.generated.resources.search_popular
 import khazena.feature.search.presentation.generated.resources.search_results
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import khazena.core.presentation.generated.resources.Res as CoreRes
 
 @Composable
 fun SearchRoot(viewModel: SearchViewModel = koinViewModel()) {
@@ -64,6 +65,7 @@ fun SearchScreen(state: SearchState, toastState: MessageToastState, onAction: (S
         onRefresh = { onAction(SearchAction.OnRefresh) },
         onRetry = { onAction(SearchAction.OnRetry) },
         toastState = toastState,
+        modifier = Modifier.clearFocusOnTap(),
         header = {
             Text(
                 stringResource(CoreRes.string.tab_search),

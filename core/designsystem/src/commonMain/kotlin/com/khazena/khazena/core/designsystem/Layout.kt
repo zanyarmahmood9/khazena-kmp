@@ -1,11 +1,14 @@
 package com.khazena.khazena.core.designsystem
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -37,4 +40,11 @@ fun Modifier.textClickable(role: Role = Role.Button, onClick: () -> Unit): Modif
         .clip(KhazenaRadius.xs)
         .clickable(role = role, onClick = click)
         .padding(horizontal = TextPressOutsetX, vertical = TextPressOutsetY)
+}
+
+// Tapping empty space drops focus (and the keyboard). Taps a child handles itself (a field, a card, a button)
+// are consumed before they reach here, so they keep working as usual.
+fun Modifier.clearFocusOnTap(): Modifier = composed {
+    val focusManager = LocalFocusManager.current
+    pointerInput(focusManager) { detectTapGestures { focusManager.clearFocus() } }
 }

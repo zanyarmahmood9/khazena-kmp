@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.clearFocusOnTap
 import com.khazena.khazena.core.designsystem.component.KhazenaCategoryCard
 import com.khazena.khazena.core.designsystem.component.KhazenaCategoryCardSkeleton
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
@@ -86,6 +87,7 @@ fun CategoriesScreen(state: CategoriesState, toastState: MessageToastState, onAc
         onRefresh = { onAction(CategoriesAction.OnRefresh) },
         onRetry = { onAction(CategoriesAction.OnRetry) },
         toastState = toastState,
+        modifier = Modifier.clearFocusOnTap(),
         bottomClearance = 48.dp,
         // Figma 02a: 44dp bar, 16dp to the search field (8 below the bar + 8 above the content).
         topBar = { scrolled ->
