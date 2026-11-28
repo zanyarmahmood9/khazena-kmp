@@ -57,4 +57,21 @@
     <string name="store_empty_title">No service list yet.</string>
     <string name="store_empty_body">This business hasn’t added its services to Khazena. To see what they offer, visit their social media or stop by the store. Your member discount still applies.</string>
     <string name="store_empty_action">See contact &amp; location</string>
+    <string name="product_most_ordered">Most ordered</string>
+    <string name="product_member_price">Your member price</string>
+    <string name="product_discount">−%1$d%</string>
+    <string name="product_you_save">You save %1$s with Khazena</string>
+    <string name="product_serves">Serves %1$d</string>
+    <string name="product_minutes">~%1$d min</string>
+    <string name="product_spicy">Spicy option</string>
+    <string name="product_description">Description</string>
+    <string name="product_included">What’s included</string>
+    <string name="product_how_title">How to get this price</string>
+    <string name="product_step_order">Order at the counter as usual</string>
+    <string name="product_step_show">Show your live Scan Me QR</string>
+    <string name="product_step_scan">The cashier scans it — %1$d% comes off the bill</string>
+    <string name="product_more">More from %1$s</string>
+    <string name="product_see_menu">See menu</string>
+    <string name="product_cta_title">Show your QR to the cashier</string>
+    <string name="product_cta_sub">Pay %1$s instead of %2$s</string>
 </resources>

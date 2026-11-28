@@ -16,6 +16,8 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -25,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
@@ -97,3 +100,14 @@ fun <S> AnimatedContentTransitionScope<S>.softReveal(): ContentTransform =
     // blank frame (the white hero showing empty), and the overlap is short enough not to read as ghosting.
     (fadeIn(tween(KhazenaMotion.MEDIUM, easing = RevealEasing)) togetherWith fadeOut(tween(KhazenaMotion.MEDIUM, easing = RevealEasing)))
         .using(SizeTransform(clip = false) { _, _ -> snap() })
+
+// Content that follows a row of chips or segments: moving to a later one brings the new content in from the
+// trailing side, an earlier one from the leading side (mirrored in RTL); the same position just cross-fades.
+fun <S> AnimatedContentTransitionScope<S>.slideByIndex(from: Int, to: Int, rtl: Boolean): ContentTransform {
+    if (from == to) return fadeIn(tween(KhazenaMotion.MEDIUM)) togetherWith fadeOut(tween(KhazenaMotion.SHORT))
+    val fromEnd = (to > from) != rtl
+    val slide = tween<IntOffset>(KhazenaMotion.LONG, easing = KhazenaMotion.EmphasizedDecelerate)
+    return (slideInHorizontally(slide) { if (fromEnd) it / 3 else -it / 3 } + fadeIn(tween(KhazenaMotion.MEDIUM))) togetherWith
+        (slideOutHorizontally(slide) { if (fromEnd) -it / 3 else it / 3 } + fadeOut(tween(KhazenaMotion.SHORT))) using
+        SizeTransform(clip = false)
+}

@@ -1,15 +1,9 @@
 package com.khazena.khazena.feature.store.presentation
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
@@ -45,6 +39,7 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -58,7 +53,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
@@ -69,7 +66,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -94,6 +90,7 @@ import com.khazena.khazena.core.designsystem.component.KhazenaTag
 import com.khazena.khazena.core.designsystem.component.TagType
 import com.khazena.khazena.core.designsystem.pressScale
 import com.khazena.khazena.core.designsystem.rememberThrottledClick
+import com.khazena.khazena.core.designsystem.slideByIndex
 import com.khazena.khazena.core.designsystem.softReveal
 import com.khazena.khazena.core.presentation.ObserveAsEvents
 import com.khazena.khazena.core.presentation.UiText
@@ -131,7 +128,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import khazena.core.presentation.generated.resources.Res as CoreRes
 
 @Composable
-fun StoreRoot(onBack: () -> Unit, onScanMe: () -> Unit, viewModel: StoreViewModel = koinViewModel()) {
+fun StoreRoot(onBack: () -> Unit, onScanMe: () -> Unit, onOpenItem: (String) -> Unit, viewModel: StoreViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val toast = rememberMessageToastState()
     val uriHandler = LocalUriHandler.current
@@ -148,14 +145,15 @@ fun StoreRoot(onBack: () -> Unit, onScanMe: () -> Unit, viewModel: StoreViewMode
         when (action) {
             StoreAction.OnBackClick -> onBack()
             StoreAction.OnScanMeClick -> onScanMe()
+            is StoreAction.OnMenuItemClick -> onOpenItem(action.id)
             is StoreAction.OnContactClick -> runCatching { uriHandler.openUri(action.contact.link) }
             StoreAction.OnDirectionsClick -> loaded?.let { runCatching { uriHandler.openUri(directionsLink(it)) } }
             StoreAction.OnCopyAddressClick -> address?.let {
                 clipboard.setText(AnnotatedString(it))
                 toast.show(UiText.Resource(Res.string.store_address_copied))
             }
-            // shortcut: share sheet, photo gallery, product page, the review flow and the full review list are later
-            // screens (Figma 02f, 07a, overlays); their taps do nothing until those land.
+            // shortcut: share sheet, photo gallery, the review flow and the full review list are later screens
+            // (Figma 07a, overlays); their taps do nothing until those land.
             else -> Unit
         }
         viewModel.onAction(action)
@@ -167,7 +165,7 @@ private fun directionsLink(store: Store) = "https://www.google.com/maps/dir/?api
 // Figma 02c: the cover runs under the status bar, 300dp tall; the info card overlaps it from 238dp.
 private val CoverHeight = 300.dp
 private val CardTop = 238.dp
-private val CoverShade = Brush.verticalGradient(0f to Color.Black.copy(alpha = 0.45f), 1f to Color.Transparent)
+internal val CoverShade = Brush.verticalGradient(0f to Color.Black.copy(alpha = 0.45f), 1f to Color.Transparent)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -181,13 +179,15 @@ fun StoreScreen(state: StoreState, toastState: MessageToastState, onAction: (Sto
     var barBottom by remember { mutableFloatStateOf(0f) }
     // The cover photo is dark, so the status bar goes light over it; the light skeleton cover keeps dark icons.
     val overCover = store != null && coverBottom > barBottom
+    // The visible height, so a tab body never ends above the screen: a shorter filter result must not drag the page up.
+    var viewportHeight by remember { mutableIntStateOf(0) }
     LightStatusBarIcons(enabled = overCover)
     Box(Modifier.fillMaxSize().background(colors.surfaceBackground).clearFocusOnTap()) {
         PullToRefreshBox(
             isRefreshing = state.store.isRefreshing,
             onRefresh = { onAction(StoreAction.OnRefresh) },
             state = refreshState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().onSizeChanged { viewportHeight = it.height },
             indicator = {
                 PullToRefreshDefaults.Indicator(
                     state = refreshState,
@@ -205,7 +205,9 @@ fun StoreScreen(state: StoreState, toastState: MessageToastState, onAction: (Sto
                     label = "store-content",
                 ) { content ->
                     when (content) {
-                        is LoadState.Data -> Column(Modifier.fillMaxWidth()) { StoreBody(content.value, state, onAction) { coverBottom = it } }
+                        is LoadState.Data -> Column(Modifier.fillMaxWidth()) {
+                            StoreBody(content.value, state, onAction, with(LocalDensity.current) { viewportHeight.toDp() }) { coverBottom = it }
+                        }
                         LoadState.Loading -> StoreSkeleton()
                         else -> Column {
                             Box(Modifier.fillMaxWidth().height(CoverHeight).background(colors.surfaceTile))
@@ -220,22 +222,29 @@ fun StoreScreen(state: StoreState, toastState: MessageToastState, onAction: (Sto
                 }
             }
         }
-        StoreTopBar(
+        PhotoTopBar(
             title = store?.name?.localized().orEmpty(),
             solid = store != null && !overCover,
             isSaved = state.isSaved,
-            onAction = onAction,
+            onBack = { onAction(StoreAction.OnBackClick) },
+            onShare = { onAction(StoreAction.OnShareClick) },
+            onSave = { onAction(StoreAction.OnSaveClick) },
             modifier = Modifier.onGloballyPositioned { barBottom = it.boundsInRoot().bottom },
         )
         if (store != null) {
-            CheckoutBar(store.discountPercent, { onAction(StoreAction.OnScanMeClick) }, Modifier.align(Alignment.BottomCenter))
+            CheckoutBar(
+                title = stringResource(Res.string.store_cta_title),
+                subtitle = stringResource(Res.string.store_cta_sub, store.discountPercent),
+                onScanMe = { onAction(StoreAction.OnScanMeClick) },
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
         }
         MessageToastHost(toastState, Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = CheckoutBarClearance))
     }
 }
 
 @Composable
-private fun StoreBody(store: Store, state: StoreState, onAction: (StoreAction) -> Unit, onCoverBottom: (Float) -> Unit) {
+private fun StoreBody(store: Store, state: StoreState, onAction: (StoreAction) -> Unit, minTabHeight: Dp, onCoverBottom: (Float) -> Unit) {
     Box(Modifier.fillMaxWidth()) {
         Cover(store, Modifier.onGloballyPositioned { onCoverBottom(it.boundsInRoot().bottom) }, onAction)
         InfoCard(store, Modifier.padding(start = 16.dp, end = 16.dp, top = CardTop))
@@ -254,17 +263,19 @@ private fun StoreBody(store: Store, state: StoreState, onAction: (StoreAction) -
     // The tab body follows the segment: a later tab slides in from the trailing side, an earlier one from the leading side.
     AnimatedContent(
         targetState = state.tab,
-        transitionSpec = {
-            val fromEnd = (targetState.ordinal > initialState.ordinal) != rtl
-            val slide = tween<IntOffset>(KhazenaMotion.LONG, easing = KhazenaMotion.EmphasizedDecelerate)
-            (slideInHorizontally(slide) { if (fromEnd) it / 3 else -it / 3 } + fadeIn(tween(KhazenaMotion.MEDIUM))) togetherWith
-                (slideOutHorizontally(slide) { if (fromEnd) -it / 3 else it / 3 } + fadeOut(tween(KhazenaMotion.SHORT))) using
-                SizeTransform(clip = false)
-        },
+        transitionSpec = { slideByIndex(initialState.ordinal, targetState.ordinal, rtl) },
         contentAlignment = Alignment.TopCenter,
         label = "store-tab",
     ) { tab ->
-        Column(Modifier.fillMaxWidth().padding(horizontal = KhazenaSpacing.screenMargin).padding(top = 16.dp)) {
+        // Only tabs with chips that change their length hold a screen's height; the rest end where their content does.
+        val holdsHeight = tab == StoreTab.Reviews || (tab == StoreTab.Services && store.menu.isNotEmpty())
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .then(if (holdsHeight) Modifier.heightIn(min = minTabHeight) else Modifier)
+                .padding(horizontal = KhazenaSpacing.screenMargin)
+                .padding(top = 16.dp),
+        ) {
             when (tab) {
                 StoreTab.Services -> ServicesTab(store, state, onAction)
                 StoreTab.Reviews -> ReviewsTab(store, state.reviewSort, onAction)
@@ -388,10 +399,18 @@ private fun OfferCard(discountPercent: Int) {
     }
 }
 
-// Pinned over the cover: white back button and the share/save pill. Once the cover is gone the bar fills with
-// paper and shows the store name, like the category screen.
+// Pinned over a photo (store cover, product photo): white back button and the share/save pill. Once the photo is
+// gone the bar fills with paper and shows the title, like the category screen.
 @Composable
-private fun StoreTopBar(title: String, solid: Boolean, isSaved: Boolean, onAction: (StoreAction) -> Unit, modifier: Modifier = Modifier) {
+internal fun PhotoTopBar(
+    title: String,
+    solid: Boolean,
+    isSaved: Boolean,
+    onBack: () -> Unit,
+    onShare: () -> Unit,
+    onSave: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val colors = KhazenaTheme.colors
     val background by animateColorAsState(if (solid) colors.surfaceBackground else colors.surfaceBackground.copy(alpha = 0f), tween(KhazenaMotion.MEDIUM), label = "store-bar")
     val solidAlpha by animateFloatAsState(if (solid) 1f else 0f, tween(KhazenaMotion.MEDIUM), label = "store-bar-title")
@@ -409,7 +428,7 @@ private fun StoreTopBar(title: String, solid: Boolean, isSaved: Boolean, onActio
         KhazenaIconButton(
             KhazenaIcons.ArrowLeft,
             stringResource(CoreRes.string.back),
-            { onAction(StoreAction.OnBackClick) },
+            onBack,
             Modifier.align(Alignment.CenterStart),
             style = IconButtonStyle.White,
         )
@@ -425,11 +444,9 @@ private fun StoreTopBar(title: String, solid: Boolean, isSaved: Boolean, onActio
             Modifier.align(Alignment.CenterEnd).clip(KhazenaRadius.pill).background(colors.surfaceCard).padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            BarAction(KhazenaIcons.Export, stringResource(Res.string.store_share), colors.textPrimary) { onAction(StoreAction.OnShareClick) }
+            BarAction(KhazenaIcons.Export, stringResource(Res.string.store_share), colors.textPrimary, onShare)
             Box(Modifier.width(1.dp).height(20.dp).background(colors.blockInk.copy(alpha = 0.15f)))
-            BarAction(KhazenaIcons.Bookmark, stringResource(Res.string.store_save), if (isSaved) colors.actionPrimary else colors.textPrimary) {
-                onAction(StoreAction.OnSaveClick)
-            }
+            BarAction(KhazenaIcons.Bookmark, stringResource(Res.string.store_save), if (isSaved) colors.actionPrimary else colors.textPrimary, onSave)
         }
     }
 }
@@ -450,10 +467,10 @@ private fun BarAction(icon: DrawableResource, label: String, tint: Color, onClic
 }
 
 // Figma "Sticky checkout bar": a paper fade, then a frosted pill with the QR prompt and the Scan Me button.
-private val CheckoutBarClearance = 108.dp
+internal val CheckoutBarClearance = 108.dp
 
 @Composable
-private fun CheckoutBar(discountPercent: Int, onScanMe: () -> Unit, modifier: Modifier = Modifier) {
+internal fun CheckoutBar(title: String, subtitle: String, onScanMe: () -> Unit, modifier: Modifier = Modifier) {
     val colors = KhazenaTheme.colors
     val type = KhazenaTheme.typography
     val paper = colors.surfaceBackground
@@ -476,8 +493,8 @@ private fun CheckoutBar(discountPercent: Int, onScanMe: () -> Unit, modifier: Mo
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
-                Text(stringResource(Res.string.store_cta_title), style = type.labelMSemiBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(stringResource(Res.string.store_cta_sub, discountPercent), style = type.bodyS.copy(fontSize = 12.sp), color = colors.textSecondary, maxLines = 1)
+                Text(title, style = type.labelMSemiBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(subtitle, style = type.bodyS.copy(fontSize = 12.sp), color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             PillButton(
                 label = stringResource(Res.string.store_scan_me),

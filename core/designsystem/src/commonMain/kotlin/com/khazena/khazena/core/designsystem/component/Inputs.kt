@@ -1,21 +1,29 @@
 package com.khazena.khazena.core.designsystem.component
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.selection.toggleable
@@ -33,7 +41,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
@@ -43,8 +53,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.khazena.khazena.core.designsystem.KhazenaMotion
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.pressScale
 import org.jetbrains.compose.resources.painterResource
 
 private val SearchFieldShape = RoundedCornerShape(18.dp)
@@ -112,6 +124,8 @@ fun KhazenaSearchField(
     )
 }
 
+// iOS-style segmented control: one selection pill slides (with a soft spring) to the tapped segment, mirrored in
+// RTL; labels cross-fade their colour as it passes, and a pressed label dims and shrinks a touch.
 @Composable
 fun KhazenaSegmentedControl(
     options: List<String>,
@@ -121,37 +135,63 @@ fun KhazenaSegmentedControl(
 ) {
     val colors = KhazenaTheme.colors
     val haptics = LocalHapticFeedback.current
-    Row(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
             .height(48.dp)
             .clip(KhazenaRadius.pill)
             .background(colors.surfaceTile)
-            .padding(4.dp)
-            .selectableGroup(),
+            .padding(4.dp),
     ) {
-        options.forEachIndexed { index, label ->
-            val selected = index == selectedIndex
-            Box(
-                Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .clip(KhazenaRadius.pill)
-                    .background(if (selected) colors.actionSelected else colors.surfaceTile)
-                    .selectable(selected = selected, role = Role.Tab) {
-                        if (!selected) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
-                        onSelect(index)
-                    },
-                contentAlignment = Alignment.Center,
-            ) {
-                // Figma: 13pt, semibold on the selected segment, medium on the others.
-                Text(
-                    label,
-                    style = KhazenaTheme.typography.labelSMedium.copy(fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium),
-                    color = if (selected) colors.actionOnSelected else colors.textSecondary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+        val segmentWidth = maxWidth / options.size.coerceAtLeast(1)
+        val thumbOffset by animateDpAsState(
+            targetValue = segmentWidth * selectedIndex,
+            animationSpec = spring(dampingRatio = 0.82f, stiffness = Spring.StiffnessMediumLow),
+            label = "segment-thumb",
+        )
+        Box(
+            Modifier
+                .offset(x = thumbOffset)
+                .width(segmentWidth)
+                .fillMaxHeight()
+                .shadow(2.dp, KhazenaRadius.pill, clip = false)
+                .clip(KhazenaRadius.pill)
+                .background(colors.actionSelected),
+        )
+        Row(Modifier.fillMaxSize().selectableGroup()) {
+            options.forEachIndexed { index, label ->
+                val selected = index == selectedIndex
+                val interaction = remember { MutableInteractionSource() }
+                val pressed by interaction.collectIsPressedAsState()
+                val textColor by animateColorAsState(
+                    if (selected) colors.actionOnSelected else colors.textSecondary,
+                    tween(KhazenaMotion.MEDIUM),
+                    label = "segment-label",
                 )
+                val pressAlpha by animateFloatAsState(if (pressed && !selected) 0.55f else 1f, tween(KhazenaMotion.SHORT), label = "segment-press")
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .selectable(selected = selected, interactionSource = interaction, indication = null, role = Role.Tab) {
+                            if (!selected) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                            onSelect(index)
+                        },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    // Figma: 13pt, semibold on the selected segment, medium on the others.
+                    Text(
+                        label,
+                        style = KhazenaTheme.typography.labelSMedium.copy(fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium),
+                        color = textColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .padding(horizontal = 6.dp)
+                            .pressScale(interaction, pressedScale = 0.94f)
+                            .graphicsLayer { alpha = pressAlpha },
+                    )
+                }
             }
         }
     }

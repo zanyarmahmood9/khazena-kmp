@@ -27,6 +27,8 @@ data class Store(
     val reviews: List<Review>,
     val about: LocalizedText,
     val address: LocalizedText,
+    /** Short form for one-line meta rows ("Salim St"). */
+    val street: LocalizedText,
     val area: LocalizedText,
     val latitude: Double,
     val longitude: Double,
@@ -45,6 +47,16 @@ data class MenuItem(
     val imageKey: String,
     val sectionId: String,
     val popular: Boolean = false,
+    val details: ProductDetails? = null,
+)
+
+/** The product page (Figma 02f); items without details show their short description instead. */
+data class ProductDetails(
+    val story: LocalizedText,
+    val includes: List<LocalizedText>,
+    val serves: Int? = null,
+    val prepMinutes: Int? = null,
+    val spicyOption: Boolean = false,
 )
 
 enum class AvatarTone { Violet, Sun, Green }

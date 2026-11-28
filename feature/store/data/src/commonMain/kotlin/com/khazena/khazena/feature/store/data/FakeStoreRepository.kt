@@ -10,6 +10,7 @@ import com.khazena.khazena.feature.store.domain.ContactKind
 import com.khazena.khazena.feature.store.domain.MenuItem
 import com.khazena.khazena.feature.store.domain.MenuSection
 import com.khazena.khazena.feature.store.domain.OpeningHours
+import com.khazena.khazena.feature.store.domain.ProductDetails
 import com.khazena.khazena.feature.store.domain.Review
 import com.khazena.khazena.feature.store.domain.Store
 import com.khazena.khazena.feature.store.domain.StoreContact
@@ -60,30 +61,97 @@ private val Azmar = Store(
             LocalizedText("پلێتی کەبابی مریشک", "Chicken Kebab Platter", "طبق كباب دجاج"),
             LocalizedText("دوو شیشی مریشک، برنج، سەوزەی برژاو و نانی تازە", "Two chicken skewers, rice, grilled veg and fresh bread", "سيخا دجاج، أرز، خضار مشوية وخبز طازج"),
             12_000, 8_400, "item_chicken_kebab", "grills", popular = true,
+            details = ProductDetails(
+                story = LocalizedText(
+                    "دوو شیشی مریشکی زەعفەرانی لەسەر خەڵووز برژاو، لەگەڵ برنجی کەرەدار، تەماتە و بیبەری برژاو، پیازی ترشێنراو و نانی گەرم ڕاستەوخۆ لە تەنووری قوڕەوە.",
+                    "Two skewers of saffron-marinated chicken, grilled over charcoal and served with buttery rice, flame-grilled tomato and pepper, pickled onions and warm bread straight from the clay oven.",
+                    "سيخان من الدجاج المتبل بالزعفران مشويان على الفحم، يقدمان مع أرز بالزبدة وطماطم وفلفل مشويين وبصل مخلل وخبز دافئ من التنور الطيني.",
+                ),
+                includes = listOf(
+                    LocalizedText("٢ شیشی مریشک", "2 chicken shish skewers", "سيخا شيش دجاج"),
+                    LocalizedText("برنجی زەعفەرانی", "Saffron rice", "أرز بالزعفران"),
+                    LocalizedText("تەماتە و بیبەری سەوزی برژاو", "Grilled tomato & green pepper", "طماطم وفلفل أخضر مشويان"),
+                    LocalizedText("نانی تەنوور و پیازی ترشێنراو", "Clay-oven bread & pickled onion", "خبز التنور وبصل مخلل"),
+                ),
+                serves = 1,
+                prepMinutes = 15,
+                spicyOption = true,
+            ),
         ),
         MenuItem(
             "mixed_grill_for_two",
             LocalizedText("گریلی تێکەڵ بۆ دوو کەس", "Mixed Grill for Two", "مشاوي مشكلة لشخصين"),
             LocalizedText("کەبابی بەرخ، تکەی مریشک و کفتە لەگەڵ زیادە بۆ دوو کەس", "Lamb kebab, chicken tikka and kofta with sides for two", "كباب لحم، تكة دجاج وكفتة مع مقبلات لشخصين"),
             30_000, 21_000, "item_mixed_grill", "grills", popular = true,
+            details = ProductDetails(
+                story = LocalizedText(
+                    "کەبابی بەرخ، تکەی مریشک و کفتەی دەستکرد لەسەر خەڵووز، لەگەڵ برنج، سەوزەی برژاو، سەڵاتە و نانی تەنوور بۆ دوو کەس.",
+                    "Lamb kebab, chicken tikka and hand-made kofta off the charcoal, with rice, grilled veg, salad and clay-oven bread for two.",
+                    "كباب لحم وتكة دجاج وكفتة يدوية على الفحم، مع أرز وخضار مشوية وسلطة وخبز التنور لشخصين.",
+                ),
+                includes = listOf(
+                    LocalizedText("کەبابی بەرخ و کفتە", "Lamb kebab & kofta", "كباب لحم وكفتة"),
+                    LocalizedText("تکەی مریشک", "Chicken tikka", "تكة دجاج"),
+                    LocalizedText("برنج و سەوزەی برژاو", "Rice & grilled veg", "أرز وخضار مشوية"),
+                    LocalizedText("سەڵاتە و نانی تەنوور", "Salad & clay-oven bread", "سلطة وخبز التنور"),
+                ),
+                serves = 2,
+                prepMinutes = 25,
+            ),
         ),
         MenuItem(
             "red_lentil_soup",
             LocalizedText("شۆربای نیسکی سوور", "Red Lentil Soup", "شوربة عدس أحمر"),
             LocalizedText("نیسکی هێواش لێنراو لەگەڵ لیمۆ و نانی برژاو", "Slow-cooked lentils with lemon and toasted bread", "عدس مطبوخ ببطء مع ليمون وخبز محمص"),
             4_000, 2_800, "item_lentil_soup", "soups",
+            details = ProductDetails(
+                story = LocalizedText(
+                    "نیسکی سووری هێواش لێنراو لەگەڵ زیرە و لیمۆی تازە، لەگەڵ نانی برژاو.",
+                    "Red lentils slow-cooked with cumin and a squeeze of fresh lemon, served with toasted bread.",
+                    "عدس أحمر مطبوخ ببطء مع الكمون وعصرة ليمون طازج، يقدم مع خبز محمص.",
+                ),
+                includes = listOf(
+                    LocalizedText("قاپێکی گەورەی شۆربا", "A large bowl of soup", "صحن شوربة كبير"),
+                    LocalizedText("نانی برژاو و لیمۆ", "Toasted bread & lemon", "خبز محمص وليمون"),
+                ),
+                serves = 1,
+                prepMinutes = 5,
+            ),
         ),
         MenuItem(
             "kunafa_pistachio",
             LocalizedText("کونافە بە فستق", "Kunafa with Pistachio", "كنافة بالفستق"),
             LocalizedText("کونافەی گەرمی پەنیر، شەربەت و فستقی هاڕاو", "Warm cheese kunafa, syrup and crushed pistachio", "كنافة جبن دافئة مع قطر وفستق مطحون"),
             6_000, 4_200, "item_kunafa", "desserts", popular = true,
+            details = ProductDetails(
+                story = LocalizedText(
+                    "کونافەی گەرمی پەنیری نابلسی، شەربەتی گوڵاو و فستقی حەلەبی هاڕاو.",
+                    "Warm Nabulsi-cheese kunafa with rose-water syrup and crushed Aleppo pistachio.",
+                    "كنافة دافئة بالجبنة النابلسية مع قطر ماء الورد وفستق حلبي مطحون.",
+                ),
+                includes = listOf(
+                    LocalizedText("پارچەیەک کونافە", "One kunafa portion", "حصة كنافة"),
+                    LocalizedText("شەربەتی زیادە", "Extra syrup on the side", "قطر إضافي جانبي"),
+                ),
+                serves = 1,
+                prepMinutes = 10,
+            ),
         ),
         MenuItem(
             "fresh_ayran",
             LocalizedText("دۆی تازە", "Fresh Ayran", "عيران طازج"),
             LocalizedText("خواردنەوەی ساردی ماست بە پونگ", "Cold yogurt drink with mint", "مشروب لبن بارد بالنعناع"),
             1_500, 1_050, "item_ayran", "drinks",
+            details = ProductDetails(
+                story = LocalizedText(
+                    "دۆی ماستی تازە، کەمێک خوێ و پونگی وشک، سارد پێشکەش دەکرێت.",
+                    "Fresh yogurt ayran with a pinch of salt and dried mint, served ice-cold.",
+                    "عيران لبن طازج مع رشة ملح ونعناع مجفف، يقدم بارداً.",
+                ),
+                includes = listOf(LocalizedText("پەرداخێکی ٤٠٠ مل", "A 400 ml glass", "كوب 400 مل")),
+                serves = 1,
+                prepMinutes = 2,
+            ),
         ),
     ),
     ratingBreakdown = listOf(98, 19, 5, 3, 1),
@@ -131,6 +199,7 @@ private val Azmar = Store(
         "مشاوٍ على الفحم يديرها أهلها منذ 2014، تقدم الأطباق الكردية والشرق أوسطية الكلاسيكية — كباب وتكة وخبز طازج من التنور الطيني.",
     ),
     address = LocalizedText("شەقامی سالم، نزیک پارکی ئازادی", "Salim Street, near Azadi Park", "شارع سالم، قرب حديقة آزادي"),
+    street = LocalizedText("شەقامی سالم", "Salim St", "شارع سالم"),
     area = Sulaymaniyah,
     latitude = 35.5613,
     longitude = 45.4374,
@@ -188,6 +257,7 @@ private fun basicStore(
     ),
     about = cuisine,
     address = address,
+    street = address,
     area = Sulaymaniyah,
     latitude = 35.5613,
     longitude = 45.4374,

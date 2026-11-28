@@ -3,6 +3,7 @@ package com.khazena.khazena.core.designsystem
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
@@ -47,4 +48,12 @@ fun Modifier.textClickable(role: Role = Role.Button, onClick: () -> Unit): Modif
 fun Modifier.clearFocusOnTap(): Modifier = composed {
     val focusManager = LocalFocusManager.current
     pointerInput(focusManager) { detectTapGestures { focusManager.clearFocus() } }
+}
+
+// Scrolls a chip row so [index] sits in the middle, bringing its neighbours on either side into view.
+suspend fun LazyListState.animateScrollToCenter(index: Int) {
+    val info = layoutInfo
+    val viewport = info.viewportEndOffset - info.viewportStartOffset
+    val itemSize = info.visibleItemsInfo.firstOrNull { it.index == index }?.size ?: 0
+    animateScrollToItem(index, -(viewport - itemSize) / 2)
 }

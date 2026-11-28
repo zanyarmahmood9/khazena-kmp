@@ -1,5 +1,6 @@
 package com.khazena.khazena.feature.store.presentation
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
@@ -31,6 +33,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,16 +42,19 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.animateScrollToCenter
 import com.khazena.khazena.core.designsystem.bleedHorizontally
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaMenuItem
@@ -56,6 +62,7 @@ import com.khazena.khazena.core.designsystem.component.KhazenaReviewCard
 import com.khazena.khazena.core.designsystem.component.KhazenaSearchField
 import com.khazena.khazena.core.designsystem.component.KhazenaStars
 import com.khazena.khazena.core.designsystem.revealOnAppear
+import com.khazena.khazena.core.designsystem.slideByIndex
 import com.khazena.khazena.core.presentation.formatDistance
 import com.khazena.khazena.core.presentation.formatGrouped
 import com.khazena.khazena.core.presentation.formatIqd
@@ -63,6 +70,7 @@ import com.khazena.khazena.core.presentation.localized
 import com.khazena.khazena.feature.store.domain.AvatarTone
 import com.khazena.khazena.feature.store.domain.ContactKind
 import com.khazena.khazena.feature.store.domain.MenuItem
+import com.khazena.khazena.feature.store.domain.Review
 import com.khazena.khazena.feature.store.domain.Store
 import com.khazena.khazena.feature.store.domain.Weekday
 import khazena.feature.store.presentation.generated.resources.Res
@@ -132,7 +140,15 @@ internal fun ServicesTab(store: Store, state: StoreState, onAction: (StoreAction
         placeholder = stringResource(Res.string.store_menu_search, store.name.localized()),
         clearContentDescription = stringResource(Res.string.store_menu_clear),
     )
-    MenuFilters(store, state.menuFilter, onAction, Modifier.padding(top = 12.dp))
+    // Chip order: All, Popular (when there is any), then each section that has items.
+    val filters = remember(store) {
+        buildList {
+            add(MenuFilter.All)
+            if (store.menu.any { it.popular }) add(MenuFilter.Popular)
+            store.menuSections.filter { section -> store.menu.any { it.sectionId == section.id } }.forEach { add(MenuFilter.Section(it.id)) }
+        }
+    }
+    MenuFilters(store, filters, state.menuFilter, onAction, Modifier.padding(top = 12.dp))
     Text(
         stringResource(Res.string.store_prices_note, store.discountPercent),
         style = KhazenaTheme.typography.bodyS.copy(fontSize = 12.sp),
@@ -140,8 +156,22 @@ internal fun ServicesTab(store: Store, state: StoreState, onAction: (StoreAction
         modifier = Modifier.padding(top = 17.dp),
     )
     val query = state.menuQuery.trim()
-    val items = store.itemsFor(state.menuFilter).matching(query)
-    Column(Modifier.padding(top = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    // The list follows the chip row: a later filter slides in from the trailing side, an earlier one from the leading side.
+    AnimatedContent(
+        targetState = state.menuFilter,
+        transitionSpec = { slideByIndex(filters.indexOf(initialState), filters.indexOf(targetState), rtl) },
+        contentAlignment = Alignment.TopCenter,
+        label = "store-menu",
+    ) { filter ->
+        MenuList(store.itemsFor(filter).matching(query), query, onAction)
+    }
+}
+
+@Composable
+private fun MenuList(items: List<MenuItem>, query: String, onAction: (StoreAction) -> Unit) {
+    val colors = KhazenaTheme.colors
+    Column(Modifier.fillMaxWidth().padding(top = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         if (items.isEmpty()) {
             Text(
                 stringResource(Res.string.store_menu_no_match, query),
@@ -175,32 +205,37 @@ private fun List<MenuItem>.matching(query: String): List<MenuItem> =
     }
 
 @Composable
-private fun MenuFilters(store: Store, selected: MenuFilter, onAction: (StoreAction) -> Unit, modifier: Modifier = Modifier) {
-    val popularCount = store.menu.count { it.popular }
+private fun MenuFilters(store: Store, filters: List<MenuFilter>, selected: MenuFilter, onAction: (StoreAction) -> Unit, modifier: Modifier = Modifier) {
+    val row = rememberLazyListState()
+    val selectedIndex = filters.indexOf(selected).coerceAtLeast(0)
+    // Centre the picked chip so tapping one near either edge brings its neighbours into view.
+    LaunchedEffect(selectedIndex) { row.animateScrollToCenter(selectedIndex) }
     LazyRow(
         modifier.bleedHorizontally(KhazenaSpacing.screenMargin).selectableGroup(),
+        state = row,
         contentPadding = PaddingValues(horizontal = KhazenaSpacing.screenMargin),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        item(key = "all") {
-            FilterChip(stringResource(Res.string.store_filter_all), selected == MenuFilter.All, count = store.menu.size) {
-                onAction(StoreAction.OnMenuFilterClick(MenuFilter.All))
-            }
-        }
-        if (popularCount > 0) {
-            item(key = "popular") {
-                FilterChip(stringResource(Res.string.store_filter_popular), selected == MenuFilter.Popular, fire = true) {
-                    onAction(StoreAction.OnMenuFilterClick(MenuFilter.Popular))
-                }
-            }
-        }
-        items(store.menuSections.filter { section -> store.menu.any { it.sectionId == section.id } }, key = { it.id }) { section ->
-            val filter = MenuFilter.Section(section.id)
-            FilterChip(section.name.localized(), selected == filter, count = store.menu.count { it.sectionId == section.id }) {
-                onAction(StoreAction.OnMenuFilterClick(filter))
+        items(filters, key = { it.key() }) { filter ->
+            val onClick = { onAction(StoreAction.OnMenuFilterClick(filter)) }
+            when (filter) {
+                MenuFilter.All -> FilterChip(stringResource(Res.string.store_filter_all), selected == filter, count = store.menu.size, onClick = onClick)
+                MenuFilter.Popular -> FilterChip(stringResource(Res.string.store_filter_popular), selected == filter, fire = true, onClick = onClick)
+                is MenuFilter.Section -> FilterChip(
+                    store.menuSections.first { it.id == filter.id }.name.localized(),
+                    selected == filter,
+                    count = store.menu.count { it.sectionId == filter.id },
+                    onClick = onClick,
+                )
             }
         }
     }
+}
+
+private fun MenuFilter.key(): String = when (this) {
+    MenuFilter.All -> "all"
+    MenuFilter.Popular -> "popular"
+    is MenuFilter.Section -> "section_$id"
 }
 
 // Figma "Menu filters": 13pt semibold with an optional count bubble; the selected chip is ink, the rest outlined.
@@ -330,8 +365,11 @@ internal fun ReviewsTab(store: Store, sort: ReviewSort, onAction: (StoreAction) 
             height = 50.dp,
             textStyle = KhazenaTheme.typography.labelMSemiBold,
         )
+        val sortRow = rememberLazyListState()
+        LaunchedEffect(sort) { sortRow.animateScrollToCenter(sort.ordinal) }
         LazyRow(
             Modifier.bleedHorizontally(KhazenaSpacing.screenMargin).selectableGroup(),
+            state = sortRow,
             contentPadding = PaddingValues(horizontal = KhazenaSpacing.screenMargin),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
@@ -339,7 +377,22 @@ internal fun ReviewsTab(store: Store, sort: ReviewSort, onAction: (StoreAction) 
                 SortChip(stringResource(option.label), option == sort) { onAction(StoreAction.OnReviewSortClick(option)) }
             }
         }
-        val reviews = store.reviewsSortedBy(sort)
+        val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+        AnimatedContent(
+            targetState = sort,
+            transitionSpec = { slideByIndex(initialState.ordinal, targetState.ordinal, rtl) },
+            contentAlignment = Alignment.TopCenter,
+            label = "store-reviews",
+        ) { shownSort ->
+            ReviewList(store, store.reviewsSortedBy(shownSort), onAction)
+        }
+    }
+}
+
+@Composable
+private fun ReviewList(store: Store, reviews: List<Review>, onAction: (StoreAction) -> Unit) {
+    val colors = KhazenaTheme.colors
+    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         if (reviews.isEmpty()) {
             Text(
                 stringResource(Res.string.store_no_reviews),

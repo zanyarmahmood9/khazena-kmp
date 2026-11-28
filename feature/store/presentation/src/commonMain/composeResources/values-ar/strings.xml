@@ -57,4 +57,21 @@
     <string name="store_empty_title">لا توجد قائمة خدمات بعد.</string>
     <string name="store_empty_body">لم يضف هذا النشاط خدماته إلى خزينة بعد. لمعرفة ما يقدمه، زر حساباته على مواقع التواصل أو المتجر نفسه. خصم الأعضاء لا يزال سارياً.</string>
     <string name="store_empty_action">عرض التواصل والموقع</string>
+    <string name="product_most_ordered">الأكثر طلباً</string>
+    <string name="product_member_price">سعرك كعضو</string>
+    <string name="product_discount">−%1$d%</string>
+    <string name="product_you_save">توفّر %1$s مع خزينة</string>
+    <string name="product_serves">يكفي %1$d</string>
+    <string name="product_minutes">~%1$d د</string>
+    <string name="product_spicy">خيار حار</string>
+    <string name="product_description">الوصف</string>
+    <string name="product_included">ماذا يتضمن</string>
+    <string name="product_how_title">كيف تحصل على هذا السعر</string>
+    <string name="product_step_order">اطلب من الكاونتر كالمعتاد</string>
+    <string name="product_step_show">اعرض رمز امسحني المباشر</string>
+    <string name="product_step_scan">يمسحه الكاشير — يُخصم %1$d% من الفاتورة</string>
+    <string name="product_more">المزيد من %1$s</string>
+    <string name="product_see_menu">عرض القائمة</string>
+    <string name="product_cta_title">اعرض رمزك للكاشير</string>
+    <string name="product_cta_sub">ادفع %1$s بدلاً من %2$s</string>
 </resources>

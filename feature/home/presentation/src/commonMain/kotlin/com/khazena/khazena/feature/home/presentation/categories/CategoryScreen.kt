@@ -1,12 +1,9 @@
 package com.khazena.khazena.feature.home.presentation.categories
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -68,7 +65,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -82,6 +78,7 @@ import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.animateScrollToCenter
 import com.khazena.khazena.core.designsystem.clearFocusOnTap
 import com.khazena.khazena.core.designsystem.component.IconButtonStyle
 import com.khazena.khazena.core.designsystem.component.KhazenaBottomSheet
@@ -98,6 +95,7 @@ import com.khazena.khazena.core.designsystem.component.KhazenaSkeletonRow
 import com.khazena.khazena.core.designsystem.component.KhazenaSkeletonText
 import com.khazena.khazena.core.designsystem.component.KhazenaTopBar
 import com.khazena.khazena.core.designsystem.component.multiplySafe
+import com.khazena.khazena.core.designsystem.slideByIndex
 import com.khazena.khazena.core.designsystem.softReveal
 import com.khazena.khazena.core.designsystem.textClickable
 import com.khazena.khazena.core.domain.LocalizedText
@@ -456,12 +454,7 @@ private fun CategoryBody(detail: CategoryDetail, state: CategoryState, onAction:
         val chips = rememberLazyListState()
         val selectedIndex = order.indexOf(subcategoryId).coerceAtLeast(0)
         // Centre the picked chip, so tapping one near either edge brings its neighbours into view.
-        LaunchedEffect(selectedIndex) {
-            val info = chips.layoutInfo
-            val viewport = info.viewportEndOffset - info.viewportStartOffset
-            val chipWidth = info.visibleItemsInfo.firstOrNull { it.index == selectedIndex }?.size ?: 0
-            chips.animateScrollToItem(selectedIndex, -(viewport - chipWidth) / 2)
-        }
+        LaunchedEffect(selectedIndex) { chips.animateScrollToCenter(selectedIndex) }
         LazyRow(
             Modifier.fillMaxWidth().padding(top = 12.dp).selectableGroup(),
             state = chips,
@@ -486,20 +479,8 @@ private fun CategoryBody(detail: CategoryDetail, state: CategoryState, onAction:
     val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     AnimatedContent(
         targetState = subcategoryId to state.sort,
-        transitionSpec = {
-            val from = order.indexOf(initialState.first)
-            val to = order.indexOf(targetState.first)
-            if (from == to) {
-                // Same chip, new sort order: a quiet cross-fade.
-                fadeIn(tween(KhazenaMotion.MEDIUM)) togetherWith fadeOut(tween(KhazenaMotion.SHORT))
-            } else {
-                // The list follows the chip: a later chip brings places in from the trailing side, an earlier one from the leading side.
-                val fromEnd = (to > from) != rtl
-                val slide = tween<IntOffset>(KhazenaMotion.LONG, easing = KhazenaMotion.EmphasizedDecelerate)
-                (slideInHorizontally(slide) { if (fromEnd) it / 3 else -it / 3 } + fadeIn(tween(KhazenaMotion.MEDIUM))) togetherWith
-                    (slideOutHorizontally(slide) { if (fromEnd) -it / 3 else it / 3 } + fadeOut(tween(KhazenaMotion.SHORT)))
-            } using SizeTransform(clip = false)
-        },
+        // The list follows the chip; a new sort on the same chip just cross-fades.
+        transitionSpec = { slideByIndex(order.indexOf(initialState.first), order.indexOf(targetState.first), rtl) },
         contentAlignment = Alignment.TopCenter,
         label = "category-places",
     ) { (subcategoryId, sort) ->

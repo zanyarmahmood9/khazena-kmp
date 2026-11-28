@@ -29,6 +29,7 @@ import khazena.core.designsystem.generated.resources.ic_chart_bar
 import khazena.core.designsystem.generated.resources.ic_check
 import khazena.core.designsystem.generated.resources.ic_check_line
 import khazena.core.designsystem.generated.resources.ic_clock
+import khazena.core.designsystem.generated.resources.ic_clock_line
 import khazena.core.designsystem.generated.resources.ic_copy
 import khazena.core.designsystem.generated.resources.ic_crosshair
 import khazena.core.designsystem.generated.resources.ic_export
@@ -49,7 +50,9 @@ import khazena.core.designsystem.generated.resources.ic_navigation
 import khazena.core.designsystem.generated.resources.ic_phone
 import khazena.core.designsystem.generated.resources.ic_qr_code
 import khazena.core.designsystem.generated.resources.ic_qr_code_line
+import khazena.core.designsystem.generated.resources.ic_receipt
 import khazena.core.designsystem.generated.resources.ic_scan
+import khazena.core.designsystem.generated.resources.ic_scan_line
 import khazena.core.designsystem.generated.resources.ic_shield_check
 import khazena.core.designsystem.generated.resources.ic_shopping_bag
 import khazena.core.designsystem.generated.resources.ic_star_fill
@@ -59,6 +62,7 @@ import khazena.core.designsystem.generated.resources.ic_tag
 import khazena.core.designsystem.generated.resources.ic_tiktok
 import khazena.core.designsystem.generated.resources.ic_user
 import khazena.core.designsystem.generated.resources.ic_user_fill
+import khazena.core.designsystem.generated.resources.ic_user_line
 import khazena.core.designsystem.generated.resources.ic_wallet
 import khazena.core.designsystem.generated.resources.ic_wallet_fill
 import khazena.core.designsystem.generated.resources.ic_x
@@ -102,6 +106,10 @@ object KhazenaIcons {
     val Facebook = Res.drawable.ic_facebook
     val TikTok = Res.drawable.ic_tiktok
     val ArrowRightLine = Res.drawable.ic_arrow_right_line
+    val UserLine = Res.drawable.ic_user_line
+    val ClockLine = Res.drawable.ic_clock_line
+    val Receipt = Res.drawable.ic_receipt
+    val ScanLine = Res.drawable.ic_scan_line
     val ArrowRight = Res.drawable.ic_arrow_right
     val Export = Res.drawable.ic_export
     val Bookmark = Res.drawable.ic_bookmark

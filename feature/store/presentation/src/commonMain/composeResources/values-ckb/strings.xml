@@ -57,4 +57,21 @@
     <string name="store_empty_title">هێشتا لیستی خزمەتگوزاری نییە.</string>
     <string name="store_empty_body">ئەم بزنسە هێشتا خزمەتگوزارییەکانی بۆ خەزێنە زیاد نەکردووە. بۆ زانینی ئەوەی پێشکەشی دەکات، سەردانی سۆشیال میدیاکەی یان خودی فرۆشگاکە بکە. داشکاندنی ئەندامییەکەت هەر جێبەجێ دەبێت.</string>
     <string name="store_empty_action">پەیوەندی و شوێن ببینە</string>
+    <string name="product_most_ordered">زۆرترین داواکراو</string>
+    <string name="product_member_price">نرخی ئەندامیی تۆ</string>
+    <string name="product_discount">−%%1$d</string>
+    <string name="product_you_save">بە خەزێنە %1$s پاشەکەوت دەکەیت</string>
+    <string name="product_serves">بۆ %1$d کەس</string>
+    <string name="product_minutes">~%1$d خولەک</string>
+    <string name="product_spicy">بژاردەی تیژ</string>
+    <string name="product_description">وەسف</string>
+    <string name="product_included">چی تێدایە</string>
+    <string name="product_how_title">چۆن ئەم نرخە وەربگریت</string>
+    <string name="product_step_order">وەک هەمیشە لە کاونتەر داوا بکە</string>
+    <string name="product_step_show">QRـی زیندووی «سکانم بکە» پیشان بدە</string>
+    <string name="product_step_scan">کاشێرەکە سکانی دەکات — %%1$d لە پسوولەکە کەم دەبێتەوە</string>
+    <string name="product_more">زیاتر لە %1$s</string>
+    <string name="product_see_menu">مینیو ببینە</string>
+    <string name="product_cta_title">QRـەکەت بە کاشێر پیشان بدە</string>
+    <string name="product_cta_sub">لە جیاتی %2$s، %1$s بدە</string>
 </resources>

@@ -35,6 +35,7 @@ import com.khazena.khazena.feature.onboarding.presentation.OnboardingGraphRoute
 import com.khazena.khazena.feature.onboarding.presentation.onboardingGraph
 import com.khazena.khazena.feature.scanme.presentation.ScanMeRoute
 import com.khazena.khazena.feature.scanme.presentation.scanMeGraph
+import com.khazena.khazena.feature.store.presentation.ProductRoute
 import com.khazena.khazena.feature.store.presentation.StoreDetailRoute
 import com.khazena.khazena.feature.store.presentation.storeDetailGraph
 import khazena.core.presentation.generated.resources.back
@@ -135,6 +136,9 @@ internal fun AppNavHost(
         storeDetailGraph(
             onBack = navController::navigateUpOnce,
             onScanMe = { requireAccount { navController.navigateOnce(ScanMeRoute) } },
+            // Back to the store if it is already underneath (store → product → "See menu"), else open it.
+            onOpenStore = { id -> if (!navController.popBackStack(StoreDetailRoute(id), inclusive = false)) navController.navigateOnce(StoreDetailRoute(id)) },
+            onOpenProduct = { storeId, itemId -> navController.navigateOnce(ProductRoute(storeId, itemId)) },
         )
         scanMemberGraph(onBack = navController::navigateUpOnce)
         composable<SignInRoute> { SignInStub(onBack = navController::navigateUpOnce) }
@@ -166,4 +170,4 @@ private fun SignInStub(onBack: () -> Unit) = Box {
 }
 
 // Screens pushed over the customer tabs slide in iOS-style, and Home drifts underneath them.
-private fun NavDestination.isPushedOverTabs(): Boolean = isCategoryScreen() || hasRoute<StoreDetailRoute>()
+private fun NavDestination.isPushedOverTabs(): Boolean = isCategoryScreen() || hasRoute<StoreDetailRoute>() || hasRoute<ProductRoute>()
