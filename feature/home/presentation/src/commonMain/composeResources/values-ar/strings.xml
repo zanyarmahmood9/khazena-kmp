@@ -37,4 +37,36 @@
     <string name="home_empty_badge">لا شيء قريب</string>
     <string name="home_empty_title">لا توجد عروض قريبة منك بعد.</string>
     <string name="home_empty_body">نضيف أماكن جديدة كل أسبوع. اسحب للأسفل للتحقق مجددًا.</string>
+    <string name="categories_title">الفئات</string>
+    <string name="categories_search_hint">ابحث في الفئات…</string>
+    <string name="categories_search_clear">مسح البحث</string>
+    <string name="categories_summary">%1$d فئات · %2$d مكانًا في %3$s</string>
+    <plurals name="categories_places">
+        <item quantity="zero">%1$d مكان</item>
+        <item quantity="one">مكان واحد</item>
+        <item quantity="two">مكانان</item>
+        <item quantity="few">%1$d أماكن</item>
+        <item quantity="many">%1$d مكانًا</item>
+        <item quantity="other">%1$d مكان</item>
+    </plurals>
+    <string name="categories_no_match">لا توجد فئات تطابق «%1$s».</string>
+    <string name="categories_empty_badge">قريبًا</string>
+    <string name="categories_empty_title">لا توجد فئات بعد.</string>
+    <string name="categories_empty_body">نضيف أماكن جديدة كل أسبوع. اسحب للأسفل للتحقق مجددًا.</string>
+    <string name="category_kicker">الفئة</string>
+    <string name="category_search">بحث</string>
+    <string name="category_stat_places">أماكن</string>
+    <string name="category_stat_top_discount">أعلى خصم</string>
+    <string name="category_stat_open_now">مفتوح الآن</string>
+    <string name="category_all">الكل</string>
+    <string name="category_sorted_discount">%1$d مكان · حسب الخصم</string>
+    <string name="category_sorted_distance">%1$d مكان · حسب المسافة</string>
+    <string name="category_sorted_rating">%1$d مكان · حسب التقييم</string>
+    <string name="category_sort_discount">أعلى خصم</string>
+    <string name="category_sort_distance">الأقرب</string>
+    <string name="category_sort_rating">الأعلى تقييمًا</string>
+    <string name="category_sort_title">ترتيب الأماكن</string>
+    <string name="category_sort_change">الترتيب حسب، %1$s</string>
+    <string name="category_rating">%1$s (%2$d)</string>
+    <string name="category_no_places">لا توجد أماكن هنا بعد. نضيف أماكن جديدة كل أسبوع.</string>
 </resources>

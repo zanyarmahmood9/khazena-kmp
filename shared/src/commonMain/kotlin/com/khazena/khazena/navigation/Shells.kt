@@ -38,6 +38,9 @@ private val customerTabs = listOf(
     ShellTab(ProfileRoute, Res.string.tab_profile, KhazenaIcons.User, KhazenaIcons.UserFill),
 )
 
+// The shell reads this when it comes back into view (see TabShell), so a screen above it can pick the tab.
+internal val CustomerSearchTab = customerTabs.indexOfFirst { it.route == SearchRoute }
+
 private val businessTabs = listOf(
     ShellTab(BusinessHomeRoute, Res.string.tab_home, KhazenaIcons.House, KhazenaIcons.HouseFill),
     ShellTab(ServicesRoute, Res.string.tab_services, KhazenaIcons.ListBullets),
@@ -52,6 +55,8 @@ internal fun CustomerShell(
     onSwitchToBusiness: () -> Unit,
     onSignIn: () -> Unit,
     onOpenGallery: (() -> Unit)?,
+    onOpenCategories: () -> Unit,
+    onOpenCategory: (String) -> Unit,
 ) = TabShell(
     tabs = customerTabs,
     savedStateHandle = savedStateHandle,
@@ -64,6 +69,8 @@ internal fun CustomerShell(
         onOpenSearch = { selectTab(customerTabs.indexOfFirst { it.route == SearchRoute }) },
         onOpenWallet = { selectTab(customerTabs.indexOfFirst { it.route == WalletRoute }) },
         onScanMe = onScanMe,
+        onOpenCategories = onOpenCategories,
+        onOpenCategory = onOpenCategory,
     )
     searchGraph()
     walletGraph()

@@ -8,7 +8,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,6 +61,7 @@ import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.textClickable
 import com.khazena.khazena.core.designsystem.TOP_BAR_MAX_FONT_SCALE
 import com.khazena.khazena.core.designsystem.component.KhazenaButton
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
@@ -222,7 +222,7 @@ private fun TopBar(onSkip: () -> Unit) {
                 stringResource(Res.string.skip),
                 style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
                 color = colors.textPrimary,
-                modifier = Modifier.align(Alignment.CenterEnd).clickable(role = Role.Button, onClick = onSkip).padding(8.dp),
+                modifier = Modifier.align(Alignment.CenterEnd).padding(8.dp).textClickable(onClick = onSkip),
             )
         }
     }

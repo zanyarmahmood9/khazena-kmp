@@ -1,8 +1,10 @@
 package com.khazena.khazena.core.designsystem.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,10 +23,13 @@ import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -37,6 +43,8 @@ import androidx.compose.ui.unit.sp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.rememberThrottledClick
+import com.khazena.khazena.core.designsystem.pressScale
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -46,14 +54,26 @@ fun KhazenaPlaceRow(
     meta: String,
     modifier: Modifier = Modifier,
     discountLabel: String? = null,
+    rating: String? = null,
     onClick: (() -> Unit)? = null,
 ) {
+    val colors = KhazenaTheme.colors
     CardRow(photo, if (onClick != null) modifier.clip(KhazenaRadius.card).clickable(role = Role.Button, onClick = onClick) else modifier) {
-        // Figma keeps the tag 4dp from the text column (the photo gap is 14), so long names keep their room.
-        Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(title, style = KhazenaTheme.typography.labelLBold, color = KhazenaTheme.colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(meta, style = KhazenaTheme.typography.labelSMedium, color = KhazenaTheme.colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        // Figma keeps the tag 4dp from the text column on Home; the rated rows (02b Category) keep the 14dp row gap.
+        Row(
+            Modifier.weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(if (rating != null) 14.dp else 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(if (rating != null) 4.dp else 6.dp)) {
+                Text(title, style = KhazenaTheme.typography.labelLBold, color = colors.textPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(meta, style = KhazenaTheme.typography.labelSMedium, color = colors.textSecondary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (rating != null) {
+                    Row(Modifier.padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(3.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Image(painterResource(KhazenaIcons.StarSmall), null, Modifier.size(12.dp))
+                        Text(rating, style = KhazenaTheme.typography.labelXSMedium.copy(fontWeight = FontWeight.SemiBold), color = colors.textPrimary, maxLines = 1)
+                    }
+                }
             }
             if (discountLabel != null) KhazenaTag(discountLabel, size = TagSize.M)
         }
@@ -160,6 +180,71 @@ fun KhazenaCategoryTile(
     }
 }
 
+// Large category card from the "All categories" grid (Figma 02a): 84dp art, name, place count,
+// a discount badge and an arrow in the top corners.
+@Composable
+fun KhazenaCategoryCard(
+    art: Painter,
+    label: String,
+    meta: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    badge: String? = null,
+) {
+    val colors = KhazenaTheme.colors
+    val type = KhazenaTheme.typography
+    val interaction = remember { MutableInteractionSource() }
+    Box(
+        modifier
+            .heightIn(min = 176.dp)
+            .pressScale(interaction)
+            .clip(KhazenaRadius.card)
+            .background(colors.surfaceCard)
+            .clickable(interaction, LocalIndication.current, role = Role.Button, onClick = rememberThrottledClick(onClick)),
+    ) {
+        Column(Modifier.fillMaxWidth().padding(top = 26.dp, bottom = 19.dp)) {
+            // Figma multiplies the art onto the card so its near-white backdrop disappears.
+            Image(
+                art,
+                null,
+                Modifier.size(84.dp).align(Alignment.CenterHorizontally).graphicsLayer { blendMode = BlendMode.Multiply },
+                contentScale = ContentScale.Crop,
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(
+                label,
+                style = type.labelMSemiBold.copy(lineHeight = 19.sp),
+                color = colors.textPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(start = 14.dp, end = 10.dp),
+            )
+            Text(
+                meta,
+                style = type.bodyS.copy(fontSize = 12.sp, lineHeight = 15.sp),
+                color = colors.textSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(start = 14.dp, end = 10.dp, top = 1.dp),
+            )
+        }
+        if (badge != null) {
+            Box(
+                Modifier
+                    .padding(10.dp)
+                    .heightIn(min = 22.dp)
+                    .clip(KhazenaRadius.pill)
+                    .background(colors.tagDiscount)
+                    .padding(horizontal = 8.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(badge, style = type.monoTag.copy(fontSize = 11.sp), color = colors.textPrimary, maxLines = 1)
+            }
+        }
+        Image(painterResource(KhazenaIcons.CaretCircleRight), null, Modifier.align(Alignment.TopEnd).padding(10.dp).size(28.dp))
+    }
+}
+
 @Composable
 fun KhazenaDealCard(
     photo: Painter,
@@ -228,6 +313,7 @@ private fun previewPhoto() = ColorPainter(KhazenaTheme.colors.borderStrong)
 @Preview(name = "Place row", widthDp = 390)
 @Composable
 private fun PlaceRowPreview() = PreviewSurface {
+    KhazenaPlaceRow(previewPhoto(), "Azmar Grill", "Grill · Salim St · 1.4 km", discountLabel = "Save 30%", rating = "4.8 (126)")
     KhazenaPlaceRow(previewPhoto(), "Naz Café", "Café · 0.6 km", discountLabel = "Save 10%")
     KhazenaPlaceRow(previewPhoto(), "Shifa Pharmacy", "Pharmacy · 0.4 km")
 }
@@ -245,6 +331,15 @@ private fun CategoryTilePreview() = PreviewSurface {
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         KhazenaCategoryTile(previewPhoto(), "Food & Cafes")
         KhazenaCategoryTile(previewPhoto(), "Beauty")
+    }
+}
+
+@Preview(name = "Category card", widthDp = 390)
+@Composable
+private fun CategoryCardPreview() = PreviewSurface {
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        KhazenaCategoryCard(previewPhoto(), "Food & Cafes", "128 places", {}, Modifier.weight(1f), badge = "Up to 50%")
+        KhazenaCategoryCard(previewPhoto(), "Markets & Groceries", "64 places", {}, Modifier.weight(1f), badge = "Up to 25%")
     }
 }
 

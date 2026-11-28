@@ -65,6 +65,8 @@ fun HomeRoot(
     onOpenSearch: () -> Unit,
     onOpenWallet: () -> Unit,
     onScanMe: () -> Unit,
+    onOpenCategories: () -> Unit,
+    onOpenCategory: (String) -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -86,6 +88,8 @@ fun HomeRoot(
                 HomeAction.OnSearchClick -> onOpenSearch()
                 HomeAction.OnWalletClick -> onOpenWallet()
                 HomeAction.OnScanToSaveClick -> onScanMe()
+                HomeAction.OnSeeAllCategoriesClick -> onOpenCategories()
+                is HomeAction.OnCategoryClick -> onOpenCategory(action.id)
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -125,9 +129,13 @@ private fun HomeContent(feed: HomeFeed, locationOn: Boolean, onAction: (HomeActi
 
         if (feed.categories.isNotEmpty()) {
             Spacer(Modifier.height(SectionGap))
-            KhazenaSectionHeader(stringResource(Res.string.home_section_categories), linkLabel = stringResource(Res.string.home_see_all))
+            KhazenaSectionHeader(
+                stringResource(Res.string.home_section_categories),
+                linkLabel = stringResource(Res.string.home_see_all),
+                onLinkClick = { onAction(HomeAction.OnSeeAllCategoriesClick) },
+            )
             Spacer(Modifier.height(HeaderGap))
-            CategoryGrid(feed.categories, Modifier.revealOnAppear(1))
+            CategoryGrid(feed.categories, onAction, Modifier.revealOnAppear(1))
         }
 
         feed.featuredOffer?.let { offer ->
@@ -168,7 +176,7 @@ private fun HomeContent(feed: HomeFeed, locationOn: Boolean, onAction: (HomeActi
 }
 
 @Composable
-private fun CategoryGrid(categories: List<HomeCategory>, modifier: Modifier = Modifier) {
+private fun CategoryGrid(categories: List<HomeCategory>, onAction: (HomeAction) -> Unit, modifier: Modifier = Modifier) {
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         categories.chunked(4).forEach { row ->
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -177,6 +185,7 @@ private fun CategoryGrid(categories: List<HomeCategory>, modifier: Modifier = Mo
                         art = painterResource(homeImage(category.imageKey)),
                         label = category.name.localized(),
                         badge = category.maxDiscountPercent?.let { stringResource(Res.string.home_category_badge, it) },
+                        onClick = { onAction(HomeAction.OnCategoryClick(category.id)) },
                     )
                 }
             }

@@ -1,7 +1,6 @@
 package com.khazena.khazena.core.designsystem.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -92,18 +91,17 @@ fun KhazenaChip(
             .height(KhazenaSize.chip)
             .clip(KhazenaRadius.pill)
             .background(if (selected) colors.actionSelected else colors.surfaceCard)
-            .then(if (selected) Modifier else Modifier.border(1.dp, colors.borderDefault, KhazenaRadius.pill))
             .selectable(selected = selected, role = Role.Tab) {
                 haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
                 onClick()
             }
-            .padding(start = 14.dp, end = if (count != null) 6.dp else 14.dp),
+            .padding(start = 16.dp, end = if (count != null) 6.dp else 16.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = label,
-            style = KhazenaTheme.typography.labelMSemiBold,
+            style = KhazenaTheme.typography.labelSMedium,
             color = if (selected) colors.actionOnSelected else colors.textPrimary,
             maxLines = 1,
         )

@@ -137,7 +137,7 @@ private fun <S> AnimatedContentTransitionScope<S>.rollTransition(): ContentTrans
         SizeTransform(clip = false) { _, _ -> tween(durationMillis = 380, easing = FastOutSlowInEasing) }
 }
 
-enum class IconButtonStyle { Paper, White, Ink, Ember }
+enum class IconButtonStyle { Paper, White, Outlined, Ink, Ember }
 
 @Composable
 fun KhazenaIconButton(
@@ -150,7 +150,7 @@ fun KhazenaIconButton(
     val colors = KhazenaTheme.colors
     val (container, content) = when (style) {
         IconButtonStyle.Paper -> colors.actionSecondary to colors.textPrimary
-        IconButtonStyle.White -> colors.surfaceCard to colors.textPrimary
+        IconButtonStyle.White, IconButtonStyle.Outlined -> colors.surfaceCard to colors.textPrimary
         IconButtonStyle.Ink -> colors.blockInk to colors.textOnDark
         IconButtonStyle.Ember -> colors.actionPrimary to colors.actionOnPrimary
     }
@@ -161,6 +161,7 @@ fun KhazenaIconButton(
             .size(KhazenaSize.tapMin)
             .clip(KhazenaRadius.pill)
             .background(container)
+            .then(if (style == IconButtonStyle.Outlined) Modifier.border(1.dp, colors.borderDefault, KhazenaRadius.pill) else Modifier)
             .clickable(interaction, LocalIndication.current, role = Role.Button, onClick = rememberThrottledClick(onClick)),
         contentAlignment = Alignment.Center,
     ) {

@@ -36,4 +36,32 @@ They join free.</string>
     <string name="home_empty_badge">Nothing nearby</string>
     <string name="home_empty_title">No deals near you yet.</string>
     <string name="home_empty_body">We add new places every week. Pull down to check again.</string>
+    <string name="categories_title">Categories</string>
+    <string name="categories_search_hint">Search categories…</string>
+    <string name="categories_search_clear">Clear search</string>
+    <string name="categories_summary">%1$d categories · %2$d places in %3$s</string>
+    <plurals name="categories_places">
+        <item quantity="one">%1$d place</item>
+        <item quantity="other">%1$d places</item>
+    </plurals>
+    <string name="categories_no_match">No categories match “%1$s”.</string>
+    <string name="categories_empty_badge">Coming soon</string>
+    <string name="categories_empty_title">No categories yet.</string>
+    <string name="categories_empty_body">We add new places every week. Pull down to check again.</string>
+    <string name="category_kicker">Category</string>
+    <string name="category_search">Search</string>
+    <string name="category_stat_places">Places</string>
+    <string name="category_stat_top_discount">Top discount</string>
+    <string name="category_stat_open_now">Open now</string>
+    <string name="category_all">All</string>
+    <string name="category_sorted_discount">%1$d places · sorted by discount</string>
+    <string name="category_sorted_distance">%1$d places · sorted by distance</string>
+    <string name="category_sorted_rating">%1$d places · sorted by rating</string>
+    <string name="category_sort_discount">Highest discount</string>
+    <string name="category_sort_distance">Nearest</string>
+    <string name="category_sort_rating">Top rated</string>
+    <string name="category_sort_title">Sort places</string>
+    <string name="category_sort_change">Sort by, %1$s</string>
+    <string name="category_rating">%1$s (%2$d)</string>
+    <string name="category_no_places">No places here yet. We add new ones every week.</string>
 </resources>

@@ -37,4 +37,32 @@
     <string name="home_empty_badge">هیچ نییە</string>
     <string name="home_empty_title">هێشتا هیچ ئۆفەرێک لە نزیکت نییە.</string>
     <string name="home_empty_body">هەموو هەفتەیەک شوێنی نوێ زیاد دەکەین. بۆ پشکنینەوە بۆ خوارەوە ڕابکێشە.</string>
+    <string name="categories_title">پۆلەکان</string>
+    <string name="categories_search_hint">بگەڕێ لە پۆلەکان…</string>
+    <string name="categories_search_clear">سڕینەوەی گەڕان</string>
+    <string name="categories_summary">%1$d پۆل · %2$d شوێن لە %3$s</string>
+    <plurals name="categories_places">
+        <item quantity="one">%1$d شوێن</item>
+        <item quantity="other">%1$d شوێن</item>
+    </plurals>
+    <string name="categories_no_match">هیچ پۆلێک لەگەڵ «%1$s» ناگونجێت.</string>
+    <string name="categories_empty_badge">بەم زووانە</string>
+    <string name="categories_empty_title">هێشتا هیچ پۆلێک نییە.</string>
+    <string name="categories_empty_body">هەموو هەفتەیەک شوێنی نوێ زیاد دەکەین. ڕایبکێشە خوارەوە بۆ پشکنینەوە.</string>
+    <string name="category_kicker">پۆل</string>
+    <string name="category_search">گەڕان</string>
+    <string name="category_stat_places">شوێن</string>
+    <string name="category_stat_top_discount">زۆرترین داشکاندن</string>
+    <string name="category_stat_open_now">ئێستا کراوەیە</string>
+    <string name="category_all">هەموو</string>
+    <string name="category_sorted_discount">%1$d شوێن · بەپێی داشکاندن</string>
+    <string name="category_sorted_distance">%1$d شوێن · بەپێی دووری</string>
+    <string name="category_sorted_rating">%1$d شوێن · بەپێی هەڵسەنگاندن</string>
+    <string name="category_sort_discount">زۆرترین داشکاندن</string>
+    <string name="category_sort_distance">نزیکترین</string>
+    <string name="category_sort_rating">باشترین هەڵسەنگاندن</string>
+    <string name="category_sort_title">ڕیزکردنی شوێنەکان</string>
+    <string name="category_sort_change">ڕیزکردن بەپێی، %1$s</string>
+    <string name="category_rating">%1$s (%2$d)</string>
+    <string name="category_no_places">هێشتا هیچ شوێنێک لێرە نییە. هەموو هەفتەیەک شوێنی نوێ زیاد دەکەین.</string>
 </resources>

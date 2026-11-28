@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.textClickable
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -57,7 +58,7 @@ fun KhazenaSectionHeader(
                 linkLabel,
                 style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
                 color = colors.textPrimary,
-                modifier = Modifier.clickable(role = Role.Button, onClick = onLinkClick),
+                modifier = Modifier.textClickable(onClick = onLinkClick),
             )
         }
     }

@@ -16,6 +16,11 @@ import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaTheme
 import khazena.core.designsystem.generated.resources.Res
 import khazena.core.designsystem.generated.resources.ic_arrow_left
+import khazena.core.designsystem.generated.resources.ic_arrow_left_regular
+import khazena.core.designsystem.generated.resources.ic_caret_circle_right
+import khazena.core.designsystem.generated.resources.ic_caret_down
+import khazena.core.designsystem.generated.resources.ic_magnifying_glass_regular
+import khazena.core.designsystem.generated.resources.ic_star_small
 import khazena.core.designsystem.generated.resources.ic_arrow_right
 import khazena.core.designsystem.generated.resources.ic_bell
 import khazena.core.designsystem.generated.resources.ic_bookmark
@@ -61,6 +66,11 @@ object KhazenaIcons {
     val QrCode = Res.drawable.ic_qr_code
     val Bell = Res.drawable.ic_bell
     val ArrowLeft = Res.drawable.ic_arrow_left
+    val ArrowLeftRegular = Res.drawable.ic_arrow_left_regular
+    val CaretCircleRight = Res.drawable.ic_caret_circle_right
+    val CaretDown = Res.drawable.ic_caret_down
+    val MagnifyingGlassRegular = Res.drawable.ic_magnifying_glass_regular
+    val StarSmall = Res.drawable.ic_star_small
     val ArrowRight = Res.drawable.ic_arrow_right
     val Export = Res.drawable.ic_export
     val Bookmark = Res.drawable.ic_bookmark

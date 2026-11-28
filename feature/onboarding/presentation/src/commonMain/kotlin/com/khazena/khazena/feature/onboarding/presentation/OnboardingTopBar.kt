@@ -6,7 +6,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -20,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -28,6 +26,7 @@ import com.khazena.khazena.core.designsystem.CapFontScale
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.textClickable
 import com.khazena.khazena.core.designsystem.TOP_BAR_MAX_FONT_SCALE
 import com.khazena.khazena.core.designsystem.component.KhazenaLogo
 import com.khazena.khazena.core.designsystem.component.KhazenaWordmark
@@ -67,7 +66,7 @@ internal fun OnboardingTopBar(step: Int, onSkip: (() -> Unit)?, skipLabel: Strin
                     stringResource(skipLabel),
                     style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
                     color = colors.textPrimary,
-                    modifier = Modifier.align(Alignment.CenterEnd).clickable(role = Role.Button, onClick = onSkip).padding(8.dp),
+                    modifier = Modifier.align(Alignment.CenterEnd).padding(8.dp).textClickable(onClick = onSkip),
                 )
             }
         }

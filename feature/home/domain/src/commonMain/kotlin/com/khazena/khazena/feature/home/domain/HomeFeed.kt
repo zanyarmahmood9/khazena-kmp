@@ -30,7 +30,12 @@ data class HomeCategory(
     val name: LocalizedText,
     val imageKey: String,
     val maxDiscountPercent: Int? = null,
+    val placeCount: Int = 0,
 )
+
+data class CategoryDirectory(val city: LocalizedText, val categories: List<HomeCategory>) {
+    val totalPlaces: Int get() = categories.sumOf { it.placeCount }
+}
 
 data class FeaturedOffer(
     val id: String,

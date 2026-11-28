@@ -19,6 +19,7 @@ import khazena.feature.home.presentation.generated.resources.home_cat_services
 import khazena.feature.home.presentation.generated.resources.home_photo_azmar
 import khazena.feature.home.presentation.generated.resources.home_photo_bazaar
 import khazena.feature.home.presentation.generated.resources.home_photo_goizha
+import khazena.feature.home.presentation.generated.resources.home_photo_kebab
 import khazena.feature.home.presentation.generated.resources.home_photo_lavender
 import khazena.feature.home.presentation.generated.resources.home_photo_naz
 import khazena.feature.home.presentation.generated.resources.home_photo_shifa
@@ -42,6 +43,7 @@ private val homeImages = mapOf(
     "photo_shirin" to Res.drawable.home_photo_shirin,
     "photo_bazaar" to Res.drawable.home_photo_bazaar,
     "photo_shifa" to Res.drawable.home_photo_shifa,
+    "photo_kebab" to Res.drawable.home_photo_kebab,
 )
 
 internal fun homeImage(key: String): DrawableResource = homeImages[key] ?: Res.drawable.home_photo_azmar

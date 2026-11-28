@@ -5,6 +5,8 @@ import com.khazena.khazena.core.domain.DataError
 import com.khazena.khazena.core.domain.LocalizedText
 import com.khazena.khazena.core.domain.Result
 import com.khazena.khazena.core.domain.demo.DemoDataSettings
+import com.khazena.khazena.feature.home.domain.CategoryDetail
+import com.khazena.khazena.feature.home.domain.CategoryDirectory
 import com.khazena.khazena.feature.home.domain.FeaturedOffer
 import com.khazena.khazena.feature.home.domain.HomeCategory
 import com.khazena.khazena.feature.home.domain.HomeFeed
@@ -15,6 +17,14 @@ import com.khazena.khazena.feature.home.domain.TopDeal
 
 class FakeHomeRepository(private val demo: DemoDataSettings) : HomeRepository {
     override suspend fun getHomeFeed(): Result<HomeFeed, DataError> = demo.demoResult(EmptyFeed) { DemoFeed }
+
+    override suspend fun getCategories(): Result<CategoryDirectory, DataError> =
+        demo.demoResult(CategoryDirectory(City, emptyList())) { DemoDirectory }
+
+    override suspend fun getCategory(id: String): Result<CategoryDetail, DataError> {
+        val detail = DemoCategoryDetails[id] ?: return Result.Error(DataError.Network.NOT_FOUND)
+        return demo.demoResult(detail.copy(subcategories = emptyList(), places = emptyList())) { detail }
+    }
 }
 
 private val Member = MemberSummary(
@@ -72,5 +82,19 @@ private val DemoFeed = HomeFeed(
         NearbyPlace("shirin", LocalizedText("شیرینی شیرین", "Shirin Sweets", "حلويات شيرين"), LocalizedText("شیرینی و نانەواخانە", "Sweets & bakery", "حلويات ومخبز"), 0.9, 20, "photo_shirin"),
         NearbyPlace("bazaar", LocalizedText("بازاڕی فرێش", "Bazaar Fresh Market", "بازار فريش ماركت"), LocalizedText("مارکێت", "Market", "سوق"), 1.1, 15, "photo_bazaar"),
         NearbyPlace("shifa", LocalizedText("دەرمانخانەی شیفا", "Shifa Pharmacy", "صيدلية شفاء"), LocalizedText("دەرمانخانە", "Pharmacy", "صيدلية"), 0.4, 10, "photo_shifa"),
+    ),
+)
+
+private val DemoDirectory = CategoryDirectory(
+    city = City,
+    categories = listOf(
+        HomeCategory("food", LocalizedText("خواردن و کافێ", "Food & Cafes", "مطاعم ومقاهٍ"), "cat_food", maxDiscountPercent = 50, placeCount = 128),
+        HomeCategory("markets", LocalizedText("مارکێت و بازاڕ", "Markets & Groceries", "أسواق وبقالة"), "cat_markets", maxDiscountPercent = 25, placeCount = 64),
+        HomeCategory("automotive", LocalizedText("ئۆتۆمبێل", "Automotive", "سيارات"), "cat_automotive", maxDiscountPercent = 30, placeCount = 41),
+        HomeCategory("beauty", LocalizedText("جوانی و تەندروستی", "Health & Beauty", "صحة وجمال"), "cat_beauty", maxDiscountPercent = 40, placeCount = 87),
+        HomeCategory("fashion", LocalizedText("جلوبەرگ", "Fashion", "أزياء"), "cat_fashion", maxDiscountPercent = 35, placeCount = 52),
+        HomeCategory("electronics", LocalizedText("ئەلیکترۆنیات", "Electronics", "إلكترونيات"), "cat_electronics", maxDiscountPercent = 20, placeCount = 29),
+        HomeCategory("services", LocalizedText("خزمەتگوزاری", "Services", "خدمات"), "cat_services", maxDiscountPercent = 30, placeCount = 46),
+        HomeCategory("entertainment", LocalizedText("کات بەسەربردن", "Entertainment", "ترفيه"), "cat_entertainment", maxDiscountPercent = 45, placeCount = 23),
     ),
 )

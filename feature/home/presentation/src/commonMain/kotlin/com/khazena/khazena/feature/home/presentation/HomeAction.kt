@@ -8,4 +8,6 @@ sealed interface HomeAction {
     data object OnScanToSaveClick : HomeAction
     data object OnWalletClick : HomeAction
     data object OnTurnOnLocationClick : HomeAction
+    data object OnSeeAllCategoriesClick : HomeAction
+    data class OnCategoryClick(val id: String) : HomeAction
 }
