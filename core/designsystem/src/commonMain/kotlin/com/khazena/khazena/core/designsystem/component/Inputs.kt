@@ -34,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -115,6 +117,7 @@ fun KhazenaSegmentedControl(
     modifier: Modifier = Modifier,
 ) {
     val colors = KhazenaTheme.colors
+    val haptics = LocalHapticFeedback.current
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -132,7 +135,10 @@ fun KhazenaSegmentedControl(
                     .fillMaxHeight()
                     .clip(KhazenaRadius.pill)
                     .background(if (selected) colors.actionSelected else colors.surfaceTile)
-                    .selectable(selected = selected, role = Role.Tab) { onSelect(index) },
+                    .selectable(selected = selected, role = Role.Tab) {
+                        if (!selected) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                        onSelect(index)
+                    },
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -151,13 +157,17 @@ fun KhazenaToggle(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier
     val colors = KhazenaTheme.colors
     val track by animateColorAsState(if (checked) colors.actionSelected else colors.borderStrong)
     val knobX: Dp by animateDpAsState(if (checked) 22.dp else 2.dp)
+    val haptics = LocalHapticFeedback.current
     Box(
         modifier
             .minimumInteractiveComponentSize()
             .size(width = 51.dp, height = 31.dp)
             .clip(KhazenaRadius.pill)
             .background(track)
-            .toggleable(value = checked, role = Role.Switch, onValueChange = onCheckedChange),
+            .toggleable(value = checked, role = Role.Switch) {
+                haptics.performHapticFeedback(if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
+                onCheckedChange(it)
+            },
     ) {
         Box(Modifier.offset(x = knobX, y = 2.dp).size(27.dp).background(colors.surfaceCard, CircleShape))
     }
@@ -169,23 +179,31 @@ private val MarkRipple = ripple(bounded = false, radius = 20.dp)
 
 @Composable
 fun KhazenaRadio(selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val haptics = LocalHapticFeedback.current
     SelectionMark(
         on = selected,
         size = 28.dp,
         shape = CircleShape,
         offBackground = null,
-        modifier = modifier.selectable(selected = selected, interactionSource = null, indication = MarkRipple, role = Role.RadioButton, onClick = onClick),
+        modifier = modifier.selectable(selected = selected, interactionSource = null, indication = MarkRipple, role = Role.RadioButton) {
+            if (!selected) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+            onClick()
+        },
     )
 }
 
 @Composable
 fun KhazenaCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier) {
+    val haptics = LocalHapticFeedback.current
     SelectionMark(
         on = checked,
         size = 24.dp,
         shape = RoundedCornerShape(7.dp),
         offBackground = KhazenaTheme.colors.surfaceCard,
-        modifier = modifier.toggleable(value = checked, interactionSource = null, indication = MarkRipple, role = Role.Checkbox, onValueChange = onCheckedChange),
+        modifier = modifier.toggleable(value = checked, interactionSource = null, indication = MarkRipple, role = Role.Checkbox) {
+            haptics.performHapticFeedback(if (it) HapticFeedbackType.ToggleOn else HapticFeedbackType.ToggleOff)
+            onCheckedChange(it)
+        },
     )
 }
 
@@ -221,12 +239,16 @@ private fun SelectionMark(
 @Composable
 fun KhazenaStarTile(selected: Boolean, contentDescription: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val colors = KhazenaTheme.colors
+    val haptics = LocalHapticFeedback.current
     Box(
         modifier
             .size(48.dp)
             .clip(KhazenaRadius.sm)
             .background(if (selected) colors.blockSun else colors.surfaceBackground)
-            .selectable(selected = selected, role = Role.RadioButton, onClick = onClick),
+            .selectable(selected = selected, role = Role.RadioButton) {
+                haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                onClick()
+            },
         contentAlignment = Alignment.Center,
     ) {
         Icon(

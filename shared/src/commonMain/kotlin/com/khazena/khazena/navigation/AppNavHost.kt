@@ -54,32 +54,32 @@ internal fun AppNavHost(navController: NavHostController, isSignedIn: Boolean, i
         onboardingGraph(
             navController = navController,
             onFinished = {
-                navController.navigate(ChooseSideRoute) { popUpTo<OnboardingGraphRoute> { inclusive = true } }
+                navController.navigateOnce(ChooseSideRoute) { popUpTo<OnboardingGraphRoute> { inclusive = true } }
             },
         )
         chooseSideGraph(
             onContinueAsCustomer = {
-                navController.navigate(CustomerRoute) { popUpTo<ChooseSideRoute> { inclusive = true } }
+                navController.navigateOnce(CustomerRoute) { popUpTo<ChooseSideRoute> { inclusive = true } }
             },
             onContinueAsBusiness = {
                 requireAccount {
-                    navController.navigate(BusinessRoute) { popUpTo<ChooseSideRoute> { inclusive = true } }
+                    navController.navigateOnce(BusinessRoute) { popUpTo<ChooseSideRoute> { inclusive = true } }
                 }
             },
-            onSignIn = { navController.navigate(SignInRoute) },
+            onSignIn = { navController.navigateOnce(SignInRoute) },
         )
         composable<CustomerRoute> { entry ->
             CustomerShell(
                 savedStateHandle = entry.savedStateHandle,
-                onScanMe = { requireAccount { navController.navigate(ScanMeRoute) } },
+                onScanMe = { requireAccount { navController.navigateOnce(ScanMeRoute) } },
                 onSwitchToBusiness = {
                     requireAccount {
-                        navController.navigate(BusinessRoute) { popUpTo<CustomerRoute> { inclusive = true } }
+                        navController.navigateOnce(BusinessRoute) { popUpTo<CustomerRoute> { inclusive = true } }
                     }
                 },
-                onSignIn = { navController.navigate(SignInRoute) },
+                onSignIn = { navController.navigateOnce(SignInRoute) },
                 onOpenGallery = if (isDebug) {
-                    { navController.navigate(GalleryRoute) }
+                    { navController.navigateOnce(GalleryRoute) }
                 } else {
                     null
                 },
@@ -88,15 +88,15 @@ internal fun AppNavHost(navController: NavHostController, isSignedIn: Boolean, i
         composable<BusinessRoute> { entry ->
             BusinessShell(
                 savedStateHandle = entry.savedStateHandle,
-                onScanMember = { navController.navigate(ScanMemberRoute) },
+                onScanMember = { navController.navigateOnce(ScanMemberRoute) },
                 onSwitchToPersonal = {
-                    navController.navigate(CustomerRoute) { popUpTo<BusinessRoute> { inclusive = true } }
+                    navController.navigateOnce(CustomerRoute) { popUpTo<BusinessRoute> { inclusive = true } }
                 },
             )
         }
-        scanMeGraph(onBack = navController::navigateUp)
-        scanMemberGraph(onBack = navController::navigateUp)
-        composable<SignInRoute> { SignInStub(onBack = navController::navigateUp) }
+        scanMeGraph(onBack = navController::navigateUpOnce)
+        scanMemberGraph(onBack = navController::navigateUpOnce)
+        composable<SignInRoute> { SignInStub(onBack = navController::navigateUpOnce) }
         if (isDebug) {
             composable<GalleryRoute> { KhazenaComponentGallery() }
         }
@@ -107,7 +107,7 @@ internal fun AppNavHost(navController: NavHostController, isSignedIn: Boolean, i
             onDismiss = { showAccountSheet = false },
             onSignIn = {
                 showAccountSheet = false
-                navController.navigate(SignInRoute)
+                navController.navigateOnce(SignInRoute)
             },
         )
     }

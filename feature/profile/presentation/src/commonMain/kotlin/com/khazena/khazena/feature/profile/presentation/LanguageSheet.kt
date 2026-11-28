@@ -19,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -77,13 +79,17 @@ private fun ColumnScope.LanguageSheetContent(state: ProfileState, onAction: (Pro
 private fun LanguageOption(language: AppLanguage, selected: Boolean, onClick: () -> Unit) {
     val colors = KhazenaTheme.colors
     val violetTint = colors.blockViolet.copy(alpha = 0.1f)
+    val haptics = LocalHapticFeedback.current
     Row(
         Modifier
             .fillMaxWidth()
             .clip(KhazenaRadius.card)
             .background(if (selected) violetTint else Color.Transparent)
             .border(1.5.dp, if (selected) colors.borderSelected else Color.Transparent, KhazenaRadius.card)
-            .selectable(selected = selected, interactionSource = null, indication = ripple(color = colors.blockViolet), role = Role.RadioButton, onClick = onClick)
+            .selectable(selected = selected, interactionSource = null, indication = ripple(color = colors.blockViolet), role = Role.RadioButton) {
+                if (!selected) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                onClick()
+            }
             .padding(horizontal = 14.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,

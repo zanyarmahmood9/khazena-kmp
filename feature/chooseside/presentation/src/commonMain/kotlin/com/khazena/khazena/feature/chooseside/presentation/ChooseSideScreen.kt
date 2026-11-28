@@ -39,6 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -229,6 +231,7 @@ private fun SideCard(
     tags: List<String>,
 ) {
     val colors = KhazenaTheme.colors
+    val haptics = LocalHapticFeedback.current
     val border by animateColorAsState(if (selected) colors.borderSelected else Color.Transparent, tween(durationMillis = 300))
     val scale by animateFloatAsState(if (selected) 1f else 0.98f, spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessLow))
     Column(
@@ -242,7 +245,10 @@ private fun SideCard(
             .background(container)
             .border(3.dp, border, KhazenaRadius.hero)
             // Ripple clipped to the card's corners and tinted with its own content colour instead of the default grey.
-            .selectable(selected = selected, interactionSource = null, indication = ripple(color = content), role = Role.RadioButton, onClick = onSelect)
+            .selectable(selected = selected, interactionSource = null, indication = ripple(color = content), role = Role.RadioButton) {
+                if (!selected) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                onSelect()
+            }
             .padding(20.dp),
     ) {
         Row(verticalAlignment = Alignment.Top) {

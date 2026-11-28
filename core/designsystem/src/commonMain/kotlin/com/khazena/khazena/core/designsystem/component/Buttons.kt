@@ -1,41 +1,51 @@
 package com.khazena.khazena.core.designsystem.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.core.tween
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSize
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.pressScale
+import com.khazena.khazena.core.designsystem.rememberThrottledClick
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.ui.tooling.preview.Preview
 
 enum class ButtonVariant { Primary, Dark, Secondary, Ghost, Danger }
 
@@ -72,8 +82,10 @@ fun KhazenaButton(
         ButtonSize.Compact -> type.buttonM.copy(fontSize = 15.sp)
         ButtonSize.S -> type.buttonM.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
     }
+    val interaction = remember { MutableInteractionSource() }
     Row(
         modifier = modifier
+            .pressScale(interaction)
             .height(size.height)
             .clip(KhazenaRadius.pill)
             .background(container)
@@ -82,35 +94,39 @@ fun KhazenaButton(
                     Modifier.border(1.dp, colors.borderDefault, KhazenaRadius.pill)
                 } else Modifier,
             )
-            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .clickable(interaction, LocalIndication.current, enabled = enabled, role = Role.Button, onClick = rememberThrottledClick(onClick))
             .padding(PaddingValues(horizontal = size.paddingX)),
         horizontalArrangement = Arrangement.spacedBy(size.gap, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // Label and icon change as one unit: the old pair fades out before the new one fades in, so they never overlap,
-        // and the size animates so the centred content glides instead of jumping.
+        // A changed label rolls: the old one slides up and out while the new one rises in, a full line apart so they never overlap.
+        // The size animates too, so the icon glides to its new spot instead of jumping.
         AnimatedContent(
-            targetState = text to icon,
-            transitionSpec = {
-                fadeIn(tween(durationMillis = 200, delayMillis = 120)) togetherWith fadeOut(tween(durationMillis = 120)) using
-                    SizeTransform(clip = false) { _, _ -> tween(durationMillis = 320, easing = FastOutSlowInEasing) }
-            },
+            targetState = text,
+            transitionSpec = { rollTransition() },
             contentAlignment = Alignment.Center,
-            label = "button-content",
-        ) { (label, labelIcon) ->
-            Row(horizontalArrangement = Arrangement.spacedBy(size.gap), verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = label,
-                    style = textStyle,
-                    color = content,
-                    maxLines = 1,
-                )
-                if (labelIcon != null) {
-                    Icon(painterResource(labelIcon), null, Modifier.size(size.iconSize), tint = content)
-                }
+            label = "button-text",
+        ) { label ->
+            Text(
+                text = label,
+                style = textStyle,
+                color = content,
+                maxLines = 1,
+            )
+        }
+        if (icon != null) {
+            AnimatedContent(targetState = icon, transitionSpec = { rollTransition() }, label = "button-icon") { target ->
+                Icon(painterResource(target), null, Modifier.size(size.iconSize), tint = content)
             }
         }
     }
+}
+
+private fun <S> AnimatedContentTransitionScope<S>.rollTransition(): ContentTransform {
+    val move = tween<IntOffset>(durationMillis = 380, easing = FastOutSlowInEasing)
+    return (slideInVertically(move) { it } + fadeIn(tween(durationMillis = 260, delayMillis = 80))) togetherWith
+        (slideOutVertically(move) { -it } + fadeOut(tween(durationMillis = 180))) using
+        SizeTransform(clip = false) { _, _ -> tween(durationMillis = 380, easing = FastOutSlowInEasing) }
 }
 
 enum class IconButtonStyle { Paper, White, Ink, Ember }
@@ -130,12 +146,14 @@ fun KhazenaIconButton(
         IconButtonStyle.Ink -> colors.blockInk to colors.textOnDark
         IconButtonStyle.Ember -> colors.actionPrimary to colors.actionOnPrimary
     }
+    val interaction = remember { MutableInteractionSource() }
     Box(
         modifier = modifier
+            .pressScale(interaction, pressedScale = 0.9f)
             .size(KhazenaSize.tapMin)
             .clip(KhazenaRadius.pill)
             .background(container)
-            .clickable(role = Role.Button, onClick = onClick),
+            .clickable(interaction, LocalIndication.current, role = Role.Button, onClick = rememberThrottledClick(onClick)),
         contentAlignment = Alignment.Center,
     ) {
         Icon(painterResource(icon), contentDescription, Modifier.size(20.dp), tint = content)

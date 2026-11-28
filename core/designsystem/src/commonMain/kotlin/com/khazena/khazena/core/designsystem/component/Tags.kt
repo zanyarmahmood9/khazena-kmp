@@ -17,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,6 +71,7 @@ fun KhazenaChip(
     count: Int? = null,
 ) {
     val colors = KhazenaTheme.colors
+    val haptics = LocalHapticFeedback.current
     Row(
         modifier = modifier
             .minimumInteractiveComponentSize()
@@ -76,7 +79,10 @@ fun KhazenaChip(
             .clip(KhazenaRadius.pill)
             .background(if (selected) colors.actionSelected else colors.surfaceCard)
             .then(if (selected) Modifier else Modifier.border(1.dp, colors.borderDefault, KhazenaRadius.pill))
-            .selectable(selected = selected, role = Role.Tab, onClick = onClick)
+            .selectable(selected = selected, role = Role.Tab) {
+                haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                onClick()
+            }
             .padding(start = 14.dp, end = if (count != null) 6.dp else 14.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
