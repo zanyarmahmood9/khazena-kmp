@@ -1,5 +1,6 @@
 package com.khazena.khazena
 
+import android.content.pm.ActivityInfo
 import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.os.Bundle
@@ -11,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import kotlin.time.Duration.Companion.milliseconds
 
+private const val LARGE_SCREEN_MIN_WIDTH_DP = 600
 private val SPLASH_FADE = 350.milliseconds
 
 class MainActivity : ComponentActivity() {
@@ -28,6 +30,13 @@ class MainActivity : ComponentActivity() {
         val lightBars = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         enableEdgeToEdge(statusBarStyle = lightBars, navigationBarStyle = lightBars)
         super.onCreate(savedInstanceState)
+        // Portrait on phones only; tablets, unfolded foldables and ChromeOS rotate freely. Re-evaluated when a foldable
+        // opens or closes, since that recreates the activity.
+        requestedOrientation = if (resources.configuration.smallestScreenWidthDp < LARGE_SCREEN_MIN_WIDTH_DP) {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
         val isDebug = applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0
 
         setContent {

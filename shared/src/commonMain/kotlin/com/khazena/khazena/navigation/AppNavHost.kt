@@ -17,6 +17,8 @@ import com.khazena.khazena.core.designsystem.component.KhazenaComponentGallery
 import com.khazena.khazena.core.designsystem.component.KhazenaIconButton
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaPlaceholder
+import com.khazena.khazena.core.domain.onboarding.AppSide
+import com.khazena.khazena.core.domain.onboarding.OnboardingProgress
 import com.khazena.khazena.feature.business.scan.presentation.ScanMemberRoute
 import com.khazena.khazena.feature.business.scan.presentation.scanMemberGraph
 import com.khazena.khazena.feature.chooseside.presentation.ChooseSideRoute
@@ -46,23 +48,35 @@ data object SignInRoute
 data object GalleryRoute
 
 @Composable
-internal fun AppNavHost(navController: NavHostController, isSignedIn: Boolean, isDebug: Boolean) {
+internal fun AppNavHost(
+    navController: NavHostController,
+    isSignedIn: Boolean,
+    isDebug: Boolean,
+    onboarding: () -> OnboardingProgress?,
+    onIntroCompleted: () -> Unit,
+    onSideEntered: (AppSide) -> Unit,
+) {
     var showAccountSheet by rememberSaveable { mutableStateOf(false) }
     val requireAccount: (() -> Unit) -> Unit = { action -> if (isSignedIn) action() else showAccountSheet = true }
 
     NavHost(navController, startDestination = OnboardingGraphRoute) {
         onboardingGraph(
             navController = navController,
+            resumeRoute = { onboarding().resumeRoute() },
             onFinished = {
+                onIntroCompleted()
                 navController.navigateOnce(ChooseSideRoute) { popUpTo<OnboardingGraphRoute> { inclusive = true } }
             },
         )
         chooseSideGraph(
             onContinueAsCustomer = {
+                onSideEntered(AppSide.Customer)
                 navController.navigateOnce(CustomerRoute) { popUpTo<ChooseSideRoute> { inclusive = true } }
             },
             onContinueAsBusiness = {
+                // Saved only once the account check passes, so a blocked business choice isn't remembered.
                 requireAccount {
+                    onSideEntered(AppSide.Business)
                     navController.navigateOnce(BusinessRoute) { popUpTo<ChooseSideRoute> { inclusive = true } }
                 }
             },
@@ -74,6 +88,7 @@ internal fun AppNavHost(navController: NavHostController, isSignedIn: Boolean, i
                 onScanMe = { requireAccount { navController.navigateOnce(ScanMeRoute) } },
                 onSwitchToBusiness = {
                     requireAccount {
+                        onSideEntered(AppSide.Business)
                         navController.navigateOnce(BusinessRoute) { popUpTo<CustomerRoute> { inclusive = true } }
                     }
                 },
@@ -90,6 +105,7 @@ internal fun AppNavHost(navController: NavHostController, isSignedIn: Boolean, i
                 savedStateHandle = entry.savedStateHandle,
                 onScanMember = { navController.navigateOnce(ScanMemberRoute) },
                 onSwitchToPersonal = {
+                    onSideEntered(AppSide.Customer)
                     navController.navigateOnce(CustomerRoute) { popUpTo<BusinessRoute> { inclusive = true } }
                 },
             )

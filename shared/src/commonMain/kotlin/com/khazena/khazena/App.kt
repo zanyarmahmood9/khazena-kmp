@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,8 @@ fun App(isDebug: Boolean = false) {
     val navController = rememberNavController()
 
     val language = state.language
-    if (language == null) {
+    // Both are read before the first screen, so the splash already knows where returning users go.
+    if (language == null || state.onboarding == null) {
         Box(Modifier.fillMaxSize().background(KhazenaColors().blockEmber), contentAlignment = Alignment.Center) {
             KhazenaLaunchMark(Modifier.absoluteOffset(x = 6.dp))
         }
@@ -41,7 +43,18 @@ fun App(isDebug: Boolean = false) {
     }
     ProvideAppLanguage(language) {
         KhazenaTheme(language.code) {
-            AppNavHost(navController, state.isSignedIn, isDebug)
+            // Screens cross-fade, so this shows through mid-transition; without it the platform's white/black window flashes.
+            Box(Modifier.fillMaxSize().background(KhazenaTheme.colors.surfaceBackground)) {
+                val onboarding by rememberUpdatedState(state.onboarding)
+                AppNavHost(
+                    navController = navController,
+                    isSignedIn = state.isSignedIn,
+                    isDebug = isDebug,
+                    onboarding = { onboarding },
+                    onIntroCompleted = viewModel::onIntroCompleted,
+                    onSideEntered = viewModel::onSideEntered,
+                )
+            }
         }
     }
 }

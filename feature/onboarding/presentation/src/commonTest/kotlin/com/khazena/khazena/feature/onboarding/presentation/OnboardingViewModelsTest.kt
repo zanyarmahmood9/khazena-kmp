@@ -42,6 +42,18 @@ class OnboardingViewModelsTest {
     }
 
     @Test
+    fun introBackGoesToPreviousPageAndStopsAtFirst() = runTest {
+        val viewModel = IntroViewModel(SavedStateHandle(mapOf("page" to 2)))
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.collect {} }
+
+        viewModel.onAction(IntroAction.OnBackClick)
+        assertEquals(1, viewModel.state.value.page)
+        viewModel.onAction(IntroAction.OnBackClick)
+        viewModel.onAction(IntroAction.OnBackClick)
+        assertEquals(0, viewModel.state.value.page)
+    }
+
+    @Test
     fun introRestoresPageFromSavedState() = runTest {
         val viewModel = IntroViewModel(SavedStateHandle(mapOf("page" to 1)))
         assertEquals(1, viewModel.state.value.page)

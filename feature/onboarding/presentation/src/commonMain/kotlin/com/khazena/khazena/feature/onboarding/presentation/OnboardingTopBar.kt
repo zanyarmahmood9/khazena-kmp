@@ -24,9 +24,11 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.khazena.khazena.core.designsystem.CapFontScale
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.TOP_BAR_MAX_FONT_SCALE
 import com.khazena.khazena.core.designsystem.component.KhazenaLogo
 import com.khazena.khazena.core.designsystem.component.KhazenaWordmark
 import khazena.feature.onboarding.presentation.generated.resources.Res
@@ -40,32 +42,34 @@ internal const val ONBOARDING_STEPS = 3
 @Composable
 internal fun OnboardingTopBar(step: Int, onSkip: (() -> Unit)?, skipLabel: StringResource = Res.string.skip) {
     val colors = KhazenaTheme.colors
-    Box(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = KhazenaSpacing.screenMargin)) {
-        Row(
-            Modifier.align(Alignment.CenterStart).clearAndSetSemantics {},
-            horizontalArrangement = Arrangement.spacedBy(5.dp),
-        ) {
-            repeat(ONBOARDING_STEPS) { index ->
-                val width by animateDpAsState(if (index == step) 28.dp else 8.dp, tween(durationMillis = 450, easing = FastOutSlowInEasing))
-                val color by animateColorAsState(if (index == step) colors.textPrimary else colors.borderStrong, tween(durationMillis = 450))
-                Box(Modifier.size(width, 8.dp).background(color, KhazenaRadius.pill))
+    CapFontScale(TOP_BAR_MAX_FONT_SCALE) {
+        Box(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = KhazenaSpacing.screenMargin)) {
+            Row(
+                Modifier.align(Alignment.CenterStart).clearAndSetSemantics {},
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+            ) {
+                repeat(ONBOARDING_STEPS) { index ->
+                    val width by animateDpAsState(if (index == step) 28.dp else 8.dp, tween(durationMillis = 450, easing = FastOutSlowInEasing))
+                    val color by animateColorAsState(if (index == step) colors.textPrimary else colors.borderStrong, tween(durationMillis = 450))
+                    Box(Modifier.size(width, 8.dp).background(color, KhazenaRadius.pill))
+                }
             }
-        }
-        Row(
-            Modifier.align(Alignment.Center),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Image(painterResource(KhazenaLogo.MarkOnPaper), null, Modifier.width(16.dp).height(18.dp))
-            KhazenaWordmark(KhazenaTheme.typography.wordmarkS, colors.textPrimary)
-        }
-        if (onSkip != null) {
-            Text(
-                stringResource(skipLabel),
-                style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
-                color = colors.textPrimary,
-                modifier = Modifier.align(Alignment.CenterEnd).clickable(role = Role.Button, onClick = onSkip).padding(8.dp),
-            )
+            Row(
+                Modifier.align(Alignment.Center),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(painterResource(KhazenaLogo.MarkOnPaper), null, Modifier.width(16.dp).height(18.dp))
+                KhazenaWordmark(KhazenaTheme.typography.wordmarkS, colors.textPrimary)
+            }
+            if (onSkip != null) {
+                Text(
+                    stringResource(skipLabel),
+                    style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
+                    color = colors.textPrimary,
+                    modifier = Modifier.align(Alignment.CenterEnd).clickable(role = Role.Button, onClick = onSkip).padding(8.dp),
+                )
+            }
         }
     }
 }

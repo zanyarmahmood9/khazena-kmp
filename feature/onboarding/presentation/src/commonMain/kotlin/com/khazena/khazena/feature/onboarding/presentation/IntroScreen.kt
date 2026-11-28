@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,6 +48,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -60,6 +60,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
+import com.khazena.khazena.core.designsystem.CapFontScale
 import com.khazena.khazena.core.designsystem.KhazenaColors
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
@@ -157,6 +161,12 @@ internal fun IntroScreen(state: IntroState, onAction: (IntroAction) -> Unit, onA
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.settledPage }.collect { onAction(IntroAction.OnPageSettled(it)) }
     }
+    // Back steps through the pages first; only on the first page does it leave the app.
+    NavigationBackHandler(
+        state = rememberNavigationEventState(NavigationEventInfo.None),
+        isBackEnabled = pagerState.currentPage > 0,
+        onBackCompleted = { onAction(IntroAction.OnBackClick) },
+    )
     Column(
         Modifier
             .fillMaxSize()
@@ -191,19 +201,27 @@ private fun IntroPageContent(page: IntroPage, pageOffset: () -> Float) {
     val colors = KhazenaTheme.colors
     Column(Modifier.fillMaxSize().padding(horizontal = KhazenaSpacing.screenMargin, vertical = 8.dp)) {
         Box(
-            Modifier.fillMaxWidth().aspectRatio(0.84f, matchHeightConstraintsFirst = false)
+            Modifier.fillMaxWidth()
                 .weight(1f, fill = false)
+                // 0.84 card ratio when there's room; with large text it gives up height to the copy instead of overlapping it.
+                .layout { measurable, constraints ->
+                    val height = minOf(constraints.maxHeight, (constraints.maxWidth / 0.84f).toInt())
+                    val placeable = measurable.measure(constraints.copy(minHeight = height, maxHeight = height))
+                    layout(placeable.width, placeable.height) { placeable.place(0, 0) }
+                }
                 .graphicsLayer {
                     val offset = pageOffset()
                     scaleX = lerp(1f, 0.92f, offset)
                     scaleY = scaleX
                     alpha = lerp(1f, 0.5f, offset)
                 }
-                .background(page.block(colors), KhazenaRadius.hero),
+                .clip(KhazenaRadius.hero)
+                .background(page.block(colors)),
             contentAlignment = Alignment.Center,
         ) {
             if (page.hero != null) {
-                page.hero()
+                // The hero is decorative art laid out on fixed Figma coordinates (hidden from screen readers), so its text keeps its size.
+                CapFontScale(1f) { page.hero() }
             } else {
                 Box(Modifier.size(112.dp).background(colors.surfaceCard, CircleShape), contentAlignment = Alignment.Center) {
                     Icon(painterResource(page.icon), null, Modifier.size(48.dp), tint = colors.textPrimary)

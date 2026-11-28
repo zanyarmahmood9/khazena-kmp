@@ -7,8 +7,8 @@ import com.khazena.khazena.core.designsystem.KhazenaTheme
 import com.khazena.khazena.core.domain.LocalizedText
 import com.khazena.khazena.core.presentation.language.LocalAppLocale
 import khazena.core.presentation.generated.resources.Res
-import khazena.core.presentation.generated.resources.distance_km
 import khazena.core.presentation.generated.resources.discount_label
+import khazena.core.presentation.generated.resources.distance_km
 import khazena.core.presentation.generated.resources.price_iqd
 import org.jetbrains.compose.resources.stringResource
 
@@ -31,8 +31,9 @@ fun formatDistance(km: Double): String {
     return stringResource(Res.string.distance_km, "${tenths / 10}.${tenths % 10}")
 }
 
+// Isolated as left-to-right, otherwise in Arabic/Kurdish text the bidi algorithm moves the minus to the end ("50%-").
 @Composable
-fun formatDiscount(percent: Int): String = stringResource(Res.string.discount_label, percent)
+fun formatDiscount(percent: Int): String = "\u2066" + stringResource(Res.string.discount_label, percent) + "\u2069"
 
 @Composable
 fun placeholderPhoto(index: Int): Painter {

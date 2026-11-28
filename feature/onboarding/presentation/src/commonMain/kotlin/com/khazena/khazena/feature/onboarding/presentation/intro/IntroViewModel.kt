@@ -30,6 +30,7 @@ class IntroViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
                 val page = state.value.page
                 if (page >= INTRO_PAGE_COUNT - 1) finish() else savedStateHandle[PAGE_KEY] = page + 1
             }
+            IntroAction.OnBackClick -> savedStateHandle[PAGE_KEY] = (state.value.page - 1).coerceAtLeast(0)
             IntroAction.OnSkipClick -> finish()
         }
     }

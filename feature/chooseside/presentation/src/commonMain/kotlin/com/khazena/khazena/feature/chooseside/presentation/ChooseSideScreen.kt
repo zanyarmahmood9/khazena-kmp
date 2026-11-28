@@ -44,17 +44,25 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.khazena.khazena.core.designsystem.CapFontScale
 import com.khazena.khazena.core.designsystem.KhazenaRadius
 import com.khazena.khazena.core.designsystem.KhazenaRtlPreview
 import com.khazena.khazena.core.designsystem.KhazenaSpacing
 import com.khazena.khazena.core.designsystem.KhazenaTheme
+import com.khazena.khazena.core.designsystem.TOP_BAR_MAX_FONT_SCALE
 import com.khazena.khazena.core.designsystem.component.KhazenaButton
 import com.khazena.khazena.core.designsystem.component.KhazenaIcons
 import com.khazena.khazena.core.designsystem.component.KhazenaLogo
@@ -176,19 +184,23 @@ internal fun ChooseSideScreen(state: ChooseSideState, onAction: (ChooseSideActio
                 modifier = Modifier.fillMaxWidth(),
                 icon = KhazenaIcons.ArrowRight,
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    stringResource(Res.string.have_account),
-                    style = KhazenaTheme.typography.labelMSemiBold.copy(fontWeight = FontWeight.Medium),
-                    color = colors.textSecondary,
-                )
-                Text(
-                    stringResource(Res.string.sign_in),
-                    style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
-                    color = colors.textPrimary,
-                    modifier = Modifier.clickable(role = Role.Button) { onAction(ChooseSideAction.OnSignInClick) },
-                )
-            }
+            // One sentence with an inline link, so with large text "Sign in" wraps as a word instead of a letter per line.
+            val haveAccount = stringResource(Res.string.have_account)
+            val signIn = stringResource(Res.string.sign_in)
+            Text(
+                buildAnnotatedString {
+                    append(haveAccount)
+                    append(' ')
+                    withLink(
+                        LinkAnnotation.Clickable(
+                            tag = "sign_in",
+                            styles = TextLinkStyles(SpanStyle(color = colors.textPrimary, fontWeight = FontWeight.SemiBold, textDecoration = TextDecoration.Underline)),
+                        ) { onAction(ChooseSideAction.OnSignInClick) },
+                    ) { append(signIn) }
+                },
+                style = KhazenaTheme.typography.labelMSemiBold.copy(fontWeight = FontWeight.Medium, textAlign = TextAlign.Center),
+                color = colors.textSecondary,
+            )
         }
     }
 }
@@ -196,21 +208,23 @@ internal fun ChooseSideScreen(state: ChooseSideState, onAction: (ChooseSideActio
 @Composable
 private fun TopBar(onSkip: () -> Unit) {
     val colors = KhazenaTheme.colors
-    Box(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = KhazenaSpacing.screenMargin)) {
-        Row(
-            Modifier.align(Alignment.Center),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Image(painterResource(KhazenaLogo.MarkOnPaper), null, Modifier.width(16.dp).height(18.dp))
-            KhazenaWordmark(KhazenaTheme.typography.wordmarkS, colors.textPrimary)
+    CapFontScale(TOP_BAR_MAX_FONT_SCALE) {
+        Box(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = KhazenaSpacing.screenMargin)) {
+            Row(
+                Modifier.align(Alignment.Center),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(painterResource(KhazenaLogo.MarkOnPaper), null, Modifier.width(16.dp).height(18.dp))
+                KhazenaWordmark(KhazenaTheme.typography.wordmarkS, colors.textPrimary)
+            }
+            Text(
+                stringResource(Res.string.skip),
+                style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
+                color = colors.textPrimary,
+                modifier = Modifier.align(Alignment.CenterEnd).clickable(role = Role.Button, onClick = onSkip).padding(8.dp),
+            )
         }
-        Text(
-            stringResource(Res.string.skip),
-            style = KhazenaTheme.typography.labelMSemiBold.copy(textDecoration = TextDecoration.Underline),
-            color = colors.textPrimary,
-            modifier = Modifier.align(Alignment.CenterEnd).clickable(role = Role.Button, onClick = onSkip).padding(8.dp),
-        )
     }
 }
 

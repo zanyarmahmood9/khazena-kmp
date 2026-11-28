@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -112,6 +113,8 @@ fun KhazenaButton(
                 style = textStyle,
                 color = content,
                 maxLines = 1,
+                // Large system text: shrink to fit the pill instead of cutting the label off.
+                autoSize = TextAutoSize.StepBased(minFontSize = 11.sp, maxFontSize = textStyle.fontSize),
             )
         }
         if (icon != null) {

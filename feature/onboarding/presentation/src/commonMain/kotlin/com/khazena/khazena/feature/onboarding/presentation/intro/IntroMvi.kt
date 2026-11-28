@@ -8,6 +8,7 @@ data class IntroState(
 sealed interface IntroAction {
     data class OnPageSettled(val page: Int) : IntroAction
     data object OnNextClick : IntroAction
+    data object OnBackClick : IntroAction
     data object OnSkipClick : IntroAction
 }
 

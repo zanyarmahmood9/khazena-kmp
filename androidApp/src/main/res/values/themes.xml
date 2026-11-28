@@ -3,6 +3,11 @@
     <style name="Theme.Khazena.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_mark</item>
-        <item name="postSplashScreenTheme">@android:style/Theme.Material.Light.NoActionBar</item>
+        <item name="postSplashScreenTheme">@style/Theme.Khazena</item>
+    </style>
+
+    <!-- App cream behind Compose, so nothing white flashes during transitions or on resume. -->
+    <style name="Theme.Khazena" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/app_background</item>
     </style>
 </resources>
