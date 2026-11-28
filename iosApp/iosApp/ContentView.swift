@@ -11,8 +11,26 @@ struct ComposeView: UIViewControllerRepresentable {
 }
 
 struct ContentView: View {
+    @State private var showsLaunchScreen = true
+
     var body: some View {
-        ComposeView()
-            .ignoresSafeArea()
+        ZStack {
+            ComposeView()
+                .ignoresSafeArea()
+            if showsLaunchScreen {
+                // Same as UILaunchScreen in Info.plist; fades out over Compose's identical first frame.
+                ZStack {
+                    Color("LaunchBackground")
+                    Image("LaunchMark")
+                }
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+                .transition(.opacity)
+            }
+        }
+        .task {
+            try? await Task.sleep(for: .milliseconds(150))
+            withAnimation(.easeOut(duration: 0.35)) { showsLaunchScreen = false }
+        }
     }
 }

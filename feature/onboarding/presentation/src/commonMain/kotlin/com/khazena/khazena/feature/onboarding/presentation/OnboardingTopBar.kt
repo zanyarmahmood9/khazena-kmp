@@ -1,6 +1,9 @@
 package com.khazena.khazena.feature.onboarding.presentation
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,13 +46,9 @@ internal fun OnboardingTopBar(step: Int, onSkip: (() -> Unit)?, skipLabel: Strin
             horizontalArrangement = Arrangement.spacedBy(5.dp),
         ) {
             repeat(ONBOARDING_STEPS) { index ->
-                val width by animateDpAsState(if (index == step) 28.dp else 8.dp)
-                Box(
-                    Modifier.size(width, 8.dp).background(
-                        if (index == step) colors.textPrimary else colors.borderStrong,
-                        KhazenaRadius.pill,
-                    ),
-                )
+                val width by animateDpAsState(if (index == step) 28.dp else 8.dp, tween(durationMillis = 450, easing = FastOutSlowInEasing))
+                val color by animateColorAsState(if (index == step) colors.textPrimary else colors.borderStrong, tween(durationMillis = 450))
+                Box(Modifier.size(width, 8.dp).background(color, KhazenaRadius.pill))
             }
         }
         Row(

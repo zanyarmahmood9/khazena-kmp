@@ -1,6 +1,13 @@
 package com.khazena.khazena.feature.onboarding.presentation
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +28,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,12 +36,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.util.lerp
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -48,6 +59,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.PI
+import kotlin.math.absoluteValue
+import kotlin.math.sin
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.khazena.khazena.core.designsystem.KhazenaColors
 import com.khazena.khazena.core.designsystem.KhazenaRadius
@@ -130,7 +144,9 @@ internal fun IntroRoot(onFinished: () -> Unit, viewModel: IntroViewModel = koinV
 internal fun IntroScreen(state: IntroState, onAction: (IntroAction) -> Unit) {
     val pagerState = rememberPagerState(initialPage = state.page) { state.pageCount }
     LaunchedEffect(state.page) {
-        if (pagerState.currentPage != state.page) pagerState.animateScrollToPage(state.page)
+        if (pagerState.currentPage != state.page) {
+            pagerState.animateScrollToPage(state.page, animationSpec = tween(durationMillis = 550, easing = FastOutSlowInEasing))
+        }
     }
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.settledPage }.collect { onAction(IntroAction.OnPageSettled(it)) }
@@ -148,7 +164,13 @@ internal fun IntroScreen(state: IntroState, onAction: (IntroAction) -> Unit) {
             onSkip = { onAction(IntroAction.OnSkipClick) },
             skipLabel = if (locationPage) Res.string.not_now else Res.string.skip,
         )
-        HorizontalPager(pagerState, Modifier.weight(1f)) { index -> IntroPageContent(pages[index]) }
+        HorizontalPager(
+            pagerState,
+            Modifier.weight(1f),
+            flingBehavior = PagerDefaults.flingBehavior(pagerState, snapAnimationSpec = tween(durationMillis = 450, easing = FastOutSlowInEasing)),
+        ) { index ->
+            IntroPageContent(pages[index]) { (pagerState.currentPage - index + pagerState.currentPageOffsetFraction).absoluteValue.coerceIn(0f, 1f) }
+        }
         KhazenaButton(
             // shortcut: "Allow location" only advances; wire a real permission request once a permissions lib is added.
             text = stringResource(if (locationPage) Res.string.allow_location else Res.string.next),
@@ -160,12 +182,18 @@ internal fun IntroScreen(state: IntroState, onAction: (IntroAction) -> Unit) {
 }
 
 @Composable
-private fun IntroPageContent(page: IntroPage) {
+private fun IntroPageContent(page: IntroPage, pageOffset: () -> Float) {
     val colors = KhazenaTheme.colors
     Column(Modifier.fillMaxSize().padding(horizontal = KhazenaSpacing.screenMargin, vertical = 8.dp)) {
         Box(
             Modifier.fillMaxWidth().aspectRatio(0.84f, matchHeightConstraintsFirst = false)
                 .weight(1f, fill = false)
+                .graphicsLayer {
+                    val offset = pageOffset()
+                    scaleX = lerp(1f, 0.92f, offset)
+                    scaleY = scaleX
+                    alpha = lerp(1f, 0.5f, offset)
+                }
                 .background(page.block(colors), KhazenaRadius.hero),
             contentAlignment = Alignment.Center,
         ) {
@@ -178,7 +206,14 @@ private fun IntroPageContent(page: IntroPage) {
             }
         }
         Spacer(Modifier.height(20.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(
+            Modifier.graphicsLayer {
+                val offset = pageOffset()
+                alpha = 1f - offset
+                translationY = offset * 16.dp.toPx()
+            },
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
             Text(stringResource(page.kicker).uppercase(), style = KhazenaTheme.typography.monoKicker, color = colors.textSecondary)
             Text(
                 stringResource(page.title),
@@ -192,9 +227,27 @@ private fun IntroPageContent(page: IntroPage) {
 }
 
 @Composable
+private fun rememberDrift(): State<Float> = rememberInfiniteTransition().animateFloat(
+    initialValue = 0f,
+    targetValue = 1f,
+    animationSpec = infiniteRepeatable(tween(durationMillis = 6_000, easing = LinearEasing), RepeatMode.Restart),
+)
+
+private fun Modifier.drift(time: State<Float>, phase: Float, amplitude: Dp = 3.dp) = graphicsLayer {
+    translationY = sin((time.value + phase) * 2 * PI.toFloat()) * amplitude.toPx()
+}
+
+private fun Modifier.breathe(time: State<Float>, phase: Float) = graphicsLayer {
+    val scale = 1f + 0.05f * sin((time.value + phase) * 2 * PI.toFloat())
+    scaleX = scale
+    scaleY = scale
+}
+
+@Composable
 private fun SaveLocalHero() {
     val colors = KhazenaTheme.colors
     val kicker = KhazenaTheme.typography.monoKicker
+    val time = rememberDrift()
     Column(Modifier.fillMaxSize().padding(20.dp).clearAndSetSemantics {}) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(stringResource(Res.string.intro_1_stat_places).uppercase(), style = kicker, color = colors.textPrimary.copy(alpha = 0.75f))
@@ -202,9 +255,9 @@ private fun SaveLocalHero() {
         }
         Spacer(Modifier.height(30.dp))
         Column(Modifier.padding(horizontal = 10.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            HeroCard(Res.drawable.intro_food, Res.string.intro_1_card_food, 128, 50, rotation = 3f, shift = 2.dp)
-            HeroCard(Res.drawable.intro_market, Res.string.intro_1_card_markets, 64, 25, rotation = -3f, shift = 6.dp)
-            HeroCard(Res.drawable.intro_beauty, Res.string.intro_1_card_beauty, 87, 40, rotation = 2f, shift = (-1).dp)
+            HeroCard(Res.drawable.intro_food, Res.string.intro_1_card_food, 128, 50, rotation = 3f, shift = 2.dp, Modifier.drift(time, 0f))
+            HeroCard(Res.drawable.intro_market, Res.string.intro_1_card_markets, 64, 25, rotation = -3f, shift = 6.dp, Modifier.drift(time, 0.33f))
+            HeroCard(Res.drawable.intro_beauty, Res.string.intro_1_card_beauty, 87, 40, rotation = 2f, shift = (-1).dp, Modifier.drift(time, 0.66f))
         }
         Spacer(Modifier.weight(1f).heightIn(min = 12.dp))
         Text(
@@ -216,10 +269,10 @@ private fun SaveLocalHero() {
 }
 
 @Composable
-private fun HeroCard(photo: DrawableResource, title: StringResource, places: Int, discount: Int, rotation: Float, shift: Dp) {
+private fun HeroCard(photo: DrawableResource, title: StringResource, places: Int, discount: Int, rotation: Float, shift: Dp, modifier: Modifier = Modifier) {
     val colors = KhazenaTheme.colors
     Row(
-        Modifier
+        modifier
             .fillMaxWidth()
             .offset(x = shift)
             .rotate(rotation)
@@ -269,6 +322,7 @@ private val qrModules = listOf(
 private fun ScanSaveHero() {
     val colors = KhazenaTheme.colors
     val kicker = KhazenaTheme.typography.monoKicker
+    val time = rememberDrift()
     Box(Modifier.fillMaxSize().clip(KhazenaRadius.hero).clearAndSetSemantics {}) {
         Row(Modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(stringResource(Res.string.intro_2_stat_counter).uppercase(), style = kicker, color = Color.White.copy(alpha = 0.8f))
@@ -276,19 +330,19 @@ private fun ScanSaveHero() {
         }
         // Art keeps Figma's 350×424 frame coordinates and centres in whatever space the block gets.
         Box(Modifier.align(Alignment.Center).requiredSize(350.dp, 424.dp)) {
-            Tilted(26.75.dp, 120.dp, 25.18.dp, 17.07.dp, 24f) { Box(Modifier.size(24.dp, 8.dp).background(colors.blockSun, KhazenaRadius.pill)) }
-            Tilted(300.dp, 86.dp, 21.32.dp, 16.93.dp, -30f) { Box(Modifier.size(20.dp, 8.dp).background(colors.blockEmber, KhazenaRadius.pill)) }
-            Tilted(24.dp, 247.22.dp, 17.15.dp, 10.66.dp, -10f) { Box(Modifier.size(16.dp, 8.dp).background(Color.White, KhazenaRadius.pill)) }
-            Tilted(53.31.dp, 70.dp, 224.19.dp, 281.72.dp, 4f) { CodeCard() }
+            Tilted(26.75.dp, 120.dp, 25.18.dp, 17.07.dp, 24f, Modifier.drift(time, 0.2f)) { Box(Modifier.size(24.dp, 8.dp).background(colors.blockSun, KhazenaRadius.pill)) }
+            Tilted(300.dp, 86.dp, 21.32.dp, 16.93.dp, -30f, Modifier.drift(time, 0.5f)) { Box(Modifier.size(20.dp, 8.dp).background(colors.blockEmber, KhazenaRadius.pill)) }
+            Tilted(24.dp, 247.22.dp, 17.15.dp, 10.66.dp, -10f, Modifier.drift(time, 0.8f)) { Box(Modifier.size(16.dp, 8.dp).background(Color.White, KhazenaRadius.pill)) }
+            Tilted(53.31.dp, 70.dp, 224.19.dp, 281.72.dp, 4f, Modifier.drift(time, 0f, 4.dp)) { CodeCard() }
             Box(
-                Modifier.offset(246.dp, 300.dp).size(76.dp)
+                Modifier.offset(246.dp, 300.dp).breathe(time, 0.4f).size(76.dp)
                     .background(colors.blockViolet, CircleShape).padding(6.dp)
                     .background(colors.blockSun, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(painterResource(KhazenaIcons.Check), null, Modifier.size(36.dp), tint = colors.textPrimary)
             }
-            Tilted(36.dp, 347.63.dp, 121.8.dp, 38.3.dp, -4f) {
+            Tilted(36.dp, 347.63.dp, 121.8.dp, 38.3.dp, -4f, Modifier.drift(time, 0.7f)) {
                 Box(Modifier.height(30.dp).background(colors.blockSun, KhazenaRadius.pill).padding(horizontal = 14.dp), contentAlignment = Alignment.Center) {
                     Text(
                         stringResource(Res.string.intro_2_applied, formatDiscount(30)).uppercase(),
@@ -303,8 +357,8 @@ private fun ScanSaveHero() {
 }
 
 @Composable
-private fun Tilted(x: Dp, y: Dp, width: Dp, height: Dp, rotation: Float, content: @Composable () -> Unit) {
-    Box(Modifier.offset(x, y).size(width, height).wrapContentSize(unbounded = true).rotate(rotation)) { content() }
+private fun Tilted(x: Dp, y: Dp, width: Dp, height: Dp, rotation: Float, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Box(Modifier.offset(x, y).size(width, height).wrapContentSize(unbounded = true).then(modifier).rotate(rotation)) { content() }
 }
 
 @Composable
@@ -344,6 +398,7 @@ private fun CodeCard() {
 private fun NearYouHero() {
     val colors = KhazenaTheme.colors
     val kicker = KhazenaTheme.typography.monoKicker
+    val time = rememberDrift()
     Box(Modifier.fillMaxSize().clip(KhazenaRadius.hero).clearAndSetSemantics {}) {
         Row(Modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(stringResource(Res.string.intro_3_stat_near).uppercase(), style = kicker, color = colors.textPrimary)
@@ -351,8 +406,8 @@ private fun NearYouHero() {
         }
         Box(Modifier.align(Alignment.Center).requiredSize(350.dp, 424.dp)) {
             Tilted(23.95.dp, 104.dp, 289.02.dp, 252.66.dp, 5f) { MapTile() }
-            Box(Modifier.offset(100.dp, 141.dp).size(150.dp).background(colors.textPrimary.copy(alpha = 0.18f), CircleShape))
-            Box(Modifier.offset(123.dp, 164.dp).size(104.dp).background(colors.textPrimary.copy(alpha = 0.3f), CircleShape))
+            Box(Modifier.offset(100.dp, 141.dp).breathe(time, 0f).size(150.dp).background(colors.textPrimary.copy(alpha = 0.18f), CircleShape))
+            Box(Modifier.offset(123.dp, 164.dp).breathe(time, 0.15f).size(104.dp).background(colors.textPrimary.copy(alpha = 0.3f), CircleShape))
             Box(
                 Modifier.offset(141.dp, 182.dp).size(68.dp)
                     .background(colors.surfaceBackground, CircleShape).padding(4.dp)
@@ -361,11 +416,11 @@ private fun NearYouHero() {
             ) {
                 Image(painterResource(Res.drawable.intro_pin), null, Modifier.size(34.dp))
             }
-            Tilted(22.dp, 77.36.dp, 174.31.dp, 48.86.dp, -5f) { PlaceChip(colors.blockSun, Res.string.intro_1_card_food, 200) }
-            Tilted(143.63.dp, 324.dp, 191.91.dp, 47.17.dp, 4f) { PlaceChip(colors.blockViolet, Res.string.intro_1_card_beauty, 450) }
-            Tilted(292.dp, 116.dp, 23.05.dp, 17.93.dp, 30f) { Box(Modifier.size(22.dp, 8.dp).background(colors.blockSun, KhazenaRadius.pill)) }
-            Tilted(26.dp, 312.39.dp, 19.69.dp, 14.86.dp, -25f) { Box(Modifier.size(18.dp, 8.dp).background(colors.surfaceBackground, KhazenaRadius.pill)) }
-            Tilted(300.dp, 259.72.dp, 17.4.dp, 16.41.dp, -40f) { Box(Modifier.size(16.dp, 8.dp).background(colors.textPrimary, KhazenaRadius.pill)) }
+            Tilted(22.dp, 77.36.dp, 174.31.dp, 48.86.dp, -5f, Modifier.drift(time, 0.25f)) { PlaceChip(colors.blockSun, Res.string.intro_1_card_food, 200) }
+            Tilted(143.63.dp, 324.dp, 191.91.dp, 47.17.dp, 4f, Modifier.drift(time, 0.75f)) { PlaceChip(colors.blockViolet, Res.string.intro_1_card_beauty, 450) }
+            Tilted(292.dp, 116.dp, 23.05.dp, 17.93.dp, 30f, Modifier.drift(time, 0.1f)) { Box(Modifier.size(22.dp, 8.dp).background(colors.blockSun, KhazenaRadius.pill)) }
+            Tilted(26.dp, 312.39.dp, 19.69.dp, 14.86.dp, -25f, Modifier.drift(time, 0.45f)) { Box(Modifier.size(18.dp, 8.dp).background(colors.surfaceBackground, KhazenaRadius.pill)) }
+            Tilted(300.dp, 259.72.dp, 17.4.dp, 16.41.dp, -40f, Modifier.drift(time, 0.9f)) { Box(Modifier.size(16.dp, 8.dp).background(colors.textPrimary, KhazenaRadius.pill)) }
         }
     }
 }

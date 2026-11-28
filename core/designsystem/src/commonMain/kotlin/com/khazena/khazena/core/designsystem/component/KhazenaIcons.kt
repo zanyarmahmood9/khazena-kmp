@@ -9,6 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.khazena.khazena.core.designsystem.KhazenaTheme
@@ -82,6 +84,15 @@ object KhazenaLogo {
     val MarkOnEmber = Res.drawable.kmark_on_ember
     internal val Watermark = Res.drawable.kmark_watermark
 }
+
+// The mark as the native launch screens and the Lottie's first frame draw it, so launch → app has no visible jump.
+@Composable
+fun KhazenaLaunchMark(modifier: Modifier = Modifier) = Image(
+    painterResource(KhazenaLogo.MarkOnEmber),
+    contentDescription = null,
+    modifier = modifier.size(102.dp, 115.6.dp),
+    colorFilter = ColorFilter.tint(Color(0xFFDA3F1F)),
+)
 
 @Preview(name = "Icons", widthDp = 390)
 @Composable

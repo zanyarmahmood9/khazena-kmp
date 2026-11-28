@@ -48,6 +48,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         dependencies {
             "implementation"(libs.lib("compose-uiToolingPreview"))
             "implementation"(libs.lib("koin-android"))
+            "implementation"(libs.lib("androidx-core-splashscreen"))
             "debugImplementation"(libs.lib("compose-uiTooling"))
         }
     }

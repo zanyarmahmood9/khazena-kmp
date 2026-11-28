@@ -8,7 +8,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-private val SPLASH_DURATION = 1_200.milliseconds
+private val SPLASH_DURATION = 2_000.milliseconds
 
 sealed interface SplashEvent {
     data object NavigateNext : SplashEvent

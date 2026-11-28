@@ -2,4 +2,5 @@
 <resources>
     <color name="ic_launcher_background">#FF481F</color>
     <color name="notification_accent">#FF481F</color>
+    <color name="splash_background">#FF481F</color>
 </resources>

@@ -4,7 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 
-/** `feature:<name>:presentation` modules: Compose UI + ViewModel + core UI modules, Koin, type-safe navigation, Coil. */
+/** `feature:<name>:presentation` modules: Compose UI + ViewModel + core UI modules, Koin, type-safe navigation, Coil, Compottie (Lottie). */
 class CmpFeatureConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) = with(target) {
@@ -26,6 +26,7 @@ class CmpFeatureConventionPlugin : Plugin<Project> {
             "commonMainImplementation"(libs.lib("kotlinx-serialization-json"))
             "commonMainImplementation"(libs.lib("coil-compose"))
             "commonMainImplementation"(libs.lib("coil-network-ktor3"))
+            "commonMainImplementation"(libs.lib("compottie"))
         }
     }
 }

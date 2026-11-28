@@ -17,7 +17,8 @@
             android:resource="@color/notification_accent" />
         <activity
             android:exported="true"
-            android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:theme="@style/Theme.Khazena.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

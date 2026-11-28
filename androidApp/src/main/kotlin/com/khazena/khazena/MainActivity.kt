@@ -3,13 +3,27 @@ package com.khazena.khazena
 import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.os.Bundle
+import android.view.animation.DecelerateInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import kotlin.time.Duration.Companion.milliseconds
+
+private val SPLASH_FADE = 350.milliseconds
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen().setOnExitAnimationListener { splash ->
+            // The app's first frame draws the same mark in the same place, so a soft fade reads as one continuous screen.
+            splash.view.animate()
+                .alpha(0f)
+                .setDuration(SPLASH_FADE.inWholeMilliseconds)
+                .setInterpolator(DecelerateInterpolator())
+                .withEndAction(splash::remove)
+                .start()
+        }
         // The app has a light theme only, so system bar icons stay dark even in system dark mode.
         val lightBars = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         enableEdgeToEdge(statusBarStyle = lightBars, navigationBarStyle = lightBars)
